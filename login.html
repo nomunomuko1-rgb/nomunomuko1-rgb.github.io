@@ -13,7 +13,7 @@
 
     <h2>秘密のページ</h2>
     <p>パスワードを入力してください</p>
-    <p>パイちゃんの名前を半角英字で</p>
+    <p>パイちゃんの名前を最初は大文字半角英字で</p>
 
     <input type="password" id="password-input">
     <button onclick="checkPassword()">入室する</button>
@@ -24,14 +24,24 @@
             const correctPassword = "Pyrite"; 
             // ▲▲▲ ▲▲▲
 
-            // ▼▼▼ 秘密のページ（ステップ1で作ったファイル名）を指定します ▼▼▼
-            const secretPageUrl = "secret-prompt.html";
-            // ▲▲▲ ▲▲▲
+            // --- ここからが賢くなった部分 ---
+
+            // 1. URLから「?page=...」という情報を読み取る
+            const urlParams = new URLSearchParams(window.location.search);
+            const secretPageUrl = urlParams.get('page');
+
+            // 2. もし行き先が指定されていなかったら、エラーにする
+            if (!secretPageUrl) {
+                alert("エラー：行き先が指定されていません。");
+                return; // 処理を中断
+            }
+            
+            // --- ここまで ---
 
             const userInput = document.getElementById("password-input").value;
 
             if (userInput === correctPassword) {
-                // パスワードが合っていたら、秘密のページに移動する
+                // パスワードが合っていたら、「URLで指定された行き先」に移動する
                 window.location.href = secretPageUrl;
             } else {
                 // パスワードが間違っていたら、メッセージを表示する
