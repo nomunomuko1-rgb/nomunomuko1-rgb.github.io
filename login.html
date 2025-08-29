@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>パスワード認証</title>
+    <style>
+        body { font-family: sans-serif; max-width: 400px; margin: 100px auto; padding: 20px; text-align: center; border: 1px solid #ccc; border-radius: 10px; }
+        input { padding: 10px; margin-top: 20px; font-size: 1em; }
+        button { padding: 10px 20px; font-size: 1em; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>秘密のページ</h2>
+    <p>パスワードを入力してください</p>
+
+    <input type="password" id="password-input">
+    <button onclick="checkPassword()">入室する</button>
+
+    <script>
+        function checkPassword() {
+            // ▼▼▼ 好きなパスワードをここに設定してください ▼▼▼
+            const correctPassword = "Pyrite"; 
+            // ▲▲▲ ▲▲▲
+
+            // ▼▼▼ 秘密のページ（ステップ1で作ったファイル名）を指定します ▼▼▼
+            const secretPageUrl = "secret-prompt.html";
+            // ▲▲▲ ▲▲▲
+
+            const userInput = document.getElementById("password-input").value;
+
+            if (userInput === correctPassword) {
+                // パスワードが合っていたら、秘密のページに移動する
+                window.location.href = secretPageUrl;
+            } else {
+                // パスワードが間違っていたら、メッセージを表示する
+                alert("パスワードが違います。");
+            }
+        }
+    </script>
+
+</body>
+</html>```
+
