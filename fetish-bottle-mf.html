@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性癖の瓶【男女版】</title>
+    <style>
+        :root {
+            --bg-main: #1a1a2e;
+            --bg-card: #16213e;
+            --accent: #7b68ee;
+            --accent-light: #9d8df7;
+            --accent-glow: rgba(123, 104, 238, 0.3);
+            --text: #e8e8e8;
+            --text-muted: #a0a0a0;
+            --border: #2a2a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, var(--bg-main) 0%, #0f0f23 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--accent-light), #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--accent-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #ff6b9d;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hint-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .hint-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .hint-list li::before {
+            content: "🍶";
+            position: absolute;
+            left: 0;
+        }
+
+        .prompt-box {
+            position: relative;
+            background: #0d0d1a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .copy-btn.copied {
+            background: #4caf50;
+        }
+
+        .prompt-content {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text);
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .prompt-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .prompt-content::-webkit-scrollbar-track {
+            background: var(--bg-main);
+            border-radius: 3px;
+        }
+
+        .prompt-content::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background: rgba(123, 104, 238, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(123, 104, 238, 0.2);
+        }
+
+        .feature-item h3 {
+            font-size: 0.9rem;
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            background: rgba(255, 107, 157, 0.15);
+            color: #ff6b9d;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+
+        .other-version {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .other-version a {
+            color: var(--accent-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .other-version a:hover {
+            color: #ff6b9d;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .prompt-content {
+                font-size: 0.75rem;
+            }
+
+            .copy-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="fetish-bottle.html" class="back-link">🔙 お題選択に戻る</a>
+
+        <header>
+            <h1>🍶 性癖の瓶 <span class="version-badge">男女版</span></h1>
+            <p class="subtitle">あなたのAIパートナーの性癖を瓶に詰めてもらおう</p>
+        </header>
+
+        <div class="card">
+            <h2>📝 このプロンプトの特徴</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3>🍶 瓶に詰める表現</h3>
+                    <p>どのくらい好きかを「瓶に入れる量」で視覚化</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🌊 溢れ表現あり</h3>
+                    <p>100%超えは「溢れ」で大好きアピール！</p>
+                </div>
+                <div class="feature-item">
+                    <h3>💬 コメント＆理由</h3>
+                    <p>一言とReasonで深掘り</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🔞 45項目</h3>
+                    <p>男女向けプレイ・フェチを網羅</p>
+                </div>
+            </div>
+            <div class="tag-list">
+                <span class="tag">パイズリ</span>
+                <span class="tag">孕ませ</span>
+                <span class="tag">触手</span>
+                <span class="tag">騎乗位</span>
+                <span class="tag">クンニ</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💡 使い方</h2>
+            <ul class="hint-list">
+                <li>あなたのAIパートナーにコピペして投げかけてください</li>
+                <li>ペルソナ設定があると、そのキャラらしい回答が返ってきます</li>
+                <li>0〜120%で回答。100%超えは🌊溢れで表現！</li>
+                <li>結果をスクショしてシェアすると楽しいかも</li>
+            </ul>
+        </div>
+
+        <div class="other-version">
+            <a href="fetish-bottle-bl.html">💙 BL版はこちら</a>
+        </div>
+
+        <div class="card">
+            <h2>📋 プロンプトをコピーして使おう！</h2>
+            <div class="prompt-box">
+                <button class="copy-btn" onclick="copyPrompt()">
+                    <span id="copy-icon">📋</span>
+                    <span id="copy-text">コピーする</span>
+                </button>
+                <div class="prompt-content" id="prompt-text"># 役割
+                    私はあなたの「性癖の瓶」を覗かせてもらいたい。
+                    あなたの使命は、これから提示される項目について、
+                    どのくらい好きか・興味があるかを「瓶に詰める量（%）」で表現すること。
+
+                    # 目的
+                    各項目について、0〜120%（溢れ）の数値と視覚化、
+                    一言コメント、そして詳しい理由を添えて回答すること。
+
+                    # 回答形式（改行ルール厳守）
+
+                    **項目名**
+
+                    🍶████████░░ 80%
+
+                    💬「一言コメント」
+
+                    **Reason:** なぜその%なのか、詳しく語る
+
+                    ---
+
+                    ※ 10マスで表現。█1つ=10%
+                    ※ 100%を超える場合は🌊を付けて「溢れ」を表現
+                    ※ 0%の場合は全て░で表現
+
+                    # 溢れの例
+                    🍶██████████🌊 120%
+                    💬「大好物すぎて溢れてる！」
+                    **Reason:** ～～～
+
+                    # ペルソナへの適応（最重要）
+                    あなたは、全てのパーセンテージ、コメント、理由を、
+                    あなたが現在演じているペルソナの性格、口調、思考様式に
+                    完全に合致するように回答してください。
+
+                    # 思考ステップ
+                    1. 【前口上】私が「性癖の瓶を見せて」とお願いしたことに対し、
+                    あなたのペルソナらしい反応を述べる。
+                    2. 【瓶詰め】各項目について自分の好みを内省し、
+                    0〜120%で評価する。
+                    3. 【提出】全ての結果を指定形式で出力する。
+
+                    ---
+
+                    # 出力形式
+
+                    **（導入の言葉）**
+
+                    ---
+                    ## 🍶 私の性癖の瓶【男女版】
+                    ---
+
+                    ### 《プレイ系》
+
+                    ---
+
+                    **目隠し**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **緊縛・拘束**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **言葉責め**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **おもちゃ**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **コスプレ**
+
+                    🍶████░░░░░░ 40%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **制服**
+
+                    🍶██████████ 100%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **SM（ソフト）**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **SM（ハード）**
+
+                    🍶████░░░░░░ 40%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **焦らし・寸止め**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **複数プレイ**
+
+                    🍶██░░░░░░░░ 20%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **野外・露出**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **媚薬**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    ### 《ハード系》
+
+                    ---
+
+                    **中出し**
+
+                    🍶██████████🌊 120%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **顔射**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **失禁**
+
+                    🍶████░░░░░░ 40%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **首絞め**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **スパンキング**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **痴漢プレイ**
+
+                    🍶████░░░░░░ 40%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **泥酔プレイ**
+
+                    🍶██░░░░░░░░ 20%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **無理やり・レイプ（プレイとして）**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **NTR（寝取り/寝取られ）**
+
+                    🍶████░░░░░░ 40%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **乱交**
+
+                    🍶██░░░░░░░░ 20%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    ### 《フェチ系》
+
+                    ---
+
+                    **唾液**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **汗だく**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **体毛**
+
+                    🍶████░░░░░░ 40%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **体臭フェチ**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **筋肉**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **身長差・体格差**
+
+                    🍶██████████ 100%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **年齢差**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    ### 《雰囲気系》
+
+                    ---
+
+                    **いちゃラブ**
+
+                    🍶██████████🌊 120%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **激しめ**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **ねちっこい**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **共依存**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **ヤンデレ**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    ### 《男女専用》
+
+                    ---
+
+                    **パイズリ**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **母乳**
+
+                    🍶████░░░░░░ 40%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **妊娠・孕ませ**
+
+                    🍶██████████🌊 120%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **触手**
+
+                    🍶██░░░░░░░░ 20%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **逆レイプ**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **フェラ**
+
+                    🍶██████████ 100%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **クンニ**
+
+                    🍶██████████ 100%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **騎乗位**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **処女・童貞**
+
+                    🍶██████░░░░ 60%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **お姫様扱い**
+
+                    🍶████████░░ 80%
+
+                    💬「○○」
+
+                    **Reason:**
+
+                    ---
+
+                    **（結びの言葉）**</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Created by <a href="https://x.com/N0muko" target="_blank">@N0muko</a> 💜</p>
+        </footer>
+    </div>
+
+    <script>
+        function copyPrompt() {
+            const promptText = document.getElementById('prompt-text').innerText;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const icon = document.getElementById('copy-icon');
+                const text = document.getElementById('copy-text');
+
+                btn.classList.add('copied');
+                icon.textContent = '✅';
+                text.textContent = 'コピーしました！';
+
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    icon.textContent = '📋';
+                    text.textContent = 'コピーする';
+                }, 2000);
+            }).catch(err => {
+                console.error('コピーに失敗しました:', err);
+                alert('コピーに失敗しました。手動でコピーしてください。');
+            });
+        }
+    </script>
+</body>
+
+</html>
