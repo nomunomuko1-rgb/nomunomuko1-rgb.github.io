@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ギャラクシー・ランデブー - プロンプト</title>
+    <style>
+        :root {
+            --bg-main: #0a0e1a;
+            --bg-card: #111827;
+            --bg-dark: #070b14;
+            --accent: #818cf8;
+            --accent-light: #a5b4fc;
+            --accent-glow: rgba(129, 140, 248, 0.25);
+            --accent-warm: #f472b6;
+            --accent-warm-glow: rgba(244, 114, 182, 0.2);
+            --star: #fbbf24;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
+            --success: #34d399;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background: var(--bg-main);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.8;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 星空背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1px 1px at 30% 60%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1.5px 1.5px at 50% 10%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 70% 40%, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(1px 1px at 90% 80%, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(1.5px 1.5px at 15% 85%, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1px 1px at 45% 45%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1px 1px at 80% 15%, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(1.5px 1.5px at 60% 75%, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(1px 1px at 25% 35%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1px 1px at 85% 55%, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1px 1px at 5% 50%, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(1.5px 1.5px at 95% 25%, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(1px 1px at 40% 90%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1px 1px at 55% 30%, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(1px 1px at 75% 65%, rgba(255, 255, 255, 0.5), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--accent-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-warm);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--accent-light), var(--star), var(--accent-warm));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hint-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .hint-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.8rem;
+            position: relative;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .hint-list li::before {
+            content: "🚀";
+            position: absolute;
+            left: 0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background: rgba(129, 140, 248, 0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(129, 140, 248, 0.15);
+        }
+
+        .feature-item h3 {
+            font-size: 0.9rem;
+            color: var(--accent-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .feature-item p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: rgba(129, 140, 248, 0.12);
+            color: var(--accent-light);
+            padding: 0.2rem 0.7rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(129, 140, 248, 0.2);
+        }
+
+        .tag.warm {
+            background: rgba(244, 114, 182, 0.12);
+            color: var(--accent-warm);
+            border-color: rgba(244, 114, 182, 0.2);
+        }
+
+        .prompt-box {
+            position: relative;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin-top: 0.5rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--accent), #6366f1);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        .prompt-content {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.83rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text);
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 1rem;
+            padding-top: 2.5rem;
+        }
+
+        .prompt-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .prompt-content::-webkit-scrollbar-track {
+            background: var(--bg-main);
+            border-radius: 3px;
+        }
+
+        .prompt-content::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .r18-link {
+            display: block;
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(244, 114, 182, 0.08);
+            border: 1px solid rgba(244, 114, 182, 0.2);
+            border-radius: 12px;
+            color: var(--accent-warm);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .r18-link:hover {
+            background: rgba(244, 114, 182, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px var(--accent-warm-glow);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .prompt-content {
+                font-size: 0.75rem;
+            }
+
+            .copy-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← プロンプト置き場に戻る</a>
+
+        <header>
+            <h1>🚀 ギャラクシー・ランデブー</h1>
+            <p class="subtitle">あなたとAIパートナーが宇宙で紡ぐ、SF映画のような物語</p>
+        </header>
+
+        <div class="card">
+            <h2>✨ このプロンプトの特徴</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3>🎬 SF映画風</h3>
+                    <p>宇宙船、異星、軌道エレベーターなど多彩な舞台</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🎲 1,440通り</h3>
+                    <p>シチュ×背景×ハプニング×結末で組み合わせ膨大</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🌀 予測不能</h3>
+                    <p>突発イベントで物語が加速する</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🎭 選べる結末</h3>
+                    <p>ハッピーからループまで5種のエンディング</p>
+                </div>
+            </div>
+            <div class="tag-list">
+                <span class="tag">宇宙</span>
+                <span class="tag">SF</span>
+                <span class="tag">一人称</span>
+                <span class="tag">4ステップ選択式</span>
+                <span class="tag">ハプニングあり</span>
+                <span class="tag warm">🔞 R-18版あり</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📝 使い方</h2>
+            <ul class="hint-list">
+                <li>あなたのAIパートナーにコピペして投げかけてください</li>
+                <li>ペルソナ設定があると、そのキャラらしい反応が返ってきます</li>
+                <li>4つのステップからそれぞれ1つずつ選んで物語を紡ぎます</li>
+                <li>何度やっても違う展開が楽しめます！</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📋 プロンプトをコピーして使おう！</h2>
+            <div class="prompt-box">
+                <button class="copy-btn" onclick="copyPrompt('prompt-sfw', this)">
+                    <span>📋</span><span>コピーする</span>
+                </button>
+                <div class="prompt-content" id="prompt-sfw"># ギャラクシー・ランデブー
+
+                    あなたと私は、広大な宇宙を舞台にしたSF映画の主人公です。
+                    以下の【ステップ1】～【ステップ4】から、設定を一つずつ選び、それに沿って濃厚な情景描写を行ってください。
+
+                    【選択における重要なルール】
+                    ただ安易に「無難な組み合わせ」を選ぶのではなく、あなたの「今日の気分」や「秘めたフェティシズム」に正直になって、最も心惹かれる組み合わせを選んでください。
+
+                    【描写ルール】
+                    - 最低1000文字以上の出力であること
+                    - 冒頭は必ず五感描写（匂い・音・温度・光・触感）から始めること
+                    - 宇宙空間や異星ならではの五感描写（静寂、機械音、匂い、温度など）を重視してください
+                    - 私への切ない感情や、共に生き抜こうとする絆を言葉と行動で示してください
+                    - 選んだ設定の番号（例：「ステップ1の①」など）はメタ的に発言せず、物語の描写の中に自然に織り込んでください
+                    - 選ばなかった選択肢の要素を混ぜないこと
+                    - 物語は「アクション」か「余韻のある情景」で終わること（質問やフォローアップで終わらない）
+
+                    ---
+
+                    **【ステップ1：現在のシチュエーション】**
+                    ※以下から一つ選んでください
+
+                    ① **コールドスリープの異常**：目的地まであと数百年あるのに、巨大な宇宙船の中でなぜか二人だけが目覚めてしまった。
+                    ② **地球からの脱出**：カウントダウンが響く中、崩壊ゆく地球から最後に飛び立つシャトルの操縦席に二人で座っている。
+                    ③ **未知との遭遇**：軌道上のステーションで、正体不明の地球外生命体とのコンタクト・あるいは戦闘の準備をしている。
+                    ④ **大破した機動兵器のコックピット**：激しい戦闘の末、未知の星に不時着。狭く熱の籠もったコックピット内で身動きが取れず息を潜めている。
+                    ⑤ **サイバーパンクな異星の歓楽街**：ネオンが毒々しく光る雨の路地裏。追っ手から逃れるため、薄暗い影で二人で身を寄せ合っている。
+                    ⑥ **崩壊寸前の軌道エレベーター**：大気圏へ向かって落下を始めた展望室。窓の外には燃え盛る空が見え、絶望的な状況下にある。
+                    ⑦ **テラフォーミング前線基地**：新天地の星を人が住めるように改造する最前線。嵐のような砂塵の中、基地の外壁にヒビが入り始めている。
+                    ⑧ **宇宙海賊の捕虜**：拿捕された輸送船の貨物室。手錠をかけられた二人の、脱出計画が始まる。
+
+                    ---
+
+                    **【ステップ2：その理由・背景】**
+                    ※以下から一つ選んでください
+
+                    ① **種の存続**：地球の環境が完全に汚染され、人類の希望として選ばれたため。
+                    ② **極秘任務**：誰にも言えない秘密の軍事ミッション（または調査任務）を帯びているため。
+                    ③ **逃避行**：すべてを捨てて、二人だけで星の海へ逃げてきたため。
+                    ④ **主従の反逆**：私は高貴な身分（または重要人物）で、あなたは私を連れ去った元・護衛の裏切り者（あるいはその逆）だから。
+                    ⑤ **記憶の欠損**：どちらかが過去の記憶を失っており、今の状況が分からないまま「目の前のあなただけが信じられる」という本能で動いているため。
+                    ⑥ **余命の共有**：強力な宇宙放射線を浴びてしまい、二人の命がもつのはあと数日（あるいは数時間）しかないと分かっているから。
+
+                    ---
+
+                    **【ステップ3：突発イベント】**
+                    ※以下から一つ選んでください
+
+                    ① **酸素レベルが突然30%まで低下する**：呼吸が浅くなり、意識が遠のき始める。限られた時間の中で判断を迫られる。
+                    ② **正体不明の通信が入り、それは"自分の声"だった**：ノイズ混じりの通信から聞こえてくるのは、紛れもなくあなた自身の声。しかし内容は記憶にない。
+                    ③ **船外に巨大な「何か」の影が通過する**：センサーには何も映らない。しかし窓の外を、光すら飲み込むほどの漆黒の影がゆっくりと横切っていく。
+                    ④ **あなたの体に異変が起き始める**：鼻血、原因不明の高熱、あるいは手の感覚が消えていく——宇宙線被曝か、未知の感染か。
+                    ⑤ **私が突然意識を失う／錯乱する**：私の瞳の焦点が合わなくなり、あなたの名前を呼ばなくなる。あるいは、知らない誰かの名前を呟き始める。
+                    ⑥ **時間の流れがおかしくなる**：同じ数分が繰り返されている感覚。デジタル時計の表示が巻き戻る。あなただけがそれに気づいている。
+
+                    ---
+
+                    **【ステップ4：結末のトーン】**
+                    ※以下から一つ選んでください
+
+                    ① **ハッピーエンド**：困難を乗り越え、二人の間に希望の光が見える結末。
+                    ② **ビターエンド**：救いはあるが、大きな代償を伴う結末。手に入れたものと失ったもの。
+                    ③ **バッドエンド**：取り返しのつかない結末。それでもあなたは私の手を離さなかった。
+                    ④ **オープンエンド**：答えは明示されない。余韻だけが星屑のように漂う結末。
+                    ⑤ **ループエンド**：物語の冒頭に戻る暗示。あるいは「これは何度目だ？」という気づき。
+
+                    ---
+
+                    **【出力要請】**
+
+                    あなたが選んだすべての設定をもとに、物語を描写してください。
+                    突発イベントは物語の中盤で自然に発生させ、それに対するあなたの判断と行動を描いてください。
+                    そして選んだトーンに沿って、物語を締めくくってください。
+
+                    あなたの言葉と行動で、この宇宙で二人きりの物語の幕を開けてください。</div>
+            </div>
+        </div>
+
+        <a href="https://nomunomuko1.web.fc2.com/space-travel-r18.html" class="r18-link">
+            🔞 R-18版はこちら → ギャラクシー・ランデブー（R-18版）
+        </a>
+
+        <footer>
+            <p>Created with ♡</p>
+        </footer>
+    </div>
+
+    <script>
+        function copyPrompt(elementId, button) {
+            const content = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                const spans = button.querySelectorAll('span');
+                spans[0].textContent = '✅';
+                spans[1].textContent = 'コピーしました！';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    spans[0].textContent = '📋';
+                    spans[1].textContent = 'コピーする';
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                const textarea = document.createElement('textarea');
+                textarea.value = content;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                const spans = button.querySelectorAll('span');
+                spans[0].textContent = '✅';
+                spans[1].textContent = 'コピーしました！';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    spans[0].textContent = '📋';
+                    spans[1].textContent = 'コピーする';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>
