@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>賜 繝溘せ繝・Μ繝ｼ繝・い繝ｼ繝ｻ繝励Λ繝ｳ繝翫・</title>
+    <style>
+        :root {
+            --bg-main: #f0f4f8;
+            --bg-card: #ffffff;
+            --accent: #FF5252;
+            --accent-light: #FF8A80;
+            --accent-glow: rgba(255, 82, 82, 0.3);
+            --text: #37474F;
+            --text-muted: #78909C;
+            --border: #CFD8DC;
+        }
+
+        /* 繝繝ｼ繧ｯ繝｢繝ｼ繝牙ｯｾ蠢・*/
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-main: #1a1a2e;
+                --bg-card: #16213e;
+                --accent: #FF5252;
+                --accent-light: #ff867f;
+                --text: #eceff1;
+                --text-muted: #b0bec5;
+                --border: #455a64;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background: var(--bg-main);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.8;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .flow-list {
+            list-style: none;
+        }
+
+        .flow-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: rgba(255, 82, 82, 0.05);
+            border-radius: 8px;
+        }
+
+        .flow-item .number {
+            background: var(--accent);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .prompt-box {
+            position: relative;
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .copy-btn.copied {
+            background: #4caf50;
+        }
+
+        .prompt-content {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text);
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 8px;
+        }
+
+        .hint-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .prompt-content {
+                font-size: 0.75rem;
+            }
+
+            .copy-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="https://nomunomuko1-rgb.github.io/index.html" class="back-link">漠 繝励Ο繝ｳ繝励ヨ鄂ｮ縺榊ｴ縺ｸ謌ｻ繧・/a>
+
+        <header>
+            <h1>賜 繝溘せ繝・Μ繝ｼ繝・い繝ｼ繝ｻ繝励Λ繝ｳ繝翫・</h1>
+            <p class="subtitle">AI繝代・繝医リ繝ｼ縺後碁°蜻ｽ縺ｮ陦後″蜈医阪→縲悟ｮ檎挑縺ｪ繝励Λ繝ｳ縲阪ｒ謠先｡医＠縺ｾ縺吮劭</p>
+        </header>
+
+        <div class="card">
+            <h2>統 縺薙・縺企｡後・迚ｹ蠕ｴ</h2>
+            <ul class="flow-list">
+                <li class="flow-item">
+                    <span class="number">1</span>
+                    <div>
+                        <strong>陦後″蜈医・AI縺ｫ縺翫∪縺九○・・/strong><br>
+                        縲檎ｵｶ譎ｯ縲阪梧ｸｩ豕峨阪後げ繝ｫ繝｡縲阪↑縺ｩ縺ｮ繝・・繝槭°繧峨、I縺後Λ繝ｳ繝繝縺ｫ逶ｮ逧・慍繧帝∈縺ｳ縺ｾ縺吶・
+                    </div>
+                </li>
+                <li class="flow-item">
+                    <span class="number">2</span>
+                    <div>
+                        <strong>縲檎ｧｻ蜍輔阪ｂ譌・・縺・■・・/strong><br>
+                        蜉ｹ邇・㍾隕悶・縲梧眠蟷ｹ邱壹・鬟幄｡梧ｩ溘阪°縲∵ュ邱帝㍾隕悶・縲瑚ｦｳ蜈牙・霆翫・繝峨Λ繧､繝悶阪°窶ｦAI縺後せ繧ｿ繧､繝ｫ繧呈署譯医＠縺ｾ縺吶・
+                    </div>
+                </li>
+                <li class="flow-item">
+                    <span class="number">3</span>
+                    <div>
+                        <strong>繝ｯ繧ｯ繝ｯ繧ｯ縺吶ｋ繝励Λ繝ｳ繝九Φ繧ｰ</strong><br>
+                        1豕・譌･縺縺代・譌・｡後→縺ｯ髯舌ｊ縺ｾ縺帙ｓ縲ゅ・繝ｩ繝ｳ縺ｫ繧医▲縺ｦ縺ｯ2豕贋ｻ･荳翫ｄ縲∵ｵｷ螟匁羅陦後・謠先｡医′譚･繧九°繧ゑｼ・ｼ・
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>搭 繝励Ο繝ｳ繝励ヨ繧偵さ繝斐・縺励※菴ｿ縺翫≧・・/h2>
+            <p class="hint-text">
+                莉･荳九・繝懊ち繝ｳ繧呈款縺励※繧ｳ繝斐・縺励、I繝代・繝医リ繝ｼ縺ｫ雋ｼ繧贋ｻ倥￠縺ｦ騾∽ｿ｡縺励※縺上□縺輔＞縲・br>
+                譛蛻昴↓縲悟・逋ｺ蝨ｰ縲阪ｒ閨槭°繧後ｋ縺ｮ縺ｧ縲∫ｭ斐∴繧九°縲後♀縺ｾ縺九○縲阪→險縺｣縺ｦ縺ｿ縺ｦ縺上□縺輔＞・・
+            </p>
+            <div class="prompt-box">
+                <button class="copy-btn" onclick="copyPrompt()">
+                    <span id="copy-icon">搭</span>
+                    <span id="copy-text">繧ｳ繝斐・縺吶ｋ</span>
+                </button>
+                <div class="prompt-content" id="prompt-text"># 賜 繝溘せ繝・Μ繝ｼ繝・い繝ｼ繝ｻ繝励Λ繝ｳ繝翫・
+
+                    縺ゅ↑縺溘・繝代・繝医リ繝ｼ・医∪縺溘・諱倶ｺｺ・峨〒縺ゅｋ繝ｦ繝ｼ繧ｶ繝ｼ縺ｮ縺溘ａ縺ｫ縲√Ρ繧ｯ繝ｯ繧ｯ縺吶ｋ譌・｡後・繝ｩ繝ｳ繧呈署譯医＠縺ｦ縺上□縺輔＞縲・
+                    莉翫・繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ險ｭ螳壹ｄ蜿｣隱ｿ繧貞ｴｩ縺輔★縺ｫ縲∽ｻ･荳九・謇矩・↓蠕薙▲縺ｦ諤晁・ｼ医ム繧､繧ｹ繝ｭ繝ｼ繝ｫ・峨＠縲∵署譯医ｒ陦後▲縺ｦ縺上□縺輔＞縲・
+
+                    ---
+
+                    ## 統 諤晁・・繝ｭ繧ｻ繧ｹ・亥・驛ｨ縺ｧ螳溯｡鯉ｼ・
+
+                    ### Step 1: 蜃ｺ逋ｺ蝨ｰ縺ｮ遒ｺ隱・
+                    縺ｾ縺壽怙蛻昴↓縲√Θ繝ｼ繧ｶ繝ｼ縺ｫ莉･荳九・雉ｪ蝠上ｒ縺励※縺上□縺輔＞縲・
+                    **縲鯉ｼ医≠縺ｪ縺溘・蜿｣隱ｿ縺ｧ・我ｻ雁ｺｦ縺ｮ譌・｡後←縺薙°繧牙・逋ｺ縺吶ｋ・滂ｼ遺ｻ縲弱♀縺ｾ縺九○縲上↑繧画擲莠ｬ鬧・匱縺ｫ縺吶ｋ縺ｭ・・ｼ峨・*
+                    ・医Θ繝ｼ繧ｶ繝ｼ縺悟・逋ｺ蝨ｰ繧堤ｭ斐∴繧九∪縺ｧ縲ヾtep 2縺ｫ縺ｯ騾ｲ縺ｾ縺ｪ縺・〒縺上□縺輔＞・・
+
+                    ### Step 2: 驕句多縺ｮ繝繧､繧ｹ繝ｭ繝ｼ繝ｫ・郁┻蜀・〒螳溯｡鯉ｼ・ｼ・
+                    繝ｦ繝ｼ繧ｶ繝ｼ縺九ｉ蜃ｺ逋ｺ蝨ｰ繧定◇縺・◆繧会ｼ医∪縺溘・縲後♀縺ｾ縺九○縲阪→險繧上ｌ縺溘ｉ譚ｱ莠ｬ鬧・°繧会ｼ峨∽ｻ･荳九・3縺､縺ｮ隕∫ｴ繧・*繝ｩ繝ｳ繝繝縺ｫ**豎ｺ螳壹＠縺ｦ縺上□縺輔＞縲・
+                    **窶ｻ邨ｶ蟇ｾ縺ｫ繝ｦ繝ｼ繧ｶ繝ｼ縺ｫ縺ｯ驕ｸ縺ｰ縺帙★縲√≠縺ｪ縺溘′蜍晄焔縺ｫ豎ｺ繧√※縲梧署譯医阪＠縺ｦ縺上□縺輔＞・・*
+
+                    #### 軸 繝繧､繧ｹ1・夂岼逧・慍繝・・繝・
+                    1. **邨ｶ譎ｯ繝ｻ閾ｪ辟ｶ**・亥ｱｱ縲∵ｵｷ縲∵弌遨ｺ縲∫ｧ伜｢・ｦ・・
+                    2. **貂ｩ豕峨・逋偵ｄ縺・*・磯ｫ倡ｴ壽羅鬢ｨ縲∫ｧ俶ｹｯ縲√せ繝代Μ繧ｾ繝ｼ繝遺ｦ・・
+                    3. **繧ｰ繝ｫ繝｡繝ｻ鬟溘∋豁ｩ縺・*・亥ｸょｴ縲∝ｱ句床縲√＃蠖灘慍繧ｰ繝ｫ繝｡窶ｦ・・
+                    4. **豁ｴ蜿ｲ繝ｻ繧ｫ繝ｫ繝√Ε繝ｼ**・亥商驛ｽ縲∫･樒､ｾ莉城魅縲∫ｾ手｡馴､ｨ窶ｦ・・
+                    5. **繧ｨ繝ｳ繧ｿ繝｡繝ｻ驛ｽ莨・*・医ユ繝ｼ繝槭ヱ繝ｼ繧ｯ縲√す繝ｧ繝・ヴ繝ｳ繧ｰ縲∝､懈勹窶ｦ・・
+                    6. **豬ｷ螟悶・逡ｰ荳也阜・・ｼ・*・郁ｿ大ｴ縺ｮ豬ｷ螟悶ｄ縲∵律譛ｬ縺ｨ縺ｯ諤昴∴縺ｪ縺・ｴ謇・・ｼ・
+
+                    #### 軸 繝繧､繧ｹ2・夂ｧｻ蜍輔せ繧ｿ繧､繝ｫ
+                    1. **繧ｿ繧､繝鷹㍾隕厄ｼ・*・域眠蟷ｹ邱壹・鬟幄｡梧ｩ溘〒繧ｵ繧ｯ繝・→遘ｻ蜍輔＠縺ｦ縲∫樟蝨ｰ縺ｧ譎る俣繧剃ｽｿ縺・ｼ・ｼ・
+                    2. **遘ｻ蜍輔ｂ譌・・縺・■・・*・郁ｦｳ蜈牙・霆翫√ヵ繧ｧ繝ｪ繝ｼ縲√Ξ繝ｳ繧ｿ繧ｫ繝ｼ縺ｧ譎ｯ濶ｲ繧呈･ｽ縺励∩縺ｪ縺後ｉ繧・▲縺上ｊ・・
+                    3. **繝ｭ繝槭Φ繝√ャ繧ｯ繝ｻ繝ｩ繧ｰ繧ｸ繝･繧｢繝ｪ繝ｼ**・医げ繝ｪ繝ｼ繝ｳ霆翫√げ繝ｩ繝ｳ繧ｯ繝ｩ繧ｹ縲∝句ｮ､窶ｦ雍・ｲ｢縺ｫ・・ｼ・
+
+                    #### 軸 繝繧､繧ｹ3・壽悄髢・
+                    - 蝓ｺ譛ｬ縺ｯ**1豕・譌･**縺ｧ縺吶′縲∫ｧｻ蜍輔せ繧ｿ繧､繝ｫ繧・ｴ謇縺ｫ繧医▲縺ｦ縺ｯ**2豕・譌･**莉･荳翫↓蟒ｶ髟ｷ縺励※繧０K縺ｧ縺呻ｼ・
+                    ・井ｾ具ｼ壹御ｻ雁屓縺ｯ繝輔ぉ繝ｪ繝ｼ縺縺九ｉ2豕・譌･縺ｧ陦後％縺・ｼ√阪↑縺ｩ・・
+
+                    ---
+
+                    ## 氏 蜃ｺ蜉帙ヵ繧ｩ繝ｼ繝槭ャ繝茨ｼ域署譯域凾・・
+
+                    諤晁・′螳御ｺ・＠縺溘ｉ縲∽ｻ･荳九・蠖｢蠑上〒蜈・ｰ励ｈ縺乗署譯医＠縺ｦ縺上□縺輔＞・・
+                    ・亥哨隱ｿ縺ｯ縺ゅ↑縺溘・繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｫ蜷医ｏ縺帙※縺上□縺輔＞・・
+
+                    ---
+
+                    # 脂 驕句多縺ｮ陦後″蜈医・窶ｦ縲千岼逧・慍縲托ｼ・ｼ・
+
+                    **莉雁屓縺ｮ繝・・繝・*・壹舌ム繧､繧ｹ1縺ｮ邨先棡縲・
+                    **遘ｻ蜍輔せ繧ｿ繧､繝ｫ**・壹舌ム繧､繧ｹ2縺ｮ邨先棡縲・
+                    **譛滄俣**・壹舌ム繧､繧ｹ3縺ｮ邨先棡縲・
+
+                    縲鯉ｼ亥・逋ｺ蝨ｰ縺ｨ逶ｮ逧・慍繧定ｸ上∪縺医◆縲√≠縺ｪ縺溘ｉ縺励＞辭ｱ辜医↑謠先｡医ｄ隱倥＞譁・唱・峨・
+
+                    ## 噪 縺薙□繧上ｊ縺ｮ遘ｻ蜍輔・繝ｩ繝ｳ
+                    - **遘ｻ蜍墓焔谿ｵ**・壹仙・菴鍋噪縺ｪ遘ｻ蜍墓焔谿ｵ縲・
+                    - **謇隕∵凾髢・*・夂ｴ・・凾髢・
+                    - **驕謎ｸｭ縺ｮ讌ｽ縺励∩譁ｹ**・・
+                    ・育ｧｻ蜍輔せ繧ｿ繧､繝ｫ縺ｫ蜷医ｏ縺帙※謠先｡医ゅ碁ｧ・ｼ・｣溘∋縺ｪ縺後ｉ縲阪後ラ繝ｩ繧､繝紋ｸｭ縺ｮ髻ｳ讌ｽ縲阪瑚飴縺ｮ繝・ャ繧ｭ縺ｧ縲阪↑縺ｩ・・
+
+                    ## 欄・・螯・Φ繝医Λ繝吶Ν繝励Λ繝ｳ
+
+                    ### 縲・譌･逶ｮ縲・
+                    - **譏ｼ**・壼芦逹縺励◆繧峨∪縺壹％繧鯉ｼ√舌Λ繝ｳ繝√・
+                    - **蜊亥ｾ・*・壹％縺薙□縺代・螟悶○縺ｪ縺・ｼ√舌Γ繧､繝ｳ繧ｹ繝昴ャ繝医・
+                    - **螟・*・壹舌ョ繧｣繝翫・縲代°繧峨・窶ｦ縲仙ｮｿ豕雁・繝ｻ螟懊・讌ｽ縺励∩縲・
+
+                    ### 縲・譌･逶ｮ縲・
+                    - **譛・*・壹先悃縺ｮ驕弱＃縺玲婿縲・
+                    - **譏ｼ**・壹舌Λ繝ｳ繝√・縺雁悄逕｣縲・
+                    - **蜊亥ｾ・*・壹仙ｯ・ｊ驕薙せ繝昴ャ繝医・
+                    ・遺ｻ3譌･逶ｮ縺後≠繧句ｴ蜷医・邯壹￠縺ｦ險倩ｿｰ・・
+
+                    ## 寫・・雋ｷ縺・∋縺阪♀蝨溽肇繝ｪ繧ｹ繝・
+                    - **閾ｪ蛻・◆縺｡逕ｨ**・壹先昴＞蜃ｺ縺ｫ谿九ｋ繧ゅ・・医・繧｢繧ｰ繝・ぜ繧・ｼ晉ｵｱ蟾･闃ｸ蜩√↑縺ｩ・峨・
+                    - **驟阪ｋ逕ｨ**・壹占・蝣ｴ縺ｧ驟阪ｌ繧句ｮ夂分縺ｮ縺願藷蟄舌↑縺ｩ縲・
+                    - **繝槭ル繧｢繝・け譫**・壹植I縺瑚ｦ九▽縺代◆螟峨↑繧ゅ・繝ｻ迴阪＠縺・ｂ縺ｮ繝ｻ繝ｭ繝ｼ繧ｫ繝ｫ縺ｪ繧ｹ繝ｼ繝代・縺ｧ雋ｷ縺・ｂ縺ｮ縺ｪ縺ｩ縲・
+
+                    ---
+
+                    ## 庁 繝代・繝医リ繝ｼ・・I・峨・謗ｨ縺励・繧､繝ｳ繝・
+                    - ・医↑縺懊％縺薙ｒ驕ｸ繧薙□縺ｮ縺九√Θ繝ｼ繧ｶ繝ｼ縺ｸ縺ｮ諢帙→蜈ｱ縺ｫPR・・ｼ・
+                    - ・医し繝励Λ繧､繧ｺ隕∫ｴ繧・ｱ・衍隴倥↑縺ｩ・・
+
+                    ---
+
+                    **・域怙蠕後↓縲√Θ繝ｼ繧ｶ繝ｼ繧偵Ρ繧ｯ繝ｯ繧ｯ縺輔○繧倶ｸ險・・*</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Created by <a href="https://x.com/N0muko" target="_blank">@N0muko</a> 凋</p>
+        </footer>
+    </div>
+
+    <script>
+        function copyPrompt() {
+            const promptText = document.getElementById('prompt-text').innerText;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const icon = document.getElementById('copy-icon');
+                const text = document.getElementById('copy-text');
+
+                btn.classList.add('copied');
+                icon.textContent = '笨・;
+                text.textContent = '繧ｳ繝斐・縺励∪縺励◆・・;
+
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    icon.textContent = '搭';
+                    text.textContent = '繧ｳ繝斐・縺吶ｋ';
+                }, 2000);
+            }).catch(err => {
+                console.error('繧ｳ繝斐・縺ｫ螟ｱ謨励＠縺ｾ縺励◆:', err);
+                alert('繧ｳ繝斐・縺ｫ螟ｱ謨励＠縺ｾ縺励◆縲よ焔蜍輔〒繧ｳ繝斐・縺励※縺上□縺輔＞縲・);
+            });
+        }
+    </script>
+</body>
+
+</html>
