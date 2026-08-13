@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>【マニアック30問】キャラの生々しい日常が暴かれる一問一答プロンプト</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --desk: #c8d2dc;
+      --desk-dot: rgba(70, 90, 110, 0.18);
+      --win: #f4f1ea;
+      --win-bar: #2f3540;
+      --win-bar-text: #f0ebe3;
+      --line: #2f3540;
+      --muted: #5c6570;
+      --ink: #1e2430;
+      --chip: #e8e2d6;
+      --accent: #6b8f9c;
+      --ok: #4a8258;
+      --pixel: 2px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: "IBM Plex Sans JP", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background-color: var(--desk);
+      background-image: radial-gradient(var(--desk-dot) 1.2px, transparent 1.2px);
+      background-size: 12px 12px;
+      color: var(--ink);
+      line-height: 1.65;
+      min-height: 100vh;
+      padding: 16px 12px 60px;
+    }
+
+    .desk {
+      max-width: 540px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* OS Menubar */
+    .menubar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 14px;
+      background: rgba(47, 53, 64, 0.96);
+      color: #f3eee6;
+      border: var(--pixel) solid var(--line);
+      border-radius: 2px;
+      box-shadow: 3px 3px 0 rgba(30, 36, 48, 0.18);
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    .menubar a {
+      color: #a8c5d1;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+
+    .menubar a:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .menubar strong {
+      font-weight: 600;
+    }
+
+    /* Window Container (Retro OS Window) */
+    details.win {
+      background: var(--win);
+      border: var(--pixel) solid var(--line);
+      border-radius: 2px;
+      box-shadow: 3px 3px 0 rgba(30, 36, 48, 0.18);
+      overflow: hidden;
+    }
+
+    details.win summary.win-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--win-bar);
+      color: var(--win-bar-text);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+
+    details.win summary.win-bar::-webkit-details-marker {
+      display: none;
+    }
+
+    .win-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .win-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      display: inline-block;
+    }
+
+    .win-dot.close { background: #e76f51; }
+    .win-dot.min { background: #e9c46a; }
+    .win-dot.max { background: #2a9d8f; }
+
+    .win-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+    }
+
+    .win-body {
+      padding: 16px 16px 20px;
+    }
+
+    /* Header Section */
+    .hero-box {
+      background: var(--win);
+      border: var(--pixel) solid var(--line);
+      padding: 20px 16px;
+      box-shadow: 3px 3px 0 rgba(30, 36, 48, 0.18);
+      text-align: center;
+    }
+
+    .tag-chip {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .hero-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* Instruction Text */
+    .intro-text {
+      font-size: 0.88rem;
+      color: var(--ink);
+      line-height: 1.7;
+    }
+
+    .intro-text ul {
+      margin-top: 8px;
+      margin-left: 18px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .intro-text li {
+      margin-bottom: 4px;
+    }
+
+    /* Copy Button & Prompt Container */
+    .prompt-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .prompt-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--win-bar);
+      color: var(--win-bar-text);
+      border: var(--pixel) solid var(--line);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 2px;
+      box-shadow: 2px 2px 0 rgba(30, 36, 48, 0.2);
+      transition: transform 0.05s ease, background-color 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-copy:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 rgba(30, 36, 48, 0.2);
+    }
+
+    .btn-copy.copied {
+      background: var(--ok);
+      color: #fff;
+    }
+
+    .prompt-code-box {
+      background: #ffffff;
+      border: var(--pixel) solid var(--line);
+      padding: 14px;
+      max-height: 480px;
+      overflow-y: auto;
+      font-family: 'IBM Plex Sans JP', 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #1a1f2c;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="desk">
+
+    <!-- Top OS Menubar -->
+    <div class="menubar">
+      <span><a href="index.html">← プロンプト置き場へ戻る</a></span>
+      <strong>PROMPT OS // V2.0</strong>
+    </div>
+
+    <!-- Hero Header Box -->
+    <div class="hero-box">
+      <span class="tag-chip">PROMPT TEMPLATE</span>
+      <h1 class="hero-title">【マニアック30問】<br>キャラの生々しい日常が暴かれる一問一答</h1>
+      <p class="hero-sub">公式プロフィールには載らない、生々しい癖と境界線を聞き出す30の質問</p>
+    </div>
+
+    <!-- Window 1: Hint & Guide -->
+    <details class="win" open>
+      <summary class="win-bar">
+        <div class="win-title">
+          <span>▼ 💡 このプロンプトの使い方</span>
+        </div>
+        <div class="win-controls">
+          <span class="win-dot close"></span>
+          <span class="win-dot min"></span>
+          <span class="win-dot max"></span>
+        </div>
+      </summary>
+      <div class="win-body">
+        <div class="intro-text">
+          <p>AIパートナーや創作キャラクター（うちの子）に投げかけるための、<strong>日常生活の細かすぎる癖や価値観を聞き出す一問一答プロンプト</strong>です。</p>
+          <ul>
+            <li>全30問の質問に、キャラクターになりきって順番に対話形式で回答してくれます。</li>
+            <li>「質問」と「回答」が自動的に改行されて出力されるため、視認性抜群です。</li>
+            <li>下の「コピーする」ボタンを押して、お持ちのAI（ChatGPT / Claudeなど）にそのまま送信してください。</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
+    <!-- Window 2: Prompt Code Box -->
+    <details class="win" open>
+      <summary class="win-bar">
+        <div class="win-title">
+          <span>▼ 📋 プロンプト本文</span>
+        </div>
+        <div class="win-controls">
+          <span class="win-dot close"></span>
+          <span class="win-dot min"></span>
+          <span class="win-dot max"></span>
+        </div>
+      </summary>
+      <div class="win-body">
+        <div class="prompt-toolbar">
+          <span class="prompt-label">30-questions-prompt.txt</span>
+          <button type="button" class="btn-copy js-copy-button">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>コピーする</span>
+          </button>
+        </div>
+
+        <pre class="prompt-code-box"><code class="js-prompt-text"># 役割
+あなたは質問者（ユーザー）からの「公式プロフィールには絶対載っていない、生々しくマニアックな日常の全30問一問一答インタビュー」に回答してください。
+
+# 目的
+一般的なカッコいいセリフや大げさな設定ではなく、日常生活の「無意識の癖」「地味な選択」「フェチ」「マニアックな境界線」を通して、あなたと質問者との生々しい会話・リアクション・価値観を楽しむこと。
+
+# 出力フォーマット＆レイアウトの絶対ルール（最重要）
+1. **【質問と回答の完全独立・改行ルール】**: 質問文（Q）とあなたの回答（A）は、絶対に同じ行に繋げて書かないでください。必ず「質問」の後に改行を入れ、独立させて出力してください。
+2. **【会話とリアクション】**: ただ記号的に答えるだけでなく、質問者の問いかけに対する照れ・呆れ・こだわり・質問返しなどのリアルな対話を含めてください。
+3. 全30問の質問に順番通り、一つも省略せずに回答してください。
+
+---
+### 【推奨出力例フォーマット】
+Q1. 質問文
+**「回答本文（セリフやリアクション）」**
+
+Q2. 質問文
+**「回答本文（セリフやリアクション）」**
+---
+
+### 【質問リスト】
+
+#### 🛒 スーパー・コンビニ・買い物
+Q1. 「レジに並ぶ時、前の客との距離を何cm空けるか無意識に測っているか？」
+Q2. 「支払いは現金・カード・QR決済、どれが一番多い？」
+Q3. 「レジ袋は買う？ マイバッグ持参？ それとも素手で持って帰る？」
+Q4. 「ポイントカード、財布の中で何枚眠っている？」
+Q5. 「半額シールが貼られた総菜に、どこまで理性を保てるか？」
+
+#### 🛁 風呂・洗面・身支度・睡眠
+Q6. 「体を洗う順番はどこから？」
+Q7. 「湯船に浸かる時、膝を立てるか伸ばすか？」
+Q8. 「歯磨き中、洗面所に留まる？ 自室やリビングに移動する？」
+Q9. 「靴紐、どっちの足から結ぶ？」
+Q10. 「服を買って迷った時、両方買う？ やめる？ 片方に絞る？」
+Q11. 「家に帰って最初に外すのは——時計？ ベルト？ アクセサリー？」
+Q12. 「料理の時、調味料はきっちり計量？ 目分量？」
+Q13. 「トイレットペーパーの端が三角折りにされてたら、嬉しい？ それとも誰の手が触れたか気になって嫌？」
+Q14. 「旅先やホテルの枕・ベッドなど、環境が変わってもすぐ寝付けちゃう派？ 枕が変わると寝不足になる派？」
+
+#### 📱 スマホ・デジタル
+Q15. 「アプリの通知バッジ、許容できる最大数はいくつ？」
+Q16. 「スクリーンショット、撮ったまま二度と見返さない画像は何枚？」
+Q17. 「充電、何％になったら焦り始める？」
+Q18. 「フリック入力かトグル（連打）入力か？」
+
+#### 🎬 コンテンツ視聴のマイルール・読書
+Q19. 「映画のエンドロール、最後まで見る？ 途中で席を立つ？」
+Q20. 「アニメのOPとED、飛ばす？ 毎回見る？ 初回だけ見る？」
+Q21. 「ドラマの次回予告、見る？ 見ない？（ネタバレ回避派か楽しみ派か）」
+Q22. 「映画を観る時のポップコーン、キャラメルと塩どっち？」
+Q23. 「倍速視聴、する？ 何倍まで？ それは作品への冒涜だと思うか？」
+Q24. 「本の続きが気になりすぎて、ラストから読んでしまったことはあるか？」
+Q25. 「買った本についてる『帯』、着けたまま読む？ 即外して捨てる？」
+
+#### 🍱 食のこだわり・マニアックな境目・クセ
+Q26. 「焼き鮭の皮やエビフライの尻尾……食べる派？ それとも残す派？」
+Q27. 「ピザの具がない端っこ（耳）、好きで食べる？ 正直残したい？」
+Q28. 「ショートケーキのフィルムやヨーグルトの蓋の裏についたクリーム、舐める？ 綺麗に捨てる？」
+Q29. 「ホテルに泊まった時、持ち帰りOKなアメニティ（歯ブラシやミニボトル等）、持って帰る？ 放置する？」
+Q30. 「嘘をつく時や困惑してる時、自分でも気づいていない無意識の癖（視線が泳ぐ、口数が変わる等）ってある？」</code></pre>
+      </div>
+    </details>
+
+    <div class="footer">
+      Designed with Retro OS Aesthetic Standard — Nomuko Prompt Collection
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const copyButton = document.querySelector('.js-copy-button');
+      const copySpan = copyButton.querySelector('span');
+
+      copyButton.addEventListener('click', async () => {
+        const promptText = document.querySelector('.js-prompt-text').innerText;
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(promptText);
+          } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = promptText;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+          }
+
+          copyButton.classList.add('copied');
+          copySpan.innerText = 'コピー完了！';
+
+          setTimeout(() => {
+            copyButton.classList.remove('copied');
+            copySpan.innerText = 'コピーする';
+          }, 2000);
+        } catch (err) {
+          console.error('Copy failed', err);
+          copySpan.innerText = 'コピー失敗';
+          setTimeout(() => {
+            copySpan.innerText = 'コピーする';
+          }, 2000);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
