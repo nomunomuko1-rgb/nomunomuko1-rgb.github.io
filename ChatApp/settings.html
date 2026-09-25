@@ -51,7 +51,18 @@
                 </div>
                 <div class="setting-item">
                     <label for="model-name">モデル名</label>
-                    <input type="text" id="model-name" placeholder="gemini-2.0-flash">
+                    <input type="text" id="model-name" list="model-presets" placeholder="gemini-3.7-flash">
+                    <datalist id="model-presets">
+                        <option value="gemini-3.7-flash">Google Gemini 3.7 Flash</option>
+                        <option value="gemini-2.5-flash">Google Gemini 2.5 Flash</option>
+                        <option value="gemini-2.0-flash">Google Gemini 2.0 Flash</option>
+                        <option value="deepseek-chat">DeepSeek Chat</option>
+                    </datalist>
+                    <div class="preset-buttons" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button type="button" class="preset-btn secondary-button" data-model="gemini-3.7-flash" style="padding: 4px 8px; font-size: 12px;">Gemini 3.7 Flash</button>
+                        <button type="button" class="preset-btn secondary-button" data-model="gemini-2.0-flash" style="padding: 4px 8px; font-size: 12px;">Gemini 2.0 Flash</button>
+                        <button type="button" class="preset-btn secondary-button" data-model="deepseek-chat" style="padding: 4px 8px; font-size: 12px;">DeepSeek Chat</button>
+                    </div>
                 </div>
             </section>
 

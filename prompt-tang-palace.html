@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>唐朝宮廷・玉座の抱愛 | AIイラストプロンプト配布</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --surface: #12141a;
+      --surface-subtle: #181b24;
+      --border: #232734;
+      --border-focus: #c5a059;
+      --gold: #d4af37;
+      --gold-muted: #998144;
+      --gold-glow: rgba(212, 175, 55, 0.12);
+      --crimson: #a32a2a;
+      --crimson-subtle: rgba(163, 42, 42, 0.15);
+      --text-main: #f0f1f5;
+      --text-muted: #8e95a5;
+      --text-dim: #5a6175;
+      --code-bg: #090a0d;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --shadow-win: 0 12px 32px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans JP', -apple-system, sans-serif;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(163, 42, 42, 0.12), transparent 70%),
+        radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.05), transparent 40%),
+        radial-gradient(#1c202b 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 24px 24px;
+      color: var(--text-main);
+      line-height: 1.7;
+      min-height: 100vh;
+      padding: 40px 16px 100px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    /* Header & Badge */
+    .header-card {
+      text-align: center;
+      margin-bottom: 28px;
+      padding: 24px 16px 16px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--crimson-subtle);
+      border: 1px solid rgba(163, 42, 42, 0.35);
+      color: #e57373;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .badge::before {
+      content: "✦";
+      color: var(--gold);
+    }
+
+    h1 {
+      font-family: 'Cinzel', 'Noto Sans JP', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.35;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #fff 30%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Window Box (Anti-Slop / Y2K-Retro OS Window) */
+    .win-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-win);
+      margin-bottom: 24px;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .win-box:focus-within,
+    .win-box:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .win-header {
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    .win-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .win-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .win-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #2a2f3d;
+      border: 1px solid #363d4e;
+    }
+
+    .win-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .win-tag {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--gold);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .win-body {
+      padding: 16px;
+    }
+
+    /* Prompt Container */
+    .prompt-block {
+      margin-bottom: 14px;
+    }
+
+    .prompt-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .prompt-label-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .prompt-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .prompt-label.negative {
+      color: #e57373;
+    }
+
+    .code-wrapper {
+      position: relative;
+      background: var(--code-bg);
+      border: 1px solid #1a1e28;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px 14px;
+    }
+
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      color: #d1d5db;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    /* Highlight placeholder text */
+    pre mark {
+      background: rgba(212, 175, 55, 0.18);
+      color: #ffd54f;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+
+    /* Copy Button */
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #1e222d;
+      border: 1px solid #2f3647;
+      color: #cfd3dc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-copy:hover {
+      background: #282e3d;
+      border-color: var(--gold-muted);
+      color: #fff;
+    }
+
+    .btn-copy:active {
+      transform: translate(1px, 1px);
+    }
+
+    .btn-copy.copied {
+      background: rgba(103, 194, 156, 0.15);
+      border-color: rgba(103, 194, 156, 0.5);
+      color: #67c29c;
+    }
+
+    /* Guide & Tips Section */
+    .guide-card {
+      background: rgba(18, 20, 26, 0.7);
+      border: 1px dashed rgba(212, 175, 55, 0.3);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+
+    .guide-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guide-list {
+      list-style: none;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .guide-list li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .guide-list li::before {
+      content: "•";
+      position: absolute;
+      left: 4px;
+      color: var(--gold-muted);
+    }
+
+    .guide-list li strong {
+      color: var(--text-main);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 40px;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1f2430;
+      border: 1px solid var(--gold-muted);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header-card">
+      <div class="badge">Couple Prompt Template</div>
+      <h1>唐朝宮廷・<span>玉座の抱愛</span></h1>
+      <p class="subtitle">豪奢な黄金の龍座で皇帝が愛妃を抱き寄せる、高貴で重厚な中華宮廷プロンプトです。お好みのキャラクターを当てはめてご自由にお使いください。</p>
+    </header>
+
+    <!-- Guide / Instructions -->
+    <section class="guide-card">
+      <div class="guide-title">
+        <span>💡</span> 使い方・カスタマイズ方法
+      </div>
+      <ul class="guide-list">
+        <li><strong>キャラクター差し替え</strong>：<mark>[ここにキャラのプロンプト]</mark> の部分に、各自のキャラクター特徴（髪型・目の色・LoRAトリガーなど）を入れてください。</li>
+        <li><strong>衣装の色分け設計</strong>：男性は「黒×金の皇帝龍袍」、女性は「深紅×金の鳳凰漢服」で固定し、衣装の混線を防いでいます。</li>
+        <li><strong>絵柄LoRAフリー</strong>：特定の画風タグを排除しているため、お好みの絵柄LoRA（スタイルLoRA）の効果を邪魔しません。</li>
+      </ul>
+    </section>
+
+    <!-- Window 1: Natural Language Format (DiT2 / DiT3 / Tsubaki) -->
+    <div class="win-box">
+      <div class="win-header">
+        <div class="win-title-wrap">
+          <div class="win-dots">
+            <div class="win-dot"></div>
+            <div class="win-dot"></div>
+          </div>
+          <span class="win-title">自然言語形式 <span class="win-tag">DiT2 / DiT3 / Tsubaki</span></span>
+        </div>
+      </div>
+      <div class="win-body">
+        
+        <!-- Prompt Body -->
+        <div class="prompt-block">
+          <div class="prompt-label-bar">
+            <span class="prompt-label">Prompt（本文）</span>
+            <button class="btn-copy" onclick="copyCode('code-dit-prompt', this)">コピー</button>
+          </div>
+          <div class="code-wrapper">
+            <pre id="code-dit-prompt">A breathtaking, highly detailed romantic illustration of a royal couple in an opulent ancient Chinese imperial palace.
+
+The man, [男性の名前], is [ここに男性キャラのプロンプト（外見・髪型・目の色・特徴など）]. [男性の名前] is seated majestically on a massive carved golden dragon throne, draped in a luxurious black and gold imperial hanfu robe with wide flowing sleeves, heavy golden dragon embroidery, and jade belt ornaments. He holds [女性の名前] possessively close against his chest with a calm, dominant expression.
+
+The woman, [女性の名前], is [ここに女性キャラのプロンプト（外見・髪型・目の色・特徴など）], leaning comfortably against [男性の名前] upon the imperial throne, looking adoringly at the viewer. [女性の名前] wears a magnificent crimson and gold phoenix robe, luxurious silk hanfu with layered flowing sleeves, delicate golden cloud and lotus embroidery, pearl tassels, and jade accessories.
+
+The scene is set in an opulent Tang dynasty imperial throne room with intricate carved screens, crimson silk drapery, golden incense burners emitting faint fragrant smoke, and traditional architectural details. Beautiful soft ambient lighting, rich vibrant colors, deep crimson and radiant gold highlights, masterpiece quality.
+
+Important: [男性の名前] is male and wears black and gold dragon robes; [女性の名前] is female and wears crimson and gold phoenix robes. Close-up composition focusing on their intimate embrace on the golden imperial throne.</pre>
+          </div>
+        </div>
+
+        <!-- Negative Prompt -->
+        <div class="prompt-block">
+          <div class="prompt-label-bar">
+            <span class="prompt-label negative">Negative Prompt（ネガティブ）</span>
+            <button class="btn-copy" onclick="copyCode('code-dit-neg', this)">コピー</button>
+          </div>
+          <div class="code-wrapper">
+            <pre id="code-dit-neg">bad quality, worst quality, lowres, bad anatomy, bad hands, deformed, ugly, blurry, watermark, text,
+modern clothes, western clothes, casual clothes, modern furniture, neon colors</pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Window 2: Tag Format (SDXL / Illustrious) -->
+    <div class="win-box">
+      <div class="win-header">
+        <div class="win-title-wrap">
+          <div class="win-dots">
+            <div class="win-dot"></div>
+            <div class="win-dot"></div>
+          </div>
+          <span class="win-title">タグ形式 <span class="win-tag">SDXL / Illustrious / Any</span></span>
+        </div>
+      </div>
+      <div class="win-body">
+        
+        <!-- Prompt Body -->
+        <div class="prompt-block">
+          <div class="prompt-label-bar">
+            <span class="prompt-label">Prompt（本文）</span>
+            <button class="btn-copy" onclick="copyCode('code-sdxl-prompt', this)">コピー</button>
+          </div>
+          <div class="code-wrapper">
+            <pre id="code-sdxl-prompt">(amazing quality, best resolution, amazing detail, absurdres, masterpiece, very aesthetic:1.2),
+1boy, 1girl, couple, heterosexual, (height difference:1.2), (size difference:1.2),
+
+// --- 構図・シチュエーション ---
+(sitting on imperial throne:1.3), (golden dragon throne:1.3), (holding from behind:1.2), (embrace:1.3), (intimate:1.2),
+(waist up:1.2), (upper body:1.2), eye level,
+
+// --- 男性（皇帝側） ---
+BREAK
+1boy, tall, broad shoulders, [ここに男性キャラのプロンプト],
+(black and gold hanfu:1.3), (imperial dragon robe:1.3), wide flowing sleeves, golden embroidery, jade belt ornament,
+dominant, calm expression, possessive,
+
+// --- 女性（妃側） ---
+BREAK
+1girl, shorter, slender, [ここに女性キャラのプロンプト],
+(crimson and gold hanfu:1.3), (phoenix robe:1.3), wide sleeves, luxurious silk, lotus embroidery, pearl tassels,
+submissive, gentle smile, leaning against chest,
+
+// --- 背景・照明 ---
+BREAK
+Tang dynasty imperial throne room, ancient Chinese palace, intricate carved wood screens, crimson silk curtains, golden incense burner, fragrant smoke,
+soft ambient lighting, radiant gold highlights, deep shadows, rich color palette, depth of field</pre>
+          </div>
+        </div>
+
+        <!-- Negative Prompt -->
+        <div class="prompt-block">
+          <div class="prompt-label-bar">
+            <span class="prompt-label negative">Negative Prompt（ネガティブ）</span>
+            <button class="btn-copy" onclick="copyCode('code-sdxl-neg', this)">コピー</button>
+          </div>
+          <div class="code-wrapper">
+            <pre id="code-sdxl-neg">bad quality, worst quality, lowres, bad anatomy, bad hands, ugly, deformed, text, watermark, blurry, censored,
+same clothes, identical characters, clones,
+modern clothes, western suit, casual clothes, modern background, neon lights</pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      Prompt crafted for PixAI & AI Illustration | Free to use & share
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast">✓ クリップボードにコピーしました</div>
+
+  <script>
+    function copyCode(elementId, btn) {
+      const codeElement = document.getElementById(elementId);
+      if (!codeElement) return;
+
+      const text = codeElement.innerText;
+
+      navigator.clipboard.writeText(text).then(() => {
+        // Button state
+        const originalText = btn.innerText;
+        btn.innerText = 'COPIED!';
+        btn.classList.add('copied');
+
+        // Toast show
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('copied');
+          toast.classList.remove('show');
+        }, 2000);
+      }).catch(err => {
+        console.error('Copy failed: ', err);
+      });
+    }
+  </script>
+
+</body>
+
+</html>

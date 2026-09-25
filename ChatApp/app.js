@@ -32,7 +32,7 @@ let conversationHistory = [];
 
 function getSettings() {
     const apiKey = localStorage.getItem(STORAGE_KEYS.API_KEY) || '';
-    const modelName = localStorage.getItem(STORAGE_KEYS.MODEL_NAME) || 'gemini-2.0-flash';
+    const modelName = localStorage.getItem(STORAGE_KEYS.MODEL_NAME) || 'gemini-3.7-flash';
 
     // Debug log
     console.log('Settings loaded:', {
@@ -311,7 +311,7 @@ async function callGeminiAPI(userMessage) {
     });
 
     // API endpoint - use the model from settings
-    const modelName = settings.modelName || 'gemini-2.0-flash';
+    const modelName = settings.modelName || 'gemini-3.7-flash';
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${settings.apiKey}`;
 
     console.log('Calling API with model:', modelName);

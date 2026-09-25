@@ -74,7 +74,7 @@ function loadSettings() {
     if (savedApiKey) apiKey.value = savedApiKey;
 
     const savedModel = localStorage.getItem(STORAGE_KEYS.MODEL_NAME);
-    if (savedModel) modelName.value = savedModel;
+    modelName.value = savedModel || 'gemini-3.7-flash';
 
     // System Prompt
     const savedPrompt = localStorage.getItem(STORAGE_KEYS.SYSTEM_PROMPT);
@@ -292,6 +292,22 @@ clearHistory.addEventListener('click', () => {
         localStorage.removeItem(STORAGE_KEYS.CONVERSATION);
         showToast('履歴をクリアしました');
     }
+});
+
+// Preset Buttons
+document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const model = btn.getAttribute('data-model');
+        if (model) {
+            modelName.value = model;
+            if (model.startsWith('gemini')) {
+                apiProvider.value = 'gemini';
+            } else if (model.startsWith('deepseek')) {
+                apiProvider.value = 'deepseek';
+            }
+            showToast(`モデルを ${model} に設定しました`);
+        }
+    });
 });
 
 // ========================================
