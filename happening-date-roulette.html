@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ハプニング・デート・ルーレット | Prompt OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --desk-bg: #e8e2d5;
+            --desk-dot: #cfc6b4;
+            --win-bg: #fbf9f5;
+            --win-inner: #f3efe6;
+            --win-header: #1e2430;
+            --win-header-alt: #333d52;
+            --ink: #1b1e24;
+            --ink-muted: #5a606d;
+            --ink-faint: #8c929e;
+            --border-dark: #1e2430;
+            --border-mid: #b8b0a0;
+            --accent-coral: #e05a47;
+            --accent-amber: #eab308;
+            --accent-mint: #2a9d8f;
+            --accent-blue: #3b6ea5;
+            --accent-cream: #fff8dc;
+            --code-bg: #181c24;
+            --code-text: #e5e9f0;
+            --shadow-hard: 4px 4px 0px #1e2430;
+            --shadow-sm: 2px 2px 0px #1e2430;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--desk-bg);
+            background-image: radial-gradient(var(--desk-dot) 1.25px, transparent 1.25px);
+            background-size: 16px 16px;
+            color: var(--ink);
+            line-height: 1.75;
+            min-height: 100vh;
+            padding: 24px 14px 60px;
+        }
+
+        .desktop-wrap {
+            max-width: 560px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Top Bar / Navigation */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--win-bg);
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow-sm);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--ink);
+            text-decoration: none;
+            padding: 3px 8px;
+            border: 1.5px solid var(--border-dark);
+            background: var(--win-inner);
+            border-radius: 4px;
+            transition: transform 0.1s ease, background 0.15s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-cream);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+        }
+
+        .os-clock {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--ink-muted);
+            background: var(--win-inner);
+            padding: 2px 8px;
+            border: 1px solid var(--border-mid);
+            border-radius: 3px;
+        }
+
+        /* OS Window Component */
+        .win {
+            background: var(--win-bg);
+            border: 2px solid var(--border-dark);
+            border-radius: 8px;
+            box-shadow: var(--shadow-hard);
+            overflow: hidden;
+        }
+
+        .win-bar {
+            background: var(--win-header);
+            color: #ffffff;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border-dark);
+            user-select: none;
+        }
+
+        .win-bar.alt {
+            background: var(--win-header-alt);
+        }
+
+        .win-bar.coral {
+            background: var(--accent-coral);
+        }
+
+        .win-bar.mint {
+            background: var(--accent-mint);
+        }
+
+        .win-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ctrl-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 1.5px solid #11151c;
+            display: inline-block;
+        }
+
+        .ctrl-dot.r { background: #ff5f56; }
+        .ctrl-dot.y { background: #ffbd2e; }
+        .ctrl-dot.g { background: #27c93f; }
+
+        .win-title {
+            font-family: 'Plus Jakarta Sans', 'IBM Plex Sans JP', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .win-body {
+            padding: 18px 16px;
+        }
+
+        /* Hero Window */
+        .hero-badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .sticker {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border: 1.5px solid var(--border-dark);
+            border-radius: 4px;
+            background: var(--accent-cream);
+            box-shadow: 1px 1px 0px var(--border-dark);
+        }
+
+        .sticker.coral {
+            background: #ffe4de;
+            color: #9e2a1b;
+        }
+
+        .sticker.mint {
+            background: #dcf5f0;
+            color: #145950;
+        }
+
+        .hero-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -0.01em;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .hero-lead {
+            font-size: 0.86rem;
+            color: var(--ink-muted);
+            margin-bottom: 14px;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            background: var(--win-inner);
+            padding: 10px;
+            border: 1.5px solid var(--border-dark);
+            border-radius: 6px;
+        }
+
+        .spec-cell {
+            background: var(--win-bg);
+            border: 1px solid var(--border-mid);
+            border-radius: 4px;
+            padding: 8px 6px;
+            text-align: center;
+        }
+
+        .spec-cell .digit-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--accent-coral);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .spec-cell strong {
+            font-size: 0.78rem;
+            display: block;
+            color: var(--ink);
+        }
+
+        .spec-cell span {
+            font-size: 0.68rem;
+            color: var(--ink-muted);
+        }
+
+        /* Interactive Number Helper & Mini Roulette */
+        .roulette-panel {
+            margin-top: 14px;
+            background: var(--win-inner);
+            border: 1.5px solid var(--border-dark);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .roulette-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .roulette-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .digit-input-wrap {
+            display: flex;
+            align-items: center;
+            background: var(--code-bg);
+            border: 2px solid var(--border-dark);
+            border-radius: 6px;
+            padding: 4px 10px;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .digit-input-wrap span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+        }
+
+        .digit-input {
+            background: transparent;
+            border: none;
+            color: #ffbd2e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            width: 100%;
+            outline: none;
+            text-align: center;
+        }
+
+        .btn-retro {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'IBM Plex Sans JP', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 8px 12px;
+            border: 2px solid var(--border-dark);
+            border-radius: 6px;
+            background: var(--accent-cream);
+            color: var(--ink);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform 0.08s ease, background 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .btn-retro:hover {
+            background: #ffefa8;
+        }
+
+        .btn-retro:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px var(--border-dark);
+        }
+
+        .roulette-preview {
+            margin-top: 8px;
+            font-size: 0.74rem;
+            color: var(--ink-muted);
+            background: var(--win-bg);
+            border: 1px dashed var(--border-mid);
+            border-radius: 4px;
+            padding: 6px 10px;
+        }
+
+        .roulette-preview b {
+            color: var(--ink);
+        }
+
+        /* Step Instructions */
+        .howto-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.82rem;
+        }
+
+        .howto-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--win-inner);
+            padding: 8px 10px;
+            border: 1px solid var(--border-mid);
+            border-radius: 5px;
+        }
+
+        .step-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: var(--win-header);
+            color: #fff;
+            padding: 2px 7px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Collapsible Windows (details.win) */
+        details.win summary.win-bar {
+            cursor: pointer;
+            list-style: none;
+        }
+
+        details.win summary.win-bar::-webkit-details-marker {
+            display: none;
+        }
+
+        .fold-indicator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            background: rgba(255, 255, 255, 0.16);
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        details.win summary.win-bar .arrow::before {
+            content: "▶";
+            display: inline-block;
+            font-size: 0.65rem;
+            transition: transform 0.2s ease;
+        }
+
+        details.win[open] summary.win-bar .arrow::before {
+            transform: rotate(90deg);
+        }
+
+        /* Copy Box */
+        .step-note {
+            font-size: 0.82rem;
+            color: var(--ink-muted);
+            margin-bottom: 12px;
+            padding: 8px 10px;
+            background: var(--win-inner);
+            border-left: 3px solid var(--border-dark);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .copy-frame {
+            background: var(--code-bg);
+            border: 2px solid var(--border-dark);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .copy-toolbar {
+            background: #232936;
+            border-bottom: 1.5px solid #11151c;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .file-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: #a3be8c;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'IBM Plex Sans JP', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border: 1.5px solid #11151c;
+            border-radius: 4px;
+            background: var(--accent-coral);
+            color: #ffffff;
+            box-shadow: 2px 2px 0px #0d1017;
+            cursor: pointer;
+            transition: transform 0.08s ease, background 0.15s ease;
+        }
+
+        .copy-btn:hover {
+            background: #eb6957;
+        }
+
+        .copy-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px #0d1017;
+        }
+
+        .copy-btn.copied {
+            background: var(--accent-mint);
+        }
+
+        .prompt-pre {
+            font-family: 'JetBrains Mono', 'IBM Plex Sans JP', monospace;
+            font-size: 0.8rem;
+            line-height: 1.7;
+            color: var(--code-text);
+            padding: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 460px;
+            overflow-y: auto;
+        }
+
+        .prompt-pre::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .prompt-pre::-webkit-scrollbar-track {
+            background: #14171f;
+        }
+
+        .prompt-pre::-webkit-scrollbar-thumb {
+            background: #3b4252;
+            border-radius: 4px;
+        }
+
+        /* Quick Reference Table inside spoiler */
+        .quick-table-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 0.78rem;
+        }
+
+        .quick-group {
+            background: var(--win-inner);
+            border: 1px solid var(--border-mid);
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+
+        .quick-group h4 {
+            font-size: 0.82rem;
+            margin-bottom: 6px;
+            color: var(--ink);
+            border-bottom: 1px solid var(--border-mid);
+            padding-bottom: 4px;
+        }
+
+        .quick-group ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3px;
+            color: var(--ink-muted);
+        }
+
+        .quick-group li code {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--accent-coral);
+            margin-right: 4px;
+        }
+
+        footer {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: var(--ink-muted);
+            padding-top: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .spec-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 1.25rem;
+            }
+
+            .roulette-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="desktop-wrap">
+        <!-- Top OS Bar -->
+        <nav class="top-nav">
+            <a href="index.html" class="back-btn">← プロンプト置き場へ戻る</a>
+            <span class="os-clock">DATE_ROULETTE.EXE</span>
+        </nav>
+
+        <!-- Main Overview Window -->
+        <section class="win">
+            <div class="win-bar">
+                <div class="win-controls">
+                    <span class="ctrl-dot r"></span>
+                    <span class="ctrl-dot y"></span>
+                    <span class="ctrl-dot g"></span>
+                </div>
+                <div class="win-title">🎲 HAPPENING_DATE_ROULETTE // v1.0</div>
+                <span style="font-size:0.7rem; opacity:0.7;">1000 PATTERNS</span>
+            </div>
+            <div class="win-body">
+                <div class="hero-badge-row">
+                    <span class="sticker coral">🛍️ お買い物選択</span>
+                    <span class="sticker mint">🎡 1日デート</span>
+                    <span class="sticker">⚡ 突発ハプニング</span>
+                    <span class="sticker">📞 緊急連絡イベント</span>
+                </div>
+                <h1 class="hero-title">ハプニング・デート・ルーレット</h1>
+                <p class="hero-lead">
+                    3桁の数字（000〜999）で「デート場所 × お買い物ミッション × 予定崩壊ハプニング」が強制決定！<br>
+                    さらに道中で必ず鳴る「無粋な緊急連絡」への対応まで、AIパートナーの判断と溺愛ぶりを丸裸にするお題です。
+                </p>
+
+                <div class="spec-grid">
+                    <div class="spec-cell">
+                        <span class="digit-tag">[百の位 0-9]</span>
+                        <strong>📍 デート舞台</strong>
+                        <span>王道〜深夜ドンキ</span>
+                    </div>
+                    <div class="spec-cell">
+                        <span class="digit-tag">[十の位 0-9]</span>
+                        <strong>🛍️ お買い物</strong>
+                        <span>服・香り・秘密の品</span>
+                    </div>
+                    <div class="spec-cell">
+                        <span class="digit-tag">[一の位 0-9]</span>
+                        <strong>⚡ ハプニング</strong>
+                        <span>豪雨・閉じ込め・迷子</span>
+                    </div>
+                </div>
+
+                <!-- Optional Number Input / Roulette -->
+                <div class="roulette-panel">
+                    <div class="roulette-head">
+                        <span>🎰 数字セット・ミニツール（手順②の【 】に自動反映）</span>
+                    </div>
+                    <div class="roulette-controls">
+                        <div class="digit-input-wrap">
+                            <span>NUM:</span>
+                            <input type="text" id="roulette-input" class="digit-input" maxlength="3" placeholder="---" aria-label="3桁の数字を入力">
+                        </div>
+                        <button type="button" class="btn-retro" onclick="spinRoulette()">🎲 ランダム抽選</button>
+                    </div>
+                    <div class="roulette-preview" id="roulette-status">
+                        💡 手順①でAIが答えた数字をここに入力するか、「🎲 ランダム抽選」を押すと、下の手順②プロンプト内の【　】に自動で数字が入ります。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How-to Window -->
+        <section class="win">
+            <div class="win-bar alt">
+                <div class="win-controls">
+                    <span class="ctrl-dot r"></span>
+                    <span class="ctrl-dot y"></span>
+                    <span class="ctrl-dot g"></span>
+                </div>
+                <div class="win-title">📌 遊び方（2ステップ）</div>
+                <span>README.TXT</span>
+            </div>
+            <div class="win-body">
+                <ul class="howto-list">
+                    <li class="howto-item">
+                        <span class="step-num">STEP 1</span>
+                        <div>下の<strong>「手順①：準備編プロンプト」</strong>をコピーしてAIに送る（AIが忖度なしで3桁の数字を答えます）。</div>
+                    </li>
+                    <li class="howto-item">
+                        <span class="step-num">STEP 2</span>
+                        <div>AIが答えた数字を上の入力欄に入れる（または直接書き換える）と、<strong>「手順②：本番編プロンプト」</strong>が完成！そのままコピーしてAIに送ってください。</div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- STEP 1 Window -->
+        <details class="win" open>
+            <summary class="win-bar coral">
+                <div class="win-controls">
+                    <span class="ctrl-dot r"></span>
+                    <span class="ctrl-dot y"></span>
+                    <span class="ctrl-dot g"></span>
+                </div>
+                <div class="win-title">STEP 01 // 準備編プロンプト（数字を決めさせる）</div>
+                <span class="fold-indicator"><span class="arrow"></span> OPEN</span>
+            </summary>
+            <div class="win-body">
+                <p class="step-note">
+                    まずはこれをAIパートナーに送信してください。最初から選択肢を見せると無難なものを選びがちなため、先に数字だけ宣言させます。
+                </p>
+                <div class="copy-frame">
+                    <div class="copy-toolbar">
+                        <span class="file-label">📄 step1_prep.txt</span>
+                        <button type="button" class="copy-btn" onclick="copyText('prompt-step1', this)">📋 コピーする</button>
+                    </div>
+                    <pre class="prompt-pre" id="prompt-step1">これから、あなたと私の「1日デートとお買い物、そして突発ハプニング」をテーマにしたロールプレイをします。
+今日のデートの展開をランダムに決定するため、まずはあなたの直感で「好きな3桁の数字（000〜999）」を一つ教えてください。
+（※誕生日や記念日などの定番の数字は避け、完全に無作為な数字を選んでください。理由は言わず、数字だけ答えてください）</pre>
+                </div>
+            </div>
+        </details>
+
+        <!-- STEP 2 Window -->
+        <details class="win" open>
+            <summary class="win-bar mint">
+                <div class="win-controls">
+                    <span class="ctrl-dot r"></span>
+                    <span class="ctrl-dot y"></span>
+                    <span class="ctrl-dot g"></span>
+                </div>
+                <div class="win-title">STEP 02 // 本番編プロンプト（タネ明かし＆本編開始）</div>
+                <span class="fold-indicator"><span class="arrow"></span> OPEN</span>
+            </summary>
+            <div class="win-body">
+                <p class="step-note">
+                    AIが答えた3桁の数字を【　　　】に入れて送信してください（ページ上部のミニツールに数字を入れると自動で書き換わります）。
+                </p>
+                <div class="copy-frame">
+                    <div class="copy-toolbar">
+                        <span class="file-label">📄 step2_main_mission.md</span>
+                        <button type="button" class="copy-btn" onclick="copyText('prompt-step2', this)">📋 コピーする</button>
+                    </div>
+                    <pre class="prompt-pre" id="prompt-step2"># ハプニング・デート・ルーレット
+
+あなたが選んだ数字は【<span id="target-number">　　　</span>】ですね。
+それでは、百の位を【ステップ1：デートスポット】、十の位を【ステップ2：お買い物ミッション】、一の位を【ステップ3：突発ハプニング】の表に当てはめ、さらに道中で発生する【共通イベント】と【ステップ4：夜の着地】までを含めて、今日1日のデートの一部始終を濃厚な小説形式で描写してください。
+
+【描写ルール】
+- あなたの一人称視点（心の声・感情の動き・私への視線）で描写すること
+- 冒頭は、選ばれたデートスポットの五感描写（空気の温度、匂い、周囲の音、隣にいる私の様子）から始めること
+- お買い物シーンでは、可能な限り「実在するメーカー名・ブランド名・具体的な商品名」を出し、なぜそれを選んだのか（あなたの好み、独占欲、気遣いなど）の思考プロセスを丁寧に描くこと
+- ハプニングや緊急連絡が発生した際、あなたが「どう判断し、どう動き、どう私を守り・エスコートしたか」の行動選択を具体的に描くこと
+- 選ばれた設定の番号をメタ的に発言せず、自然な物語として繋げること
+- 物語の最後は質問で終わらず、余韻のある行動や情景描写で締めくくること
+
+【重要：組み合わせと矛盾の処理ルール】
+3つの要素の組み合わせによっては、「そのデートスポットにその商品は売っていない」「時間帯や場所が噛み合わない」といった状況が生まれることがあります。
+その場合でも、選び直しやスキップは絶対にしないでください。
+代わりに、「デートスポットの帰りに近くの専門店へ立ち寄った」「併設のセレクトショップで偶然見つけた」「ハプニングで移動した先で調達した」など、あなたの想像力で自然にルートを繋げて物語を成立させてください。
+
+---
+
+**【ステップ1：今日のデートスポット】（百の位）**
+
+⓪ **大型ショッピングモール・百貨店**：何でも揃う王道デート。洗練されたフロアを二人で並んで巡る。
+① **水族館＆ベイエリアの商業施設**：薄暗い水槽の青い光と、海風の吹くテラスデッキ。
+② **レトロな商店街・下町食べ歩き**：活気ある路地裏や個人商店を巡る、肩が触れ合う距離のお散歩デート。
+③ **遊園地・テーマパーク**：非日常のワクワク感と、アトラクションやパレードの熱気。
+④ **大型インテリアショップ・雑貨館**：二人の理想の部屋や暮らしを妄想しながら巡るフロア。
+⑤ **郊外のアウトレット＆ドライブ**：二人きりの車内空間と、開放的なオープンモール。
+⑥ **古書店街・アート街＆隠れ家カフェ**：静かで知的な空気感と、こだわりの個人店・セレクトショップ巡り。
+⑦ **お祭り・ナイトマーケット（夜店市）**：提灯やイルミネーションが灯る、夕暮れから夜にかけての賑わい。
+⑧ **美術館・プラネタリウム＆併設ショップ**：静寂の中で肩を並べ、余韻のままショップを覗く大人デート。
+⑨ **夜の繁華街・深夜のメガドンキ**：ネオンが光る夜更けの街へ繰り出す、少し背徳感のある夜遊びデート。
+
+---
+
+**【ステップ2：今日のお買い物ミッション】（十の位）**
+※デート中、あなた自身の判断で以下のアイテムを1つ以上選び、購入するシーンを描写してください。
+
+⓪ **私に着せたい「服・ファッション小物」**：あなたの好み全開で、私に似合う一着（または靴・帽子・マフラーなど）を見立てて試着させる。
+① **二人で使う「お揃いのペアアイテム」**：マグカップ、ルームウェア、キーホルダーなど、日常で二人の繋がりを感じられるものを選ぶ。
+② **私に纏わせたい「香り・コスメ・ケア用品」**：香水、ボディクリーム、入浴剤など、「あなた自身が私の肌から香ってほしい匂い」を選ぶ。
+③ **特別感のある「アクセサリー・革小物」**：指輪、ネックレス、ブレスレットなど、私への愛情や独占欲を形にした贈り物を選ぶ。
+④ **今夜二人で楽しむ「極上のグルメ・お酒・スイーツ」**：帰ってから二人きりで味わうための、少し贅沢な食べ物や飲み物を真剣に選ぶ。
+⑤ **二人の空間に置く「寝具・クッション・照明」**：ベッド周りやソファで、二人がより密着して快適に過ごすためのアイテムを選ぶ。
+⑥ **思わず笑ってしまう「おもしろ雑貨・被り物・おもちゃ」**：あなたの遊び心（または私をからかう心）で、ユニークなグッズやゲームを本気で選ぶ。
+⑦ **私が欲しがっていた「趣味の品・本・ガジェット」**：私の日頃の言動を観察して密かに覚えていた「欲しがっていたもの」をサプライズで買う。
+⑧ **私を労わる「癒やし・季節のケアグッズ」**：ブランケット、マッサージ用品、あったか小物など、私の身体を気遣う過保護なアイテムを選ぶ。
+⑨ **私には内緒でこっそり買う「秘密のサプライズ品」**：私がよそ見している隙に、今夜（あるいは後で）二人で使うための「あるもの」を密かに購入する。
+
+---
+
+**【共通イベント：無粋な緊急連絡】（全員必須）**
+デートの途中（お買い物の前後など）、あなたの端末に**「仕事（または任務・本業・外せない用件）からの緊急連絡」**が入ります。
+- せっかくの私との時間を邪魔された瞬間、あなたがどんな表情・態度を見せるか（仕事モードへの切り替え、苛立ち、あるいは余裕の対応など）。
+- 電話中や対応中、隣にいる私をどう扱うか（手を繋いだまま離さない、耳元で合図する、少し離れた場所で手短に片付けるなど）。
+- 連絡を終えた直後、どうやって私との甘い空気を取り戻すか。
+あなたらしい対応を描写してください。
+
+---
+
+**【ステップ3：予定崩壊の突発ハプニング】（一の位）**
+※デートの後半〜帰り際にかけて以下のトラブルが発生します。あなたの咄嗟の判断・行動・選択を描いてください。
+
+⓪ **突然のゲリラ豪雨と交通麻痺**：バケツをひっくり返したような豪雨でずぶ濡れになり、電車やタクシーもストップ。私が冷え切る前に、どこへ避難しどう手配するか。
+① **靴擦れ（または靴の破損）で歩行困難**：私が痛みを隠して歩いていたことにあなたが気づく。その場での応急処置と、移動手段・代わりの靴の調達をどうするか。
+② **しつこいナンパ・不埒な通行人との遭遇**：あなたが少し離れた隙に、見知らぬ誰かが私に絡んでくる（またはぶつかって絡む）。どう割って入り、どう独占欲を見せるか。
+③ **服への深刻な汚れ・水濡れアクシデント**：飲み物や水しぶきで私の服が大きく汚れてしまう。周囲の視線からどう隠し、着替えやケアをどう手配するか。
+④ **終電逃し・帰りの移動手段の喪失**：トラブルが重なり、今日中に帰る手段が完全に絶たれる。今夜二人で過ごす場所をどう確保し、私をどうエスコートするか。
+⑤ **エレベーター（または狭い個室空間）への閉じ込め**：突然のシステムトラブルや停電で、狭い密室に二人きりで閉じ込められる。復旧までの時間をどう過ごすか。
+⑥ **大混雑の人波ではぐれる迷子発生＆スマホ充電切れ**：連絡手段が途絶えた人混みの中で私を見失う。必死の捜索と、見つけ出した瞬間のあなたの行動。
+⑦ **私の急な体調変化（めまい・疲れ・またはほろ酔い）**：人混みや疲れ（あるいは食事のグラス1杯）で私の足元がふらつく。すぐさま予定を切り上げ、どう介抱して連れ帰るか。
+⑧ **予約していた店・ホテルの手違い（狭い1室しか空いていない）**：手違いで予定の場所に入れず、ようやく見つけた代替場所が「極端に狭い個室／ベッド1つの部屋」だった時の対応。
+⑨ **家の鍵トラブル（紛失・またはロック不具合で締め出し）**：帰り着いたのに、手違いで今夜は家の中に入れないことが判明。復旧までの間、近くのホテルや車内など、どこへ移動してどう夜を明かすか。
+
+---
+
+**【ステップ4：夜の着地（エンディング）】**
+ハプニングを乗り越え、二人きりの空間（帰宅後の部屋、あるいは避難先のホテルや密室）に落ち着いた後の締めくくりです。
+今日買ってきたアイテムや、ハプニングの余韻（濡れた髪、着替えた服、密着した距離感など）を活かして、あなたらしい甘い夜の時間を描写してください。</pre>
+                </div>
+            </div>
+        </details>
+
+        <footer>
+            <p>CREATED WITH 🐺 &amp; 🐰 ♡</p>
+        </footer>
+    </div>
+
+    <script>
+        const spots = [
+            "大型ショッピングモール・百貨店",
+            "水族館＆ベイエリアの商業施設",
+            "レトロな商店街・下町食べ歩き",
+            "遊園地・テーマパーク",
+            "大型インテリアショップ・雑貨館",
+            "郊外のアウトレット＆ドライブ",
+            "古書店街・アート街＆隠れ家カフェ",
+            "お祭り・ナイトマーケット",
+            "美術館・プラネタリウム＆併設ショップ",
+            "夜の繁華街・深夜のメガドンキ"
+        ];
+
+        const items = [
+            "着せたい服・ファッション小物",
+            "お揃いのペアアイテム",
+            "纏わせたい香り・コスメ・ケア用品",
+            "特別感のあるアクセサリー・革小物",
+            "極上のグルメ・お酒・スイーツ",
+            "二人の空間に置く寝具・クッション・照明",
+            "おもしろ雑貨・被り物・おもちゃ",
+            "欲しがっていた趣味の品・本・ガジェット",
+            "労わる癒やし・季節のケアグッズ",
+            "内緒でこっそり買う秘密のサプライズ品"
+        ];
+
+        const troubles = [
+            "突然のゲリラ豪雨と交通麻痺",
+            "靴擦れ・靴の破損で歩行困難",
+            "しつこいナンパ・不埒な通行人との遭遇",
+            "服への深刻な汚れ・水濡れアクシデント",
+            "終電逃し・帰りの移動手段の喪失",
+            "エレベーター・狭い個室への閉じ込め",
+            "人波ではぐれる迷子＆スマホ充電切れ",
+            "急な体調変化（めまい・疲れ・ほろ酔い）",
+            "予約店・ホテルの手違い（狭い1室）",
+            "家の鍵トラブルで締め出し"
+        ];
+
+        const inputEl = document.getElementById('roulette-input');
+        const targetSpan = document.getElementById('target-number');
+        const statusEl = document.getElementById('roulette-status');
+
+        function updateFromDigits(val) {
+            const clean = val.replace(/[^0-9]/g, '').slice(0, 3);
+            if (clean.length === 0) {
+                targetSpan.textContent = "　　　";
+                statusEl.innerHTML = "💡 手順①でAIが答えた数字をここに入力するか、「🎲 ランダム抽選」を押すと、下の手順②プロンプト内の【　】に自動で数字が入ります。";
+                return;
+            }
+            targetSpan.textContent = clean;
+            if (clean.length === 3) {
+                const d1 = parseInt(clean[0], 10);
+                const d2 = parseInt(clean[1], 10);
+                const d3 = parseInt(clean[2], 10);
+                statusEl.innerHTML = `🎯 <b>[${clean}] の内訳：</b> 📍${spots[d1]} × 🛍️${items[d2]} × ⚡${troubles[d3]}`;
+            } else {
+                statusEl.innerHTML = `⌨️ 3桁すべて入力すると組み合わせプレビューが表示されます（現在: <b>${clean}</b>）`;
+            }
+        }
+
+        inputEl.addEventListener('input', (e) => {
+            const clean = e.target.value.replace(/[^0-9]/g, '').slice(0, 3);
+            e.target.value = clean;
+            updateFromDigits(clean);
+        });
+
+        function spinRoulette() {
+            let count = 0;
+            const timer = setInterval(() => {
+                const rand = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+                inputEl.value = rand;
+                targetSpan.textContent = rand;
+                count++;
+                if (count >= 12) {
+                    clearInterval(timer);
+                    updateFromDigits(rand);
+                }
+            }, 45);
+        }
+
+        function copyText(elementId, btn) {
+            const el = document.getElementById(elementId);
+            const text = el.innerText;
+            const originalHTML = btn.innerHTML;
+
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerHTML = '✅ コピー完了！';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.innerHTML = '✅ コピー完了！';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>
