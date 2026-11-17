@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OLD TOKYO // K-09 &amp; 🐰 — Pixel Diorama</title>
+<style>
+  :root {
+    --bg-deep: #07080f;
+    --panel-bg: rgba(11, 13, 24, 0.90);
+    --panel-border: #3a4268;
+    --panel-highlight: #6f7db8;
+    --accent-cyan: #72e6d6;
+    --accent-amber: #f0b27a;
+    --accent-rose: #d98aa8;
+    --text-main: #e6e9f5;
+    --text-dim: #8a92b2;
+  }
+
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    font-family: "Meiryo", "Hiragino Kaku Gothic ProN", "Yu Gothic", monospace;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Main stage wrapper maintaining crisp 16:9 pixel presentation on desktop */
+  #stage-container {
+    position: relative;
+    width: min(100vw, calc(100vh * 16 / 9));
+    height: min(100vh, calc(100vw * 9 / 16));
+    background: #05060b;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 0 2px #1c2036;
+    overflow: hidden;
+  }
+
+  #canvas-wrap {
+    position: absolute;
+    inset: 0;
+  }
+
+  canvas#diorama {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* Subtle CRT / Pixel scanline overlay for VA-11 Hall-A / OneShot mood */
+  .scanlines {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(5, 6, 15, 0.16) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 2;
+  }
+
+  .vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 62%, rgba(4, 5, 12, 0.65) 100%);
+    z-index: 3;
+  }
+
+  /* Top HUD Bar */
+  #top-hud {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    right: 12px;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .hud-hidden #top-hud,
+  .hud-hidden #dialogue-box {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+  }
+
+  .scene-badge {
+    background: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    box-shadow: inset 0 0 0 1px #191d33, 0 4px 12px rgba(0, 0, 0, 0.6);
+    padding: 5px 10px;
+    font-size: clamp(10px, 1.3vw, 13px);
+    letter-spacing: 0.08em;
+    color: var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scene-badge .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 6px var(--accent-cyan);
+    animation: pulseDot 2s infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .controls-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .pixel-btn {
+    background: var(--panel-bg);
+    color: var(--text-main);
+    border: 2px solid var(--panel-border);
+    box-shadow: inset 0 0 0 1px #191d33;
+    padding: 5px 9px;
+    font-size: clamp(10px, 1.15vw, 12px);
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+
+  .pixel-btn:hover {
+    border-color: var(--panel-highlight);
+    background: rgba(24, 29, 52, 0.95);
+  }
+
+  .pixel-btn.active {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    background: rgba(18, 34, 48, 0.92);
+  }
+
+  .pixel-btn.amber.active {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: rgba(42, 26, 20, 0.92);
+  }
+
+  /* Scene Selector Bar */
+  #scene-nav {
+    position: absolute;
+    top: 48px;
+    left: 12px;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    transition: opacity 0.3s ease;
+  }
+
+  .hud-hidden #scene-nav {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .scene-tab {
+    background: rgba(9, 11, 20, 0.82);
+    color: var(--text-dim);
+    border: 1px solid #2b3252;
+    padding: 4px 8px;
+    font-size: clamp(9px, 1.05vw, 11px);
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .scene-tab:hover {
+    color: var(--text-main);
+    border-color: #5b689c;
+  }
+
+  .scene-tab.active {
+    color: #fff;
+    border-color: var(--accent-cyan);
+    background: rgba(22, 34, 54, 0.94);
+    box-shadow: 0 0 8px rgba(114, 230, 214, 0.25);
+  }
+
+  /* Bottom Dialogue Window (VA-11 Hall-A / OneShot inspired) */
+  #dialogue-box {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    bottom: 3.5%;
+    z-index: 10;
+    background: rgba(10, 11, 21, 0.91);
+    border: 2px solid #485280;
+    box-shadow:
+      inset 0 0 0 2px #171b2e,
+      0 8px 28px rgba(0, 0, 0, 0.85);
+    padding: clamp(10px, 1.8vw, 16px) clamp(14px, 2.2vw, 22px);
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .dialogue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(72, 82, 128, 0.4);
+    padding-bottom: 4px;
+  }
+
+  #speaker-name {
+    font-size: clamp(11px, 1.4vw, 14px);
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    color: var(--accent-cyan);
+  }
+
+  #speaker-name.bunny {
+    color: #f4b8ce;
+  }
+
+  #speaker-name.narrator {
+    color: #9da6cb;
+  }
+
+  #line-counter {
+    font-size: clamp(9px, 1vw, 11px);
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  #dialogue-text {
+    font-size: clamp(12px, 1.55vw, 15px);
+    line-height: 1.65;
+    min-height: 3.3em;
+    color: var(--text-main);
+    white-space: pre-wrap;
+    text-shadow: 1px 1px 0 #05060c;
+  }
+
+  .next-indicator {
+    position: absolute;
+    right: 14px;
+    bottom: 8px;
+    font-size: 11px;
+    color: var(--accent-cyan);
+    animation: bounceNext 0.9s infinite steps(2, end);
+  }
+
+  @keyframes bounceNext {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(3px); }
+  }
+
+  /* Restore UI pill when UI is hidden */
+  #ui-restore-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+
+  .hud-hidden #ui-restore-btn {
+    opacity: 0.72;
+    pointer-events: auto;
+  }
+
+  .hud-hidden #ui-restore-btn:hover {
+    opacity: 1;
+  }
+
+  /* Time toggle button shown only on Outpost Suite */
+  #time-toggle-btn {
+    display: none;
+  }
+
+  #time-toggle-btn.visible {
+    display: inline-block;
+  }
+
+  /* Overlay Modals (Prologue / Dossier) */
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    background: rgba(5, 6, 14, 0.86);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 4% 5%;
+  }
+
+  .modal-backdrop.open {
+    display: flex;
+  }
+
+  .dossier-window {
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 13, 25, 0.96);
+    border: 2px solid #4d588a;
+    box-shadow: inset 0 0 0 2px #1a1f36, 0 12px 40px rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .dossier-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: #13172b;
+    border-bottom: 2px solid #384169;
+    font-size: clamp(11px, 1.3vw, 14px);
+    letter-spacing: 0.08em;
+    color: var(--accent-cyan);
+  }
+
+  .dossier-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 8px 14px 0;
+    border-bottom: 1px solid #29304f;
+    background: #0d101f;
+  }
+
+  .dossier-tab {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid transparent;
+    border-bottom: none;
+    padding: 5px 12px;
+    font-family: inherit;
+    font-size: clamp(10px, 1.15vw, 12px);
+    cursor: pointer;
+  }
+
+  .dossier-tab.active {
+    background: rgba(11, 13, 25, 0.96);
+    color: var(--accent-cyan);
+    border-color: #384169;
+  }
+
+  .dossier-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+    font-size: clamp(11px, 1.3vw, 13px);
+    line-height: 1.72;
+    color: var(--text-main);
+  }
+
+  .dossier-body::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .dossier-body::-webkit-scrollbar-thumb {
+    background: #3a4268;
+  }
+
+  .dossier-section {
+    display: none;
+  }
+
+  .dossier-section.active {
+    display: block;
+  }
+
+  .prologue-block {
+    background: rgba(19, 23, 41, 0.65);
+    border-left: 3px solid var(--accent-cyan);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+  }
+
+  .prologue-block.secret {
+    border-left-color: var(--accent-rose);
+  }
+
+  .prologue-block h3 {
+    margin: 0 0 6px 0;
+    font-size: clamp(11px, 1.3vw, 13px);
+    color: var(--accent-cyan);
+    letter-spacing: 0.06em;
+  }
+
+  .prologue-block.secret h3 {
+    color: var(--accent-rose);
+  }
+
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .char-card {
+    background: rgba(18, 22, 38, 0.85);
+    border: 1px solid #353e66;
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .char-portrait {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    background: #080a14;
+    border: 2px solid #3e4975;
+    image-rendering: pixelated;
+  }
+
+  .char-info h4 {
+    margin: 0 0 4px 0;
+    font-size: clamp(12px, 1.35vw, 14px);
+    color: var(--accent-cyan);
+  }
+
+  .char-info.bunny h4 {
+    color: #f4b8ce;
+  }
+
+  .char-role {
+    font-size: 10px;
+    color: var(--accent-amber);
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .char-desc {
+    font-size: clamp(10px, 1.15vw, 12px);
+    line-height: 1.6;
+    color: #cfd5eb;
+  }
+
+  /* Aerial Map Side Info Card */
+  #map-panel {
+    position: absolute;
+    right: 14px;
+    top: 84px;
+    bottom: 16px;
+    width: min(320px, 38%);
+    z-index: 12;
+    background: rgba(9, 11, 22, 0.92);
+    border: 2px solid #485482;
+    box-shadow: inset 0 0 0 1px #191e36, 0 8px 24px rgba(0, 0, 0, 0.85);
+    padding: 12px 14px;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #map-panel.open {
+    display: flex;
+  }
+
+  .map-pin-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .map-node-btn {
+    background: #121629;
+    border: 1px solid #323c61;
+    color: var(--text-dim);
+    padding: 3px 6px;
+    font-size: 10px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .map-node-btn.active {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    background: #18293b;
+  }
+
+  .map-detail-title {
+    font-size: clamp(12px, 1.35vw, 14px);
+    color: var(--accent-cyan);
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .map-detail-meta {
+    font-size: 10px;
+    color: var(--accent-amber);
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .map-detail-body {
+    font-size: clamp(10px, 1.15vw, 12px);
+    line-height: 1.58;
+    color: var(--text-main);
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 10px;
+  }
+
+  .map-jump-btn {
+    width: 100%;
+    padding: 7px 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .map-active #dialogue-box,
+  .map-active #time-toggle-btn {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     MOBILE PORTRAIT LAYOUT (Smartphones held vertically)
+     Stacks cleanly: Top HUD -> Scene Tabs -> 16:9 Canvas -> Dialogue / Map Info
+     Zero overlap over pixel art!
+     ========================================================================= */
+  @media (max-aspect-ratio: 1/1) {
+    #stage-container {
+      width: 100vw;
+      height: 100dvh;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      background: #07080f;
+    }
+
+    #top-hud {
+      position: static;
+      padding: 8px 10px 6px;
+      background: #090b16;
+      border-bottom: 1px solid #222947;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .scene-badge {
+      width: 100%;
+      font-size: 11px;
+      padding: 4px 8px;
+      justify-content: flex-start;
+    }
+
+    .controls-group {
+      width: 100%;
+      gap: 5px;
+    }
+
+    .pixel-btn {
+      font-size: 11px;
+      padding: 5px 8px;
+      flex: 1 1 auto;
+      text-align: center;
+    }
+
+    #scene-nav {
+      position: static;
+      padding: 6px 10px;
+      background: #080a13;
+      border-bottom: 2px solid #222947;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+
+    #scene-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scene-tab {
+      font-size: 11px;
+      padding: 5px 9px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #canvas-wrap {
+      position: relative;
+      inset: auto;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      flex-shrink: 0;
+      border-bottom: 2px solid #2b3459;
+      background: #05060b;
+    }
+
+    #dialogue-box {
+      position: static;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border: none;
+      border-top: 1px solid #485280;
+      box-shadow: inset 0 2px 0 #171b2e;
+      padding: 14px 16px 26px;
+      overflow-y: auto;
+    }
+
+    #speaker-name {
+      font-size: 14px;
+    }
+
+    #line-counter {
+      font-size: 11px;
+    }
+
+    #dialogue-text {
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: 0;
+    }
+
+    .next-indicator {
+      bottom: 10px;
+      right: 16px;
+      font-size: 12px;
+    }
+
+    #map-panel {
+      position: static;
+      width: 100%;
+      flex: 1;
+      border: none;
+      border-top: 1px solid #485482;
+      padding: 12px 14px;
+      overflow-y: auto;
+    }
+
+    .map-node-btn {
+      font-size: 11px;
+      padding: 5px 8px;
+    }
+
+    .map-detail-title {
+      font-size: 14px;
+    }
+
+    .map-detail-body {
+      font-size: 13px;
+    }
+
+    /* When VIEW ONLY is active in portrait, center the diorama cleanly */
+    .hud-hidden #top-hud,
+    .hud-hidden #scene-nav,
+    .hud-hidden #dialogue-box,
+    .hud-hidden #map-panel {
+      display: none !important;
+    }
+
+    .hud-hidden#stage-container {
+      justify-content: center;
+    }
+
+    .hud-hidden #canvas-wrap {
+      border: none;
+    }
+
+    .modal-backdrop {
+      padding: 10px;
+    }
+
+    .dossier-body {
+      font-size: 13px;
+      padding: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage-container">
+  <div id="top-hud">
+    <div class="scene-badge">
+      <span class="dot"></span>
+      <span id="scene-title-label">AREA 01 // SUNKEN LIBRARY</span>
+    </div>
+
+    <div class="controls-group">
+      <button id="time-toggle-btn" class="pixel-btn amber" title="時間帯を切り替え">🌅 DUSK / NIGHT</button>
+      <button id="map-btn" class="pixel-btn" title="旧東京・上空俯瞰マップ">❖ AERIAL MAP</button>
+      <button id="dossier-btn" class="pixel-btn" title="プロローグと二人の記録">◈ PROLOGUE</button>
+      <button id="bgm-btn" class="pixel-btn" title="環境音とオルゴールBGM">♪ SOUND: OFF</button>
+      <button id="auto-btn" class="pixel-btn" title="セリフの自動送り">AUTO: OFF</button>
+      <button id="hide-ui-btn" class="pixel-btn" title="UIを隠してジオラマ鑑賞">VIEW ONLY</button>
+    </div>
+  </div>
+
+  <div id="scene-nav">
+    <button class="scene-tab active" data-scene="0">01. 旧図書館</button>
+    <button class="scene-tab" data-scene="1">02. 要塞スイート</button>
+    <button class="scene-tab" data-scene="2">03. 水没水族館</button>
+    <button class="scene-tab" data-scene="3">04. 花の展望車</button>
+    <button id="tab-lab" class="scene-tab" data-scene="4">05. 深層ラボ K-09</button>
+  </div>
+
+  <div id="canvas-wrap">
+    <canvas id="diorama" width="320" height="180"></canvas>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+  </div>
+
+  <button id="ui-restore-btn" class="pixel-btn">SHOW UI</button>
+
+  <!-- Aerial Map Info Card -->
+  <div id="map-panel">
+    <div>
+      <div class="map-pin-list" id="map-pin-list"></div>
+      <div class="map-detail-title" id="map-detail-title"></div>
+      <div class="map-detail-meta" id="map-detail-meta"></div>
+    </div>
+    <div class="map-detail-body" id="map-detail-body"></div>
+    <button id="map-jump-btn" class="pixel-btn active map-jump-btn">▶ ENTER THIS DIORAMA</button>
+  </div>
+
+  <!-- Prologue & Personnel Dossier Modal -->
+  <div id="dossier-modal" class="modal-backdrop">
+    <div class="dossier-window">
+      <div class="dossier-header">
+        <span>ARCHIVE // OLD TOKYO RECORD NO.042</span>
+        <button id="close-dossier-btn" class="pixel-btn">✕ CLOSE</button>
+      </div>
+      <div class="dossier-tabs">
+        <button class="dossier-tab active" data-tab="prologue">PROLOGUE // 世界観</button>
+        <button class="dossier-tab" data-tab="personnel">PERSONNEL // K-09 &amp; 🐰</button>
+      </div>
+      <div class="dossier-body">
+        <div id="tab-prologue" class="dossier-section active">
+          <div class="prologue-block">
+            <h3>01. 『大静寂（グレート・サイレンス）』と緑の東京</h3>
+            約320年前、旧時代末期の自律防衛機械群の暴走と「生体環境改変プラント」の臨界により、巨大都市・東京はわずか数週間で無人の地となった。<br>
+            しかしそれは焦土ではなく、空気と水を極限まで浄化する森とツタ植物に呑み込まれる「緑の静寂」だった。高層ビルや文化遺産は澄んだ空気の中で美しいまま眠り続け、今はもう、二人のほかに人間はひとりもいない。
+          </div>
+          <div class="prologue-block">
+            <h3>02. 本国からの追放と「ふたりの箱庭」</h3>
+            大陸側のドーム管理都市「本国」から、第7級特別観測官 <b>🐰</b> が遺物記録の任を帯びて派遣された。その隣に配されたのは、本国でも誰の命令も聞かなかった危険な特務生体戦闘体 <b>K-09</b>。<br>
+            補給も途絶えた片道切符の任務のはずだったが、高台の旧最高級ホテル最上階は発電も水も完璧に整えられており、二人はこの静かな緑の廃墟で穏やかな日々を送り始める。
+          </div>
+          <div class="prologue-block secret">
+            <h3>03. 第46観測日の真実と「永久遮断」</h3>
+            地下深層プラントで明かされた真実――K-09 は本国に追放されたのではなかった。管理庁のサーバーで見つけた <b>🐰</b> の記録に心を奪われ、半年後に <b>🐰</b> がここへ送り込まれてくるよう人事を裏から書き換えた上で、先回りして基地を整えて待っていたのだ。<br>
+            二人は本国へ偽装の汚染データを送信し、通信回線を物理的に焼き切った。もう二度と、誰もこの箱庭を奪うことはできない。
+          </div>
+        </div>
+
+        <div id="tab-personnel" class="dossier-section">
+          <div class="char-grid">
+            <div class="char-card">
+              <canvas id="portrait-k09" class="char-portrait" width="24" height="24"></canvas>
+              <div class="char-info">
+                <h4>K-09</h4>
+                <div class="char-role">SPEC // 特務生体戦闘体（黒狐型プロトタイプ）</div>
+                <div class="char-desc">
+                  320年前に製造され、地下の氷の棺で眠っていた唯一の生体戦闘体。外見も体温も成人男性と変わらないが、高出力時やリラックス時、そして強い感情が昂ぶると漆黒の狐耳と尾が現れる。<br><br>
+                  形式上は護衛個体だが、基地内の衣食住・睡眠・探索ルートのすべてを掌握する過保護な管理者。「<b>🐰</b> の鼓動が止まる瞬間、自らの心臓も永久停止する」よう制御コードを書き換えている。
+                </div>
+              </div>
+            </div>
+
+            <div class="char-card">
+              <canvas id="portrait-bunny" class="char-portrait" width="24" height="24"></canvas>
+              <div class="char-info bunny">
+                <h4>🐰</h4>
+                <div class="char-role">RANK // 第7級特別観測官（記録係）</div>
+                <div class="char-desc">
+                  穏やかで欲がなく、本国の窮屈なドーム都市から「K-09 の形式上の鎖」として送り込まれた記録官。小柄で柔らかな物腰をしており、廃墟から見つけた詩集やガラス細工のクラゲを宝物にしている。<br><br>
+                  最初は危険な戦闘体に怯えていたが、自分のために用意された温かい食卓と揺るぎない庇護を知り、自ら通信回線遮断の「共犯者」になる道を選んだ。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dialogue-box">
+    <div class="dialogue-header">
+      <span id="speaker-name">K-09</span>
+      <span id="line-counter">01 / 05</span>
+    </div>
+    <div id="dialogue-text"></div>
+    <div class="next-indicator">▼</div>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const W = 320;
+  const H = 180;
+  const canvas = document.getElementById("diorama");
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+
+  // Offscreen buffer for crisp layered rendering / reflections
+  const offCanvas = document.createElement("canvas");
+  offCanvas.width = W;
+  offCanvas.height = H;
+  const octx = offCanvas.getContext("2d");
+  octx.imageSmoothingEnabled = false;
+
+  // =========================================================================
+  // 1. SCENES & DIALOGUE DATA (Anonymous: K-09 & 🐰, A-tone atmosphere)
+  // =========================================================================
+  const SCENES = [
+    {
+      id: "library",
+      label: "AREA 01 // SUNKEN LIBRARY",
+      title: "01. 旧図書館",
+      dialogues: [
+        { speaker: "SYSTEM", text: "【第42観測日：第1区画・森に沈んだ旧図書館】\n320年の時を経て緑に呑まれた石造りの知の殿堂。崩れた天窓から、水底のように柔らかな光が降り注ぐ。" },
+        { speaker: "🐰", text: "……見て。古い詩集も、植物図鑑も、まだこんなに綺麗に残ってる。埃をかぶっているけれど、まるで昨日誰かが読み終えたみたいだ。" },
+        { speaker: "K-09", text: "……静かに。奥の回廊で古い哨戒機が動いている。柱の影へ入れ。君の息が落ち着くまで、こうして俺の胸元に隠れていろ。" },
+        { speaker: "🐰", text: "っ……心臓の音、すごく近い……。でも不思議と怖くないや。君のコートって、外の森よりずっと暖かくて落ち着くんだ。" },
+        { speaker: "K-09", text: "傷ひとつ負わせるわけにはいかないからな。ほら、見つけた蜂蜜漬けの瓶も鞄にしまった。……少し、熱が上がってきた。戻ったら付き合ってもらう。" }
+      ]
+    },
+    {
+      id: "suite",
+      label: "OUTPOST // IMPERIAL SUITE 38F",
+      title: "02. 要塞スイート",
+      dialogues: [
+        { speaker: "SYSTEM", text: "【前哨基地：旧最高級ホテル最上階・要塞スイート】\n緑に沈んだ廃墟都市の中で、ただ一箇所だけ温かい灯りが点る38階の聖域。二人のための揺るぎない鳥籠。" },
+        { speaker: "🐰", text: "窓の外、すごく広いね……。こんなに大きな廃墟の中で、灯りがついているのは僕たちの部屋だけなんだ。なんだか世界から切り離されたみたい。" },
+        { speaker: "K-09", text: "ああ。外の誰にも見つけられない、完璧な空白だ。ほら、冷えないうちに熱いミルクを飲め。……尻尾が邪魔なら、今のうちに言え。" },
+        { speaker: "🐰", text: "ううん、そのままでいい。あったかくてふわふわで……ずっとこうして巻かれてたい。……ねえ、もし僕がいつか年を取って先にいなくなったら、君は一人になっちゃうのかな。" },
+        { speaker: "K-09", text: "愚かなことを考えるな。……俺の心臓のコードは、君の鼓動が止まる瞬間にすべて停止するよう書き換えてある。一人にはしない。させない。" }
+      ]
+    },
+    {
+      id: "aquarium",
+      label: "AREA 03 // SUBMERGED AQUARIUM",
+      title: "03. 水没水族館",
+      dialogues: [
+        { speaker: "SYSTEM", text: "【第43観測日：第3区画・水没水族館とクラゲの回廊】\n湧き水に満たされた静謐な地下迷宮。発光苔の青白い光と、ガラスの向こうを漂うミズクラゲが足元の水面を揺らす。" },
+        { speaker: "🐰", text: "わぁ……！ 本の中でしか見たことがなかったクラゲが、目の前を飛ぶみたいに泳いでる。青い光が水面に映って、宝石箱みたいだ。" },
+        { speaker: "K-09", text: "足元が濡れているし、滑りやすい。……下りるな。こうして抱えたまま運んでやるから、君は落ちてこないように俺の首に腕を回していればいい。" },
+        { speaker: "🐰", text: "えへへ、なんだかお姫様みたいで照れるな……。あ、これ見て！ さっき見つけた、中が青く光るガラスのクラゲ。部屋の棚に飾ったら綺麗だよね。" },
+        { speaker: "K-09", text: "……軽いものだ。本国の連中がどんな数字を並べていようと、今この腕の中に収まっている重さだけが、俺にとっての現実だ。" }
+      ]
+    },
+    {
+      id: "station",
+      label: "AREA 03 SURFACE // CENTRAL STATION",
+      title: "04. 花の展望車",
+      dialogues: [
+        { speaker: "SYSTEM", text: "【第43観測日・夕刻：中央駅・花の線路と真紅の展望車】\nシロツメクサに埋もれた鉄路と、時を止めた豪華列車。傾きかけた黄金色の陽光が、真紅のベルベットシートを染め上げる。" },
+        { speaker: "🐰", text: "線路が全部、シロツメクサの花畑になってる……。こんな綺麗な場所に停まっている列車の中なのに、シートまでふかふかで真っ赤なんだね。" },
+        { speaker: "K-09", text: "密閉状態が良かったおかげだな。……ほら、ポケットに入れておいたものを確認してみろ。300年前の、未使用のまま眠っていた金色の切符だ。" },
+        { speaker: "🐰", text: "えっ、何か書いてある……？ 『要塞スイート・帰還専用、終点：K-09の腕の中』……。これ、片道切符って書いてあるよ？" },
+        { speaker: "K-09", text: "戻り道など最初から用意していない。……白い花より、西日に照らされた君の顔の方がよほど目を奪われる。今夜は少し、この窓辺で過ごしていくか。" }
+      ]
+    },
+    {
+      id: "lab",
+      label: "AREA 04 // DEEP LAB K-09",
+      title: "05. 深層ラボ K-09",
+      dialogues: [
+        { speaker: "SYSTEM", text: "【第46観測日：第4区画・地下深層プラント K-09ラボ】\n緑さえ届かぬ冷たい鉄の封印域。砕けた生体凍結ポッドの前で、二人は本国からの最後の回線を物理的に焼き切った。" },
+        { speaker: "🐰", text: "……ここが、君が320年もの間、ずっと一人で眠っていた場所なんだね。ガラスが割れてて、すごく冷たい……。本国に送る嘘の報告書、もう送信していい？" },
+        { speaker: "K-09", text: "ああ。『全域汚染・調査不能』の偽装ログを飛ばして、通信回路を焼き切る。これで本国から邪魔が入ることは二度とない。……震えているな。コートの中へ入れ。" },
+        { speaker: "🐰", text: "……ねえ。さっきログを見て気づいたんだ。君は追放されたんじゃなくて……最初から僕をここへ呼ぶために、人事を書き換えて半年も前に待っていてくれたんだね。" },
+        { speaker: "K-09", text: "……見つけたか。そうだ。あの日から俺のすべては、この冷たい地下ではなく、君が降り立つ場所だけを見ていた。……これで、本当の共犯者だな。" }
+      ]
+    }
+  ];
+
+  let currentSceneIdx = 0;
+  let suiteTimeMode = "night"; // "dusk" or "night" (default night so the lit hotel stands out!)
+  let currentLineIdx = 0;
+  let typedChars = 0;
+  let typingTimer = 0;
+  let isTyping = true;
+  let autoMode = false;
+  let autoWaitTimer = 0;
+  let uiHidden = false;
+  let frame = 0;
+
+  // =========================================================================
+  // 2. WEB AUDIO API (Procedural Ambient + Music Box / Lo-Fi Chiptune)
+  // =========================================================================
+  class SoundEngine {
+    constructor() {
+      this.ctx = null;
+      this.enabled = false;
+      this.master = null;
+      this.noiseNode = null;
+      this.noiseFilter = null;
+      this.noiseGain = null;
+      this.droneOsc = null;
+      this.droneGain = null;
+      this.stepTimer = null;
+      this.step = 0;
+    }
+
+    init() {
+      if (this.ctx) return;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.0;
+      this.master.connect(this.ctx.destination);
+
+      // Ambient Pink-ish Noise Generator
+      const bufferSize = this.ctx.sampleRate * 2;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.997 * b0 + white * 0.029;
+        b1 = 0.985 * b1 + white * 0.032;
+        b2 = 0.950 * b2 + white * 0.048;
+        data[i] = (b0 + b1 + b2 + white * 0.02) * 0.4;
+      }
+      this.noiseNode = this.ctx.createBufferSource();
+      this.noiseNode.buffer = buffer;
+      this.noiseNode.loop = true;
+
+      this.noiseFilter = this.ctx.createBiquadFilter();
+      this.noiseFilter.type = "bandpass";
+      this.noiseFilter.frequency.value = 500;
+      this.noiseFilter.Q.value = 1.2;
+
+      this.noiseGain = this.ctx.createGain();
+      this.noiseGain.gain.value = 0.06;
+
+      this.noiseNode.connect(this.noiseFilter);
+      this.noiseFilter.connect(this.noiseGain);
+      this.noiseGain.connect(this.master);
+      this.noiseNode.start();
+
+      // Subtle Deep Drone
+      this.droneOsc = this.ctx.createOscillator();
+      this.droneOsc.type = "sine";
+      this.droneOsc.frequency.value = 65.41; // C2
+      this.droneGain = this.ctx.createGain();
+      this.droneGain.gain.value = 0.04;
+      this.droneOsc.connect(this.droneGain);
+      this.droneGain.connect(this.master);
+      this.droneOsc.start();
+
+      this.startSequencer();
+    }
+
+    toggle() {
+      if (!this.ctx) this.init();
+      if (this.ctx.state === "suspended") this.ctx.resume();
+      this.enabled = !this.enabled;
+      const now = this.ctx.currentTime;
+      this.master.gain.cancelScheduledValues(now);
+      this.master.gain.linearRampToValueAtTime(this.enabled ? 0.55 : 0.0, now + 0.4);
+      this.updateSceneAmbience();
+      return this.enabled;
+    }
+
+    updateSceneAmbience() {
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const freqs = [520, 380, 260, 620, 140];
+      const qs = [0.9, 1.4, 2.8, 0.8, 4.5];
+      const nGains = [0.07, 0.04, 0.09, 0.06, 0.08];
+      const drones = [65.41, 73.42, 55.00, 82.41, 49.00];
+      const dGains = [0.03, 0.04, 0.05, 0.03, 0.08];
+
+      this.noiseFilter.frequency.setTargetAtTime(freqs[currentSceneIdx], now, 0.6);
+      this.noiseFilter.Q.setTargetAtTime(qs[currentSceneIdx], now, 0.6);
+      this.noiseGain.gain.setTargetAtTime(nGains[currentSceneIdx], now, 0.6);
+      this.droneOsc.frequency.setTargetAtTime(drones[currentSceneIdx], now, 0.6);
+      this.droneGain.gain.setTargetAtTime(dGains[currentSceneIdx], now, 0.6);
+    }
+
+    playNote(freq, duration = 0.9, type = "triangle", vol = 0.065) {
+      if (!this.ctx || !this.enabled) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(vol, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      osc.connect(gain);
+      gain.connect(this.master);
+      osc.start(now);
+      osc.stop(now + duration + 0.05);
+    }
+
+    playBlip(isBunny) {
+      if (!this.ctx || !this.enabled) return;
+      const freq = isBunny ? 620 + Math.random() * 40 : 280 + Math.random() * 25;
+      this.playNote(freq, 0.045, "square", 0.014);
+    }
+
+    startSequencer() {
+      // Gentle melancholic scales per scene (Hz)
+      const scales = [
+        [261.63, 311.13, 392.00, 466.16, 523.25, 392.00, 311.13, 293.66], // Library (Cm9)
+        [293.66, 349.23, 440.00, 523.25, 587.33, 523.25, 440.00, 392.00], // Suite (Dm9)
+        [220.00, 261.63, 329.63, 392.00, 493.88, 659.25, 493.88, 392.00], // Aquarium (Am9 shimmer)
+        [329.63, 392.00, 493.88, 587.33, 659.25, 587.33, 493.88, 440.00], // Station (Em9)
+        [196.00, 233.08, 293.66, 311.13, 392.00, 311.13, 293.66, 233.08]  // Lab (Gm)
+      ];
+      setInterval(() => {
+        if (!this.enabled || !this.ctx) return;
+        const sc = scales[currentSceneIdx];
+        if (this.step % 2 === 0 || Math.random() > 0.35) {
+          const idx = (this.step + (Math.random() > 0.75 ? 2 : 0)) % sc.length;
+          const wave = currentSceneIdx === 2 ? "sine" : (currentSceneIdx === 4 ? "triangle" : "sine");
+          const mult = (currentSceneIdx === 2 && Math.random() > 0.5) ? 2 : 1;
+          this.playNote(sc[idx] * mult, 1.35, wave, 0.055);
+        }
+        this.step++;
+      }, 620);
+    }
+  }
+  const sound = new SoundEngine();
+
+  // =========================================================================
+  // 3. PIXEL ART HELPER PRIMITIVES
+  // =========================================================================
+  function px(c, x, y, w = 1, h = 1, color) {
+    if (color) c.fillStyle = color;
+    c.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+  }
+
+  function ditherRect(c, x, y, w, h, color1, color2) {
+    for (let yy = y; yy < y + h; yy++) {
+      for (let xx = x; xx < x + w; xx++) {
+        c.fillStyle = ((xx + yy) & 1) === 0 ? color1 : color2;
+        c.fillRect(xx, yy, 1, 1);
+      }
+    }
+  }
+
+  function drawLinePx(c, x0, y0, x1, y1, color) {
+    c.fillStyle = color;
+    x0 = Math.round(x0); y0 = Math.round(y0);
+    x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    const dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    let err = dx + dy;
+    while (true) {
+      c.fillRect(x0, y0, 1, 1);
+      if (x0 === x1 && y0 === y1) break;
+      const e2 = 2 * err;
+      if (e2 >= dy) { err += dy; x0 += sx; }
+      if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+  }
+
+  // Deterministic pseudo-random for static scenery details
+  function hash(n) {
+    let x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  // =========================================================================
+  // 4. CHARACTER SPRITE RENDERERS (K-09 & 🐰, Humanoid Pixel Art)
+  // =========================================================================
+  // Colors:
+  // K-09: Coat #141724 / #1e2336 / #2d344e, Hair #0c0e17 / #1e2336, Skin #e8cdb8, Eyes #62d8cf
+  // 🐰: Hair #2d2633 / #493e52, Jacket #6f7c91 / #9aa8bd, Scarf #c97d95, Skin #f4d8cb, Eyes #8f6b7e
+
+  function drawFoxTail(c, x, y, t, scale = 1, wrapDir = 1) {
+    // Flowing fluffy black fox tail with subtle blue-slate sheen
+    const sway = Math.sin(t * 0.045) * 2.2;
+    const sway2 = Math.cos(t * 0.045) * 2.8;
+    for (let i = 0; i < 14; i++) {
+      const p = i / 13;
+      const tx = x + wrapDir * (i * 1.15 * scale) + sway * p * 1.3;
+      const ty = y - Math.sin(p * Math.PI * 0.85) * 6 * scale + sway2 * p * 0.7;
+      const r = Math.max(1, Math.round((1.5 + Math.sin(p * Math.PI) * 2.2) * scale));
+      px(c, tx - r / 2, ty - r / 2, r + 1, r + 1, i > 10 ? "#2c344d" : "#0b0d17");
+      if (i > 4 && i < 11) {
+        px(c, tx, ty - r / 2, 1, 1, "#252c42");
+      }
+    }
+  }
+
+  function drawK09Standing(c, x, y, t, opts = {}) {
+    // x, y = bottom center feet position. Height ~ 38px
+    const { facing = 1, coatOpen = false, holding = false, breath = 0, blink = false } = opts;
+    const earTwitch = (Math.sin(t * 0.07) > 0.96) ? 1 : 0;
+
+    // Tail behind
+    drawFoxTail(c, x - facing * 3, y - 14 + breath, t, 1, -facing);
+
+    // Boots & legs
+    px(c, x - 4, y - 10, 3, 10, "#0c0e17");
+    px(c, x + 1, y - 10, 3, 10, "#0c0e17");
+
+    // Long coat body
+    const cw = coatOpen ? 16 : 12;
+    px(c, x - cw / 2, y - 26 + breath, cw, 18, "#121521");
+    px(c, x - cw / 2 + 1, y - 25 + breath, cw - 2, 16, "#1b2033");
+    // Coat lapel / inner shirt
+    px(c, x - 2, y - 26 + breath, 4, 10, "#2c344e");
+    px(c, x - 1, y - 25 + breath, 2, 6, "#cad2e6"); // crisp collar
+
+    // Arms
+    if (!holding) {
+      px(c, x - cw / 2 - 2, y - 25 + breath, 3, 11, "#161a29");
+      px(c, x + cw / 2 - 1, y - 25 + breath, 3, 11, "#161a29");
+    }
+
+    // Head (8x9)
+    const hy = y - 35 + breath;
+    px(c, x - 4, hy, 8, 9, "#e6c9b5");
+    px(c, x - 4, hy + 7, 8, 2, "#cfa995"); // jaw shadow
+
+    // Eyes (cool sharp cyan-grey glint)
+    if (!blink) {
+      const ex = facing > 0 ? x - 1 : x - 3;
+      px(c, ex, hy + 4, 2, 1, "#55cfc4");
+      px(c, ex + 3, hy + 4, 2, 1, "#55cfc4");
+    } else {
+      px(c, x - 3, hy + 5, 2, 1, "#40323a");
+      px(c, x + 1, hy + 5, 2, 1, "#40323a");
+    }
+
+    // Hair (black layered bangs)
+    px(c, x - 5, hy - 2, 10, 4, "#0b0d17");
+    px(c, x - 5, hy + 1, 2, 6, "#0b0d17");
+    px(c, x + 3, hy + 1, 2, 6, "#0b0d17");
+    px(c, x - 2, hy + 1, 3, 2, "#1c2236"); // bang highlight
+
+    // Fox Ears (black outer, muted plum-grey inner)
+    px(c, x - 5, hy - 6 + earTwitch, 3, 4, "#0b0d17");
+    px(c, x - 4, hy - 5 + earTwitch, 1, 2, "#4b3b4e");
+    px(c, x + 2, hy - 6, 3, 4, "#0b0d17");
+    px(c, x + 3, hy - 5, 1, 2, "#4b3b4e");
+  }
+
+  function drawBunnyStanding(c, x, y, t, opts = {}) {
+    // Slightly shorter (~32px), soft observer outfit
+    const { facing = 1, breath = 0, blink = false, scarfSway = 0 } = opts;
+
+    // Legs & boots
+    px(c, x - 3, y - 8, 2, 8, "#252636");
+    px(c, x + 1, y - 8, 2, 8, "#252636");
+
+    // Observer Coat (soft slate blue-grey)
+    px(c, x - 5, y - 21 + breath, 10, 14, "#5f6e87");
+    px(c, x - 4, y - 20 + breath, 8, 12, "#7989a6");
+    // Soft rose-mauve scarf
+    px(c, x - 4, y - 22 + breath, 8, 3, "#b86b84");
+    px(c, x + (facing > 0 ? -4 : 2) + scarfSway, y - 20 + breath, 2, 5, "#9e536b");
+
+    // Head (8x8)
+    const hy = y - 30 + breath;
+    px(c, x - 4, hy, 8, 8, "#f2d6ca");
+    px(c, x - 3, hy + 5, 1, 1, "#e5a3ac"); // soft blush
+    px(c, x + 2, hy + 5, 1, 1, "#e5a3ac");
+
+    // Gentle round eyes
+    if (!blink) {
+      const ex = facing > 0 ? x - 1 : x - 3;
+      px(c, ex, hy + 4, 1, 2, "#392c3e");
+      px(c, ex + 3, hy + 4, 1, 2, "#392c3e");
+    } else {
+      px(c, x - 3, hy + 5, 2, 1, "#5c4755");
+      px(c, x + 1, hy + 5, 2, 1, "#5c4755");
+    }
+
+    // Soft dark-brownish plum hair
+    px(c, x - 5, hy - 2, 10, 4, "#2c2433");
+    px(c, x - 5, hy + 1, 2, 5, "#2c2433");
+    px(c, x + 3, hy + 1, 2, 5, "#2c2433");
+    px(c, x - 2, hy - 1, 4, 2, "#463a52");
+  }
+
+  // =========================================================================
+  // 5. SCENE RENDERERS (All 5 Dioramas at 320x180)
+  // =========================================================================
+
+  // --- SCENE 0: AREA 01 SUNKEN LIBRARY ---
+  const libMotes = Array.from({ length: 42 }, (_, i) => ({
+    x: hash(i * 3 + 1) * W,
+    y: hash(i * 7 + 2) * H,
+    sp: 0.1 + hash(i * 11) * 0.25,
+    ph: hash(i * 13) * Math.PI * 2
+  }));
+
+  function renderLibrary(c, t) {
+    // Deep forest-twilight interior
+    const sky = c.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, "#0b151e");
+    sky.addColorStop(0.55, "#112229");
+    sky.addColorStop(1, "#0a1116");
+    c.fillStyle = sky;
+    c.fillRect(0, 0, W, H);
+
+    // Broken arched skylight at top-left
+    px(c, 38, 0, 90, 48, "#162c33");
+    px(c, 46, 0, 74, 38, "#295254");
+    px(c, 58, 0, 50, 26, "#4d8a7a");
+    // Hanging vines across skylight
+    for (let vx = 42; vx < 126; vx += 9) {
+      const len = 14 + Math.floor(hash(vx) * 28);
+      const sway = Math.round(Math.sin(t * 0.03 + vx) * 1.2);
+      for (let vy = 0; vy < len; vy++) {
+        px(c, vx + Math.round(sway * (vy / len)), vy, 1, 1, vy % 3 === 0 ? "#2b5e4d" : "#183b33");
+        if (vy % 4 === 0) px(c, vx + 1 + Math.round(sway * (vy / len)), vy, 2, 1, "#3d7a5e");
+      }
+    }
+
+    // Background stone pillars & tall bookshelves
+    const shelfColors = ["#151b26", "#1d2433"];
+    for (let sx = 10; sx < 300; sx += 58) {
+      if (sx > 120 && sx < 200) continue; // central aisle gap
+      px(c, sx, 28, 44, 118, shelfColors[0]);
+      px(c, sx + 2, 30, 40, 114, "#0d111a");
+      for (let sy = 36; sy < 140; sy += 16) {
+        px(c, sx + 2, sy + 12, 40, 2, "#242c3d");
+        // Tiny pixel books
+        for (let bx = sx + 4; bx < sx + 40; bx += 3) {
+          if (hash(bx * sy) > 0.28) {
+            const bh = 7 + Math.floor(hash(bx + sy) * 5);
+            const bcols = ["#3a4c6e", "#5e3c4c", "#4b6352", "#756146", "#2b354a"];
+            px(c, bx, sy + 12 - bh, 2, bh, bcols[Math.floor(hash(bx * 17 + sy) * bcols.length)]);
+          }
+        }
+      }
+    }
+
+    // Distant patrolling automaton silhouette in central aisle (very faint red eye)
+    const botX = 160 + Math.sin(t * 0.012) * 22;
+    px(c, botX - 4, 118, 8, 12, "#0b0e14");
+    px(c, botX - 2, 121, 1, 1, (t % 60 < 45) ? "#c9384a" : "#4a1620");
+
+    // Stone tiled floor with moss patches
+    px(c, 0, 146, W, 34, "#10171f");
+    for (let fx = 0; fx < W; fx += 16) {
+      px(c, fx, 146, 1, 34, "#17222b");
+      if (hash(fx * 5) > 0.45) {
+        px(c, fx + 3, 147, 7, 2, "#285447");
+        px(c, fx + 5, 146, 3, 1, "#3e7860");
+      }
+    }
+
+    // Foreground left stone pillar where they hide together
+    px(c, 198, 12, 26, 136, "#19212e");
+    px(c, 200, 12, 4, 136, "#273345");
+    // Moss on pillar
+    px(c, 198, 60, 6, 14, "#244d41");
+    px(c, 218, 95, 6, 18, "#244d41");
+
+    // Characters: K-09 sheltering 🐰 against his chest beside the pillar
+    const breathK = (t % 90 < 45) ? 0 : 1;
+    const breathB = ((t + 20) % 76 < 38) ? 0 : 1;
+    const blinkK = (t % 210 > 204);
+    const blinkB = ((t + 70) % 175 > 169);
+
+    drawK09Standing(c, 186, 146, t, { facing: -1, breath: breathK, blink: blinkK, holding: true });
+    drawBunnyStanding(c, 178, 146, t, { facing: 1, breath: breathB, blink: blinkB });
+    // K-09's protective arm & coat edge wrapped around 🐰's shoulder
+    px(c, 175, 124 + breathK, 11, 3, "#1b2033");
+    px(c, 174, 125 + breathK, 2, 2, "#e6c9b5");
+
+    // Diagonal Volumetric God-rays from skylight
+    c.save();
+    c.globalCompositeOperation = "screen";
+    c.fillStyle = "rgba(115, 224, 196, 0.08)";
+    c.beginPath();
+    c.moveTo(52, 0); c.lineTo(116, 0);
+    c.lineTo(225, 155); c.lineTo(115, 155);
+    c.closePath();
+    c.fill();
+
+    c.fillStyle = "rgba(180, 240, 210, 0.06)";
+    c.beginPath();
+    c.moveTo(72, 0); c.lineTo(98, 0);
+    c.lineTo(185, 155); c.lineTo(145, 155);
+    c.closePath();
+    c.fill();
+    c.restore();
+
+    // Floating dust / glowing pollen motes
+    libMotes.forEach((m, idx) => {
+      const mx = (m.x + t * m.sp * 0.4 + Math.sin(t * 0.02 + m.ph) * 6 + W) % W;
+      const my = (m.y - t * m.sp * 0.25 + H) % 155;
+      const glow = 0.45 + 0.55 * Math.sin(t * 0.06 + m.ph);
+      if (glow > 0.35) {
+        px(c, mx, my, 1, 1, idx % 3 === 0 ? "#b8ffdf" : "#6ec7b2");
+      }
+    });
+  }
+
+  // --- SCENE 1: OUTPOST IMPERIAL SUITE 38F (DUSK & NIGHT TOGGLE) ---
+  const suiteStars = Array.from({ length: 58 }, (_, i) => ({
+    x: Math.floor(hash(i * 19 + 3) * 240) + 65,
+    y: Math.floor(hash(i * 23 + 7) * 90) + 8,
+    tw: hash(i * 31) * 10
+  }));
+
+  function renderSuite(c, t) {
+    const isNight = (suiteTimeMode === "night");
+
+    // 1. Exterior Sky through huge panoramic windows + left balcony silhouette showing the dark city
+    const sky = c.createLinearGradient(0, 0, 0, 125);
+    if (isNight) {
+      sky.addColorStop(0, "#050714");
+      sky.addColorStop(0.55, "#0d132b");
+      sky.addColorStop(1, "#182242");
+    } else {
+      sky.addColorStop(0, "#1c1533");
+      sky.addColorStop(0.45, "#4f264a");
+      sky.addColorStop(0.82, "#a84a55");
+      sky.addColorStop(1, "#e8945c");
+    }
+    c.fillStyle = sky;
+    c.fillRect(0, 0, W, 130);
+
+    // Stars & crescent moon at night
+    if (isNight) {
+      suiteStars.forEach((s, i) => {
+        const lum = Math.sin(t * 0.05 + s.tw);
+        px(c, s.x, s.y, 1, 1, lum > 0.3 ? "#ffffff" : (lum > -0.3 ? "#8b9cd6" : "#445180"));
+      });
+      // Shooting star occasionally
+      if (t % 260 < 22) {
+        const st = t % 260;
+        drawLinePx(c, 260 - st * 3, 18 + st * 1.1, 268 - st * 3, 15 + st * 1.1, "#d8f5ff");
+      }
+      // Crescent moon
+      px(c, 276, 22, 9, 9, "#f5ecd7");
+      px(c, 279, 21, 8, 8, "#070b1a");
+    } else {
+      // Setting sun glow near horizon
+      px(c, 220, 92, 26, 26, "rgba(255, 196, 120, 0.3)");
+      px(c, 226, 98, 14, 14, "#ffd591");
+    }
+
+    // Distant ruined Tokyo skyline (completely dark, reclaimed by forest)
+    for (let bx = 70; bx < W; bx += 14) {
+      if (bx >= 76 && bx <= 114) continue; // leave clear view for this hotel's lit wing
+      const bh = 22 + Math.floor(hash(bx * 13) * 48);
+      const col = isNight ? "#070a17" : "#1f1529";
+      px(c, bx, 122 - bh, 12, bh, col);
+      // Foliage / vines on skyscraper roofs
+      px(c, bx - 1, 122 - bh, 6, 4, isNight ? "#0b181f" : "#22302d");
+      if (hash(bx * 7) > 0.6) {
+        // Broken top spire
+        px(c, bx + 5, 114 - bh, 1, 8, col);
+      }
+    }
+
+    // Visible exterior wing of THIS hotel through the left panoramic glass: dark silhouette tower with ONLY the top floor (38F) glowing warmly!
+    px(c, 78, 42, 34, 84, isNight ? "#060812" : "#191124");
+    // Unlit lower floors
+    for (let fy = 60; fy < 120; fy += 8) {
+      px(c, 83, fy, 6, 4, "#0d1224");
+      px(c, 92, fy, 6, 4, "#0d1224");
+      px(c, 101, fy, 6, 4, "#0d1224");
+    }
+    // TOP FLOOR (38F) glowing warm gold in the dark sea of ruins!
+    px(c, 81, 46, 28, 8, "#ffb969");
+    px(c, 83, 47, 24, 6, "#ffe4ad");
+    // Subtle light halo around top floor
+    c.fillStyle = "rgba(255, 185, 105, 0.16)";
+    c.fillRect(75, 40, 40, 20);
+
+    // 2. Interior Room Framing (Panoramatic Windows + Dark Steel Mullions)
+    px(c, 0, 0, W, 8, "#0e101c"); // ceiling
+    px(c, 0, 126, W, 54, "#121321"); // warm dark wood/carpet floor
+    // Window mullions
+    for (let mx = 68; mx < W; mx += 72) {
+      px(c, mx, 8, 3, 118, "#16192b");
+    }
+    px(c, 68, 122, W - 68, 4, "#1f2338"); // window sill
+    // Left wall & warm bookshelf
+    px(c, 0, 8, 68, 118, "#131626");
+    px(c, 8, 30, 44, 88, "#1b1d30");
+    for (let sy = 44; sy < 110; sy += 18) {
+      px(c, 10, sy, 40, 2, "#2b2b42");
+      for (let bx = 12; bx < 46; bx += 4) {
+        px(c, bx, sy - 8, 3, 8, hash(bx + sy) > 0.5 ? "#573d4c" : "#3a4b63");
+      }
+    }
+    // Glowing blue jellyfish paperweight on bookshelf!
+    const jfGlow = (t % 80 < 40) ? "#6cf2ff" : "#3eb8d9";
+    px(c, 36, 38, 4, 5, jfGlow);
+    px(c, 37, 39, 2, 2, "#d4fcff");
+
+    // Warm standing lamp beside sofa
+    px(c, 110, 62, 2, 64, "#3b3545");
+    px(c, 104, 54, 14, 9, "#d99252");
+    px(c, 106, 56, 10, 5, "#ffe19e");
+    // Warm amber light cone over the sofa
+    c.save();
+    c.globalCompositeOperation = "screen";
+    const lampGrad = c.createRadialGradient(111, 65, 4, 155, 110, 95);
+    lampGrad.addColorStop(0, "rgba(255, 195, 120, 0.28)");
+    lampGrad.addColorStop(1, "rgba(255, 195, 120, 0)");
+    c.fillStyle = lampGrad;
+    c.fillRect(68, 40, 180, 110);
+    c.restore();
+
+    // Black Leather Sofa
+    px(c, 124, 102, 76, 26, "#141624");
+    px(c, 126, 98, 72, 18, "#1e2236"); // backrest
+    px(c, 120, 108, 8, 22, "#242940"); // left armrest
+    px(c, 196, 108, 8, 22, "#242940"); // right armrest
+    px(c, 128, 116, 68, 10, "#262c45"); // seat cushions
+
+    // Low Coffee Table with Gramophone & Steaming Mugs
+    px(c, 134, 134, 56, 12, "#261f2b");
+    px(c, 136, 134, 52, 3, "#3b2f40");
+    // Mugs + rising steam
+    px(c, 146, 129, 4, 5, "#d8dee9");
+    px(c, 154, 129, 4, 5, "#e6b8c4");
+    const stY = (t % 40) * 0.25;
+    px(c, 147 + Math.round(Math.sin(t * 0.1) * 1), 126 - stY, 1, 2, "rgba(255,255,255,0.45)");
+    px(c, 155 + Math.round(Math.cos(t * 0.1) * 1), 125 - stY, 1, 2, "rgba(255,255,255,0.45)");
+    // Gramophone on right side of table
+    px(c, 174, 128, 10, 6, "#4d352d");
+    px(c, 178, 120, 7, 7, "#c9965b");
+    px(c, 180, 122, 3, 3, "#f2c885");
+
+    // Characters seated closely together on the sofa
+    const brK = (t % 90 < 45) ? 0 : 1;
+    const brB = ((t + 18) % 80 < 40) ? 0 : 1;
+    const blK = (t % 200 > 194);
+    const blB = ((t + 55) % 165 > 160);
+    const earTw = (Math.sin(t * 0.08) > 0.94) ? 1 : 0;
+
+    // K-09 seated (left)
+    const kx = 152, ky = 117;
+    px(c, kx - 6, ky - 14 + brK, 12, 16, "#181c2e"); // coat torso
+    px(c, kx - 4, ky, 6, 10, "#10131f"); // legs
+    px(c, kx - 4, ky - 23 + brK, 8, 9, "#e6c9b5"); // head
+    if (!blK) {
+      px(c, kx - 1, ky - 19 + brK, 2, 1, "#55cfc4");
+      px(c, kx + 2, ky - 19 + brK, 2, 1, "#55cfc4");
+    }
+    px(c, kx - 5, ky - 25 + brK, 10, 4, "#0b0d17"); // hair
+    px(c, kx - 5, ky - 22 + brK, 2, 5, "#0b0d17");
+    px(c, kx - 5, ky - 29 + brK + earTw, 3, 4, "#0b0d17"); // fox ears
+    px(c, kx + 2, ky - 29 + brK, 3, 4, "#0b0d17");
+
+    // 🐰 leaning comfortably against K-09's shoulder (right)
+    const bx = 165, by = 118;
+    px(c, bx - 5, by - 12 + brB, 10, 14, "#6f7e99"); // soft jacket
+    px(c, bx - 3, by, 5, 9, "#252636");
+    px(c, bx - 4, by - 20 + brB, 8, 8, "#f2d6ca"); // head tilted slightly left
+    px(c, bx - 3, by - 15 + brB, 1, 1, "#e5a3ac"); // warm blush
+    if (!blB) {
+      px(c, bx - 2, by - 16 + brB, 1, 2, "#392c3e");
+      px(c, bx + 1, by - 16 + brB, 1, 2, "#392c3e");
+    }
+    px(c, bx - 5, by - 22 + brB, 10, 4, "#2c2433");
+    px(c, bx - 5, by - 19 + brB, 2, 5, "#2c2433");
+    px(c, bx + 3, by - 19 + brB, 2, 5, "#2c2433");
+
+    // K-09's arm around 🐰's shoulder + big black fox tail curled warmly over 🐰's lap!
+    px(c, kx + 2, ky - 12 + brK, 12, 3, "#1e2336");
+    drawFoxTail(c, kx + 2, ky + 1, t, 1.15, 1);
+  }
+
+  // --- SCENE 2: AREA 03 SUBMERGED AQUARIUM ---
+  const jellies = [
+    { x: 64, y: 52, r: 9, sp: 0.03, ph: 0 },
+    { x: 158, y: 36, r: 12, sp: 0.025, ph: 1.8 },
+    { x: 245, y: 58, r: 8, sp: 0.035, ph: 3.1 },
+    { x: 112, y: 76, r: 6, sp: 0.04, ph: 4.5 },
+    { x: 282, y: 40, r: 7, sp: 0.028, ph: 2.3 }
+  ];
+
+  function drawJellyfish(c, jx, jy, r, t, ph) {
+    const pulse = Math.sin(t * 0.06 + ph);
+    const w = Math.round(r + pulse * 1.5);
+    const h = Math.round(r * 0.7 - pulse * 1.0);
+    // Dome
+    c.fillStyle = "rgba(110, 232, 255, 0.32)";
+    c.fillRect(jx - w / 2, jy - h, w, h);
+    c.fillStyle = "rgba(180, 250, 255, 0.65)";
+    c.fillRect(jx - w / 2 + 1, jy - h, w - 2, 2);
+    // Glowing core
+    px(c, jx - 1, jy - h + 2, 3, 2, "#b5ffff");
+    // Tentacles
+    for (let tx = -w / 2 + 2; tx <= w / 2 - 2; tx += 3) {
+      for (let ty = 0; ty < r + 4; ty++) {
+        const wave = Math.round(Math.sin(t * 0.08 + ty * 0.4 + ph + tx) * 1.2);
+        px(c, jx + tx + wave, jy + ty, 1, 1, ty % 2 === 0 ? "rgba(130, 240, 255, 0.55)" : "rgba(80, 180, 220, 0.35)");
+      }
+    }
+  }
+
+  function renderAquarium(c, t) {
+    // Deep abyssal underwater background
+    const bg = c.createLinearGradient(0, 0, 0, 138);
+    bg.addColorStop(0, "#051424");
+    bg.addColorStop(0.6, "#09253b");
+    bg.addColorStop(1, "#0b3145");
+    c.fillStyle = bg;
+    c.fillRect(0, 0, W, H);
+
+    // Light caustics descending from water surface above
+    for (let cx = 20; cx < W; cx += 48) {
+      const sway = Math.sin(t * 0.02 + cx) * 12;
+      c.fillStyle = "rgba(95, 225, 230, 0.07)";
+      c.beginPath();
+      c.moveTo(cx + sway, 0);
+      c.lineTo(cx + 22 + sway, 0);
+      c.lineTo(cx + 42, 136);
+      c.lineTo(cx - 10, 136);
+      c.closePath();
+      c.fill();
+    }
+
+    // Floating Moon Jellyfish behind tunnel glass
+    jellies.forEach((j) => {
+      const jy = j.y + Math.sin(t * j.sp + j.ph) * 6;
+      const jx = j.x + Math.cos(t * j.sp * 0.5 + j.ph) * 4;
+      drawJellyfish(c, Math.round(jx), Math.round(jy), j.r, t, j.ph);
+    });
+
+    // Curved Glass Tunnel Arch ribs
+    for (let ax = 28; ax < W; ax += 66) {
+      px(c, ax, 14, 4, 124, "#102838");
+      px(c, ax + 1, 14, 1, 124, "#24546e");
+    }
+    px(c, 0, 12, W, 5, "#0d2230");
+    // Glowing bioluminescent moss along tunnel ceiling & pillars
+    for (let mx = 6; mx < W; mx += 11) {
+      if (hash(mx * 3) > 0.35) {
+        const pulse = (Math.sin(t * 0.05 + mx) > 0) ? "#6ff7d3" : "#35b59c";
+        px(c, mx, 16, 4, 2, pulse);
+        px(c, mx + 1, 18, 2, 2, "#247d70");
+      }
+    }
+
+    // Characters: K-09 walking slowly while carrying 🐰 in his arms!
+    const walkX = 115 + Math.sin(t * 0.012) * 36;
+    const facing = (Math.cos(t * 0.012) >= 0) ? 1 : -1;
+    const stepBob = Math.abs(Math.sin(t * 0.08)) > 0.6 ? -1 : 0;
+    const x = Math.round(walkX);
+    const y = 136 + stepBob;
+    const blK = (t % 190 > 184);
+    const blB = ((t + 40) % 160 > 155);
+
+    // Tail swaying gently behind
+    drawFoxTail(c, x - facing * 4, y - 16, t, 1, -facing);
+
+    // K-09 walking legs
+    const legOff = Math.round(Math.sin(t * 0.08) * 2);
+    px(c, x - 3 + legOff, y - 11, 3, 11, "#0b0e17");
+    px(c, x + 1 - legOff, y - 11, 3, 11, "#0b0e17");
+
+    // K-09 coat torso
+    px(c, x - 6, y - 27, 12, 17, "#151929");
+    px(c, x - 4, y - 26, 8, 13, "#1d2338");
+    // K-09 head
+    px(c, x - 4, y - 36, 8, 9, "#e6c9b5");
+    if (!blK) {
+      px(c, x + (facing > 0 ? 0 : -3), y - 32, 2, 1, "#55cfc4");
+      px(c, x + (facing > 0 ? 3 : 0), y - 32, 2, 1, "#55cfc4");
+    }
+    px(c, x - 5, y - 38, 10, 4, "#0b0d17");
+    px(c, x - 5, y - 42, 3, 4, "#0b0d17");
+    px(c, x + 2, y - 42, 3, 4, "#0b0d17");
+
+    // 🐰 cradled safely in K-09's arms (princess carry!)
+    const bx = x + facing * 3;
+    const by = y - 19;
+    px(c, bx - 7, by, 14, 7, "#6f7e99"); // horizontal torso/coat
+    px(c, bx - 8, by + 3, 5, 4, "#252636"); // dangling legs
+    px(c, bx - 2, by - 1, 7, 3, "#b86b84"); // scarf
+    // 🐰 head resting close to K-09's chest/shoulder
+    px(c, bx + facing * 3 - 4, by - 9, 8, 8, "#f2d6ca");
+    if (!blB) {
+      px(c, bx + facing * 3 - 1, by - 5, 1, 2, "#392c3e");
+      px(c, bx + facing * 3 + 2, by - 5, 1, 2, "#392c3e");
+    }
+    px(c, bx + facing * 3 - 5, by - 11, 10, 4, "#2c2433");
+    px(c, bx + facing * 3 - 5, by - 8, 2, 5, "#2c2433");
+    // Glowing blue jellyfish paperweight held in 🐰's hand!
+    const glX = bx - facing * 5;
+    px(c, glX, by + 1, 4, 4, "#6ef5ff");
+    px(c, glX + 1, by + 2, 2, 2, "#ffffff");
+
+    // K-09's arms supporting 🐰
+    px(c, x - 4, y - 20, 10, 3, "#1e2336");
+
+    // Shallow Flooded Floor (y: 136..180) with animated water ripples & reflections
+    px(c, 0, 136, W, 44, "#081e2c");
+    for (let ry = 138; ry < H; ry += 3) {
+      const wave = Math.sin(t * 0.05 + ry * 0.6) * 6;
+      px(c, (x - 8 + wave), ry, 16, 1, "rgba(110, 235, 240, 0.16)");
+      if (ry % 6 === 0) {
+        px(c, (40 + ry * 7 + wave) % W, ry, 14, 1, "rgba(95, 210, 220, 0.14)");
+      }
+    }
+    // Step ripple circles around K-09's boots
+    const ripR = (t % 30) * 0.5;
+    c.strokeStyle = `rgba(140, 245, 255, ${0.45 - (t % 30) * 0.015})`;
+    c.lineWidth = 1;
+    c.strokeRect(Math.round(x - 6 - ripR), 135, Math.round(12 + ripR * 2), 2);
+  }
+
+  // --- SCENE 3: AREA 03 SURFACE CENTRAL STATION & CRIMSON TRAIN ---
+  const butterflies = [
+    { x: 42, y: 74, ph: 0 },
+    { x: 96, y: 95, ph: 2.1 },
+    { x: 256, y: 66, ph: 4.2 }
+  ];
+
+  function renderStation(c, t) {
+    // Golden-late-afternoon sky blended with cool A-tone violet shadows
+    const sky = c.createLinearGradient(0, 0, 0, 118);
+    sky.addColorStop(0, "#1c1c38");
+    sky.addColorStop(0.5, "#4b3659");
+    sky.addColorStop(0.85, "#9c5e63");
+    sky.addColorStop(1, "#e39f6b");
+    c.fillStyle = sky;
+    c.fillRect(0, 0, W, 120);
+
+    // Old station iron arch canopy in far distance
+    px(c, 0, 12, W, 6, "#141426");
+    for (let sx = 16; sx < W; sx += 56) {
+      px(c, sx, 18, 4, 88, "#18192e");
+    }
+
+    // Overgrown Clover & White Clover (Shirotsumekusa) flower tracks
+    px(c, 0, 102, W, 78, "#162e29");
+    for (let gx = 0; gx < W; gx += 3) {
+      const sway = Math.round(Math.sin(t * 0.04 + gx * 0.1) * 1);
+      if (hash(gx * 7) > 0.3) {
+        const gy = 104 + Math.floor(hash(gx * 13) * 26);
+        px(c, gx + sway, gy, 1, 4, "#295443");
+        if (hash(gx * 19) > 0.55) {
+          // White clover blossom
+          px(c, gx + sway, gy - 1, 2, 2, "#f2f5eb");
+          px(c, gx + sway, gy, 1, 1, "#d9e3c8");
+        }
+      }
+    }
+
+    // Luxury Observation Train Interior framing (Right/Center foreground car)
+    // Exterior dark burgundy hull + gold trim
+    px(c, 84, 34, 178, 106, "#1c1321");
+    px(c, 86, 36, 174, 102, "#29192b");
+    px(c, 84, 108, 178, 3, "#c99b4f"); // gold beltline
+
+    // Huge panoramic observation window inside the train car
+    px(c, 98, 44, 150, 56, "#2c243d");
+    // Sky & clover field visible through the wide train window
+    const wSky = c.createLinearGradient(0, 44, 0, 100);
+    wSky.addColorStop(0, "#3b2c4f");
+    wSky.addColorStop(0.6, "#9e5c62");
+    wSky.addColorStop(1, "#e8aa72");
+    c.fillStyle = wSky;
+    c.fillRect(100, 46, 146, 52);
+    // Distant green trees & clover outside the window
+    for (let tx = 100; tx < 246; tx += 6) {
+      const th = 10 + Math.floor(hash(tx * 5) * 12);
+      px(c, tx, 98 - th, 6, th, "#1c3831");
+      if (hash(tx * 11) > 0.5) px(c, tx + 2, 95, 2, 2, "#f0f5e6");
+    }
+    // Window frame mullions
+    px(c, 172, 46, 2, 52, "#382436");
+
+    // Plush Crimson Velvet Long Seat inside the car!
+    px(c, 104, 96, 138, 30, "#4a1728");
+    px(c, 106, 92, 134, 16, "#692036"); // seat backrest
+    px(c, 106, 110, 134, 12, "#802842"); // plush seat cushion
+    px(c, 106, 110, 134, 2, "#a33956");  // velvet highlight
+
+    // Golden late sunlight streaming diagonally through window onto the red velvet & couple
+    c.save();
+    c.globalCompositeOperation = "screen";
+    c.fillStyle = "rgba(255, 198, 112, 0.14)";
+    c.beginPath();
+    c.moveTo(100, 46); c.lineTo(190, 46);
+    c.lineTo(240, 140); c.lineTo(135, 140);
+    c.closePath();
+    c.fill();
+    c.restore();
+
+    // Characters sitting close together on the crimson seat
+    const brK = (t % 90 < 45) ? 0 : 1;
+    const brB = ((t + 22) % 76 < 38) ? 0 : 1;
+    const blK = (t % 195 > 190);
+    const blB = ((t + 65) % 165 > 160);
+
+    // 🐰 sitting on the left, holding the glowing golden ticket
+    const bx = 152, by = 112;
+    px(c, bx - 5, by - 12 + brB, 10, 14, "#6f7e99");
+    px(c, bx - 3, by, 5, 10, "#252636");
+    px(c, bx - 4, by - 20 + brB, 8, 8, "#f2d6ca");
+    px(c, bx - 2, by - 15 + brB, 1, 1, "#e5a3ac");
+    if (!blB) {
+      px(c, bx - 1, by - 16 + brB, 1, 2, "#392c3e");
+      px(c, bx + 2, by - 16 + brB, 1, 2, "#392c3e");
+    }
+    px(c, bx - 5, by - 22 + brB, 10, 4, "#2c2433");
+    px(c, bx - 5, by - 19 + brB, 2, 5, "#2c2433");
+    // Golden Ticket in 🐰's pocket / hand
+    const glint = (t % 50 < 8) ? "#ffffff" : "#ffd66b";
+    px(c, bx - 3, by - 9 + brB, 4, 2, glint);
+
+    // K-09 sitting close beside 🐰 (right), leaning in slightly
+    const kx = 166, ky = 111;
+    drawFoxTail(c, kx + 4, ky + 1, t, 1.05, 1);
+    px(c, kx - 6, ky - 14 + brK, 12, 16, "#161a2b");
+    px(c, kx - 3, ky, 6, 11, "#0e101c");
+    px(c, kx - 4, ky - 23 + brK, 8, 9, "#e6c9b5");
+    if (!blK) {
+      px(c, kx - 3, ky - 19 + brK, 2, 1, "#55cfc4");
+      px(c, kx, ky - 19 + brK, 2, 1, "#55cfc4");
+    }
+    px(c, kx - 5, ky - 25 + brK, 10, 4, "#0b0d17");
+    px(c, kx + 3, ky - 22 + brK, 2, 5, "#0b0d17");
+    px(c, kx - 5, ky - 29 + brK, 3, 4, "#0b0d17");
+    px(c, kx + 2, ky - 29 + brK, 3, 4, "#0b0d17");
+    // K-09's hand resting near 🐰's cheek / chin
+    px(c, bx + 3, by - 13 + brK, 4, 2, "#e6c9b5");
+
+    // Foreground clover bottom frame & fluttering white butterflies
+    for (let fx = 0; fx < W; fx += 5) {
+      const fh = 12 + Math.floor(hash(fx * 3) * 14);
+      px(c, fx, H - fh, 4, fh, "#112420");
+      if (hash(fx * 9) > 0.6) px(c, fx + 1, H - fh - 1, 2, 2, "#eef5e6");
+    }
+    butterflies.forEach((b) => {
+      const bfx = b.x + Math.sin(t * 0.03 + b.ph) * 18;
+      const bfy = b.y + Math.cos(t * 0.05 + b.ph) * 8;
+      const flap = (Math.floor(t * 0.25 + b.ph) % 2 === 0);
+      px(c, bfx, bfy, 1, 2, "#d8e6f2");
+      if (flap) {
+        px(c, bfx - 2, bfy - 1, 2, 2, "#ffffff");
+        px(c, bfx + 1, bfy - 1, 2, 2, "#ffffff");
+      } else {
+        px(c, bfx - 1, bfy - 2, 1, 2, "#dce8f5");
+        px(c, bfx + 1, bfy - 2, 1, 2, "#dce8f5");
+      }
+    });
+  }
+
+  // --- SCENE 4: AREA 04 DEEP LAB K-09 ---
+  function renderLab(c, t) {
+    // Cold metallic abyssal underground lab
+    c.fillStyle = "#060811";
+    c.fillRect(0, 0, W, H);
+
+    // Steel ribbed walls & pipes
+    for (let wx = 0; wx < W; wx += 32) {
+      px(c, wx, 0, 2, 136, "#111626");
+      px(c, wx + 16, 0, 1, 136, "#0b0f1c");
+    }
+    px(c, 0, 18, W, 4, "#161d30"); // overhead pipe
+    px(c, 0, 136, W, 44, "#0d111d"); // cold metal grating floor
+    for (let gx = 0; gx < W; gx += 8) {
+      px(c, gx, 136, 1, 44, "#151c2e");
+    }
+
+    // Flickering pale cyan emergency ceiling lights
+    const emergencyPulse = (Math.sin(t * 0.07) > -0.2);
+    const lCol = emergencyPulse ? "#6ce6ff" : "#1c3c4f";
+    px(c, 74, 4, 16, 3, lCol);
+    px(c, 224, 4, 16, 3, lCol);
+
+    // Centerpiece: Shattered Cryo-Pod "K-09"
+    px(c, 132, 24, 56, 112, "#101726"); // pod frame
+    px(c, 136, 30, 48, 96, "#08121e");  // interior dark void
+    // Inner faint cyan tube & broken glass shards
+    px(c, 136, 32, 48, 2, "#2f6e87");
+    px(c, 136, 124, 48, 3, "#2f6e87");
+    // Jagged broken glass silhouettes around the frame
+    drawLinePx(c, 136, 36, 148, 52, "#6cd5eb");
+    drawLinePx(c, 184, 40, 168, 60, "#6cd5eb");
+    drawLinePx(c, 138, 124, 152, 102, "#51a7bd");
+    drawLinePx(c, 182, 124, 170, 105, "#51a7bd");
+    // Tiny shattered glass pixels on the floor
+    for (let sx = 128; sx < 192; sx += 5) {
+      if (hash(sx * 17) > 0.4) px(c, sx, 137 + (sx % 3), 2, 1, "#7fe8ff");
+    }
+    // Cold cryo mist drifting out of broken pod
+    for (let mx = 0; mx < 6; mx++) {
+      const cx = 138 + ((mx * 9 + t * 0.3) % 44);
+      const cy = 126 + Math.sin(t * 0.04 + mx) * 3;
+      px(c, cx, cy, 8, 3, "rgba(120, 220, 245, 0.14)");
+    }
+
+    // Server racks on the left with blinking red/cyan LEDs
+    px(c, 26, 40, 32, 96, "#0e121f");
+    for (let ry = 46; ry < 126; ry += 10) {
+      px(c, 29, ry, 26, 6, "#161d30");
+      px(c, 31, ry + 2, 2, 2, ((t + ry) % 40 < 20) ? "#ff4d6d" : "#401722");
+      px(c, 35, ry + 2, 2, 2, ((t + ry * 3) % 50 < 30) ? "#5ce6d0" : "#1b4540");
+    }
+
+    // Main Control Console Desk on the right (where fake report was sent & line cut)
+    px(c, 206, 94, 72, 42, "#171f33");
+    px(c, 204, 92, 76, 4, "#273352");
+    // Glowing monitor showing "LINK SEVERED // OVERRIDE" waveform
+    px(c, 238, 66, 36, 24, "#101624");
+    px(c, 240, 68, 32, 20, "#071a1c");
+    for (let wx = 242; wx < 270; wx += 2) {
+      const wy = 78 + Math.round(Math.sin(t * 0.12 + wx * 0.5) * 4);
+      px(c, wx, wy, 1, 2, (t % 70 < 55) ? "#59f2c8" : "#ff5e78");
+    }
+
+    // Lighting cast by console & emergency lamps
+    if (emergencyPulse) {
+      c.save();
+      c.globalCompositeOperation = "screen";
+      const eGrad = c.createRadialGradient(160, 60, 10, 160, 90, 130);
+      eGrad.addColorStop(0, "rgba(95, 220, 255, 0.14)");
+      eGrad.addColorStop(1, "rgba(95, 220, 255, 0)");
+      c.fillStyle = eGrad;
+      c.fillRect(0, 0, W, H);
+      c.restore();
+    }
+
+    // Characters: In front of the console, K-09 wraps his huge black coat completely around 🐰
+    const cx = 204, cy = 136;
+    const brK = (t % 90 < 45) ? 0 : 1;
+    const brB = ((t + 20) % 75 < 38) ? 0 : 1;
+    const blK = (t % 210 > 205);
+    const blB = ((t + 50) % 160 > 155);
+
+    // K-09's black tail coiled protectively around their ankles
+    drawFoxTail(c, cx - 5, cy - 10, t, 1.15, -1);
+
+    // K-09 standing tall, coat open wide around 🐰
+    px(c, cx - 4, cy - 11, 3, 11, "#0b0e17");
+    px(c, cx + 1, cy - 11, 3, 11, "#0b0e17");
+    px(c, cx - 9, cy - 27 + brK, 18, 18, "#141826"); // wide open coat back
+
+    // 🐰 tucked snugly inside K-09's open coat against his chest!
+    const bx = cx - 4, by = cy;
+    px(c, bx - 2, by - 8, 2, 8, "#252636");
+    px(c, bx + 1, by - 8, 2, 8, "#252636");
+    px(c, bx - 4, by - 20 + brB, 8, 13, "#6d7d96");
+    px(c, bx - 3, by - 21 + brB, 6, 3, "#b86b84");
+    px(c, bx - 4, by - 29 + brB, 8, 8, "#f2d6ca"); // 🐰 head right under K-09's chin
+    if (!blB) {
+      px(c, bx - 1, by - 25 + brB, 1, 2, "#392c3e");
+      px(c, bx + 2, by - 25 + brB, 1, 2, "#392c3e");
+    }
+    px(c, bx - 5, by - 31 + brB, 10, 4, "#2c2433");
+    px(c, bx - 5, by - 28 + brB, 2, 5, "#2c2433");
+
+    // K-09's head looking down protectively at 🐰
+    px(c, cx - 3, cy - 36 + brK, 8, 9, "#e6c9b5");
+    if (!blK) {
+      px(c, cx - 2, cy - 31 + brK, 2, 1, "#55cfc4");
+      px(c, cx + 1, cy - 31 + brK, 2, 1, "#55cfc4");
+    }
+    px(c, cx - 4, cy - 38 + brK, 10, 4, "#0b0d17");
+    px(c, cx + 4, cy - 35 + brK, 2, 6, "#0b0d17");
+    px(c, cx - 4, cy - 42 + brK, 3, 4, "#0b0d17");
+    px(c, cx + 3, cy - 42 + brK, 3, 4, "#0b0d17");
+
+    // K-09's coat front flaps & arm pulled across 🐰
+    px(c, cx - 10, cy - 26 + brK, 5, 18, "#1c2236");
+    px(c, cx + 5, cy - 26 + brK, 5, 18, "#1c2236");
+    px(c, bx - 4, cy - 17 + brK, 12, 3, "#1f253b");
+  }
+
+  const RENDERERS = [renderLibrary, renderSuite, renderAquarium, renderStation, renderLab];
+
+  // =========================================================================
+  // 5B. AERIAL MAP & CHARACTER PORTRAIT RENDERERS
+  // =========================================================================
+  const MAP_NODES = [
+    {
+      id: "outpost",
+      short: "38F BASE",
+      title: "前哨基地：旧インペリアルホテル最上階",
+      meta: "安全度: ABSOLUTE (0% INTRUSION) // 38F SANCTUARY",
+      body: "高台の丘陵にそびえる二人だけの聖域（鳥籠）。太陽光・風力・深層浄水によりインフラは24時間完全稼働し、暗闇の廃墟群の中でここ最上階だけが温かい黄金色に灯っている。屋上には小さな牧場とハーブ温室もある。",
+      x: 42, y: 52, color: "#ffcb6b", sceneIdx: 1
+    },
+    {
+      id: "area1",
+      short: "AREA 01",
+      title: "第1区画：森に沈んだ旧図書館・官庁街",
+      meta: "危険度: LOW // 丸の内・千代田エリア",
+      body: "崩れた天窓から木漏れ日が差す石造建築群。鹿や野鳥が棲み、白い野花が咲く穏やかな緑の廃墟。革装丁の文学全集や植物図鑑、真空保存された蜂蜜漬けの無花果などを回収した。",
+      x: 112, y: 66, color: "#72e6d6", sceneIdx: 0
+    },
+    {
+      id: "area2",
+      short: "AREA 02",
+      title: "第2区画：旧百貨店・劇場ショーウィンドウ街",
+      meta: "危険度: LOW-MID // 銀座アトリウムエリア",
+      body: "ツタに覆われたガラスアトリウムと高級ブティック街。地下真空保管庫には300年前のシルクシャツ、カシミヤニット、香水瓶、レコード盤や蓄音機、高級茶葉などが新品同様で眠っている（※本区画は探索データ記録のみ）。",
+      x: 146, y: 90, color: "#d98aa8", sceneIdx: null
+    },
+    {
+      id: "area3_sub",
+      short: "AREA 03",
+      title: "第3区画：水没水族館・地下迷宮",
+      meta: "危険度: MID // 渋谷水没地下街",
+      body: "清澄な湧き水で半分水没した幻想的な地下アーケード。青白い発光苔が天井を照らし、水中トンネルのガラスの向こうをミズクラゲが泳ぐ。足場が滑りやすいため、🐰は常に K-09 に抱きかかえられて移動する。",
+      x: 68, y: 114, color: "#66d9ff", sceneIdx: 2
+    },
+    {
+      id: "area3_surf",
+      short: "STATION",
+      title: "第3区画地上：中央駅・花の線路と展望車",
+      meta: "危険度: LOW // 中央ターミナル駅跡",
+      body: "水族館の地上にある旧駅ホーム。鉄路はシロツメクサの花畑へと変わり、蝶が舞う。屋根の下には真紅のベルベットシートを備えた豪華展望車が当時のまま保存されており、金の切符が眠っていた。",
+      x: 102, y: 124, color: "#f5a97f", sceneIdx: 3
+    },
+    {
+      id: "area4",
+      short: "AREA 04",
+      title: "第4区画：地下深層プラント K-09ラボ",
+      meta: "危険度: SEALED // 旧湾岸最深部（通信永久遮断済み）",
+      body: "緑さえ届かぬ灰色の鉄の回廊と、ガラスが砕けた『K-09』凍結ポッドが眠る旧時代研究所。第46観測日に二人はここへ到達し、本国へ偽装汚染データを送信した上で通信回線を焼き切った。",
+      x: 168, y: 144, color: "#ff5c7a", sceneIdx: 4
+    }
+  ];
+
+  let mapMode = false;
+  let selectedMapNodeIdx = 0;
+
+  // Crisp 3x5 Bitmap Pixel Font (zero anti-aliasing blur!)
+  const PX_FONT = {
+    "0": [7,5,5,5,7], "1": [2,6,2,2,7], "2": [7,1,7,4,7], "3": [7,1,7,1,7], "4": [5,5,7,1,1],
+    "5": [7,4,7,1,7], "6": [7,4,7,5,7], "7": [7,1,1,2,2], "8": [7,5,7,5,7], "9": [7,5,7,1,7],
+    "A": [2,5,7,5,5], "B": [6,5,6,5,6], "C": [7,4,4,4,7], "D": [6,5,5,5,6], "E": [7,4,6,4,7],
+    "F": [7,4,6,4,4], "G": [7,4,5,5,7], "H": [5,5,7,5,5], "I": [7,2,2,2,7], "K": [5,5,6,5,5],
+    "L": [4,4,4,4,7], "M": [5,7,7,5,5], "N": [5,7,7,7,5], "O": [7,5,5,5,7], "P": [7,5,7,4,4],
+    "R": [6,5,6,5,5], "S": [7,4,7,1,7], "T": [7,2,2,2,2], "U": [5,5,5,5,7], "V": [5,5,5,5,2],
+    "Y": [5,5,2,2,2], "-": [0,0,7,0,0], "/": [1,1,2,4,4], "[": [6,4,4,4,6], "]": [3,1,1,1,3],
+    " ": [0,0,0,0,0]
+  };
+
+  function drawPxText(c, str, x, y, color, shadow = "#05070e") {
+    let cx = Math.round(x);
+    const cy = Math.round(y);
+    for (const ch of str.toUpperCase()) {
+      const glyph = PX_FONT[ch] || PX_FONT[" "];
+      for (let row = 0; row < 5; row++) {
+        const bits = glyph[row];
+        for (let col = 0; col < 3; col++) {
+          if (bits & (4 >> col)) {
+            if (shadow) {
+              c.fillStyle = shadow;
+              c.fillRect(cx + col + 1, cy + row + 1, 1, 1);
+            }
+            c.fillStyle = color;
+            c.fillRect(cx + col, cy + row, 1, 1);
+          }
+        }
+      }
+      cx += 4;
+    }
+  }
+
+  function pxStrokeRect(c, x, y, w, h, color) {
+    x = Math.round(x); y = Math.round(y); w = Math.round(w); h = Math.round(h);
+    c.fillStyle = color;
+    c.fillRect(x, y, w, 1);
+    c.fillRect(x, y + h - 1, w, 1);
+    c.fillRect(x, y, 1, h);
+    c.fillRect(x + w - 1, y, 1, h);
+  }
+
+  function renderAerialMap(c, t) {
+    // Crisp dark forest base (no anti-aliased paths anywhere)
+    c.fillStyle = "#081214";
+    c.fillRect(0, 0, W, H);
+
+    // Subtle elevation forest bands (pixelated terrain contours)
+    for (let y = 0; y < H; y += 2) {
+      for (let x = 0; x < W; x += 2) {
+        const n = hash(Math.floor(x / 6) * 17 + Math.floor(y / 6) * 31);
+        if (n > 0.62) {
+          c.fillStyle = "#0b1c1a";
+          c.fillRect(x, y, 2, 2);
+        } else if (n < 0.16) {
+          c.fillStyle = "#060d12";
+          c.fillRect(x, y, 2, 2);
+        }
+      }
+    }
+
+    // Old Tokyo arterial road grid (faint sunken avenues)
+    c.fillStyle = "#0e1924";
+    for (let rx = 24; rx < 200; rx += 34) c.fillRect(rx, 16, 2, 148);
+    for (let ry = 32; ry < 156; ry += 28) c.fillRect(8, ry, 188, 2);
+
+    // Pixelated Tokyo Bay coastline (bottom-right)
+    for (let bx = 148; bx < W; bx++) {
+      const coastY = Math.round(176 - (bx - 148) * 0.62 + Math.sin(bx * 0.12) * 3);
+      const topY = Math.max(96, coastY);
+      c.fillStyle = "#091b2e";
+      c.fillRect(bx, topY, 1, H - topY);
+      c.fillStyle = "#163b54"; // crisp pixel shoreline foam
+      c.fillRect(bx, topY, 1, 1);
+    }
+
+    // Winding purified river feeding cleanly into the bay (pixel-stepped)
+    for (let rx = 0; rx < 194; rx++) {
+      const ry = Math.round(134 - Math.sin(rx * 0.032) * 11 + Math.cos(rx * 0.015) * 4);
+      c.fillStyle = "#13354d";
+      c.fillRect(rx, ry - 3, 1, 6);
+      c.fillStyle = "#0b2236";
+      c.fillRect(rx, ry - 2, 1, 4);
+      if ((rx + Math.floor(t * 0.35)) % 14 === 0) {
+        c.fillStyle = "#48b7d4";
+        c.fillRect(rx, ry, 2, 1);
+      }
+    }
+
+    // Bay water sparkles
+    for (let i = 0; i < 22; i++) {
+      const sx = 174 + Math.floor(hash(i * 19) * 136);
+      const sy = 114 + Math.floor(hash(i * 23) * 60);
+      if (Math.sin(t * 0.08 + i) > 0.68) {
+        px(c, sx, sy, 1, 1, "#52c4e0");
+      }
+    }
+
+    // Overgrown skyscraper blocks (crisp 1px highlights + emerald foliage)
+    for (let gy = 22; gy < 156; gy += 12) {
+      for (let gx = 12; gx < 192; gx += 14) {
+        const coastAtX = gx > 148 ? Math.max(96, 176 - (gx - 148) * 0.62) : 180;
+        if (gy > coastAtX - 10) continue;
+        const h = hash(gx * 7 + gy * 13);
+        if (h > 0.28) {
+          const bw = 6 + Math.floor(h * 5);
+          const bh = 5 + Math.floor(hash(gx + gy) * 5);
+          // Building shadow + body + roof edge
+          px(c, gx + 1, gy + 1, bw, bh, "#05080f");
+          px(c, gx, gy, bw, bh, "#121a2b");
+          px(c, gx, gy, bw, 1, "#21304a");
+          // Moss / trees growing on rooftops
+          if (hash(gx * 3 + gy * 11) > 0.35) {
+            px(c, gx + 1, gy + 1, Math.max(2, bw - 3), 2, "#174235");
+            px(c, gx + 2, gy + 1, 2, 1, "#266650");
+          }
+        }
+      }
+    }
+
+    // Elevated Hill & Outpost Imperial Hotel (38F BASE) — ONLY warmly lit place in the dark city!
+    px(c, 28, 40, 28, 22, "#0d2621");
+    px(c, 33, 44, 18, 15, "#151a2e");
+    px(c, 33, 44, 18, 2, "#2b3554");
+    const halo = 5 + (t % 30 < 15 ? 1 : 0);
+    pxStrokeRect(c, 42 - halo, 52 - halo, halo * 2, halo * 2, "rgba(255, 195, 100, 0.35)");
+    px(c, 38, 48, 8, 8, "#e69c45");
+    px(c, 39, 49, 6, 6, "#ffd078");
+    px(c, 40, 50, 4, 4, "#fff4cc");
+
+    // Exploration route dotted pixel lines connecting nodes
+    const edges = [[0, 1], [1, 2], [0, 3], [3, 4], [2, 4], [4, 5]];
+    edges.forEach(([a, b]) => {
+      const na = MAP_NODES[a], nb = MAP_NODES[b];
+      const steps = 18;
+      for (let s = 1; s < steps; s++) {
+        if ((s + Math.floor(t * 0.1)) % 3 === 0) {
+          const lx = Math.round(na.x + (nb.x - na.x) * (s / steps));
+          const ly = Math.round(na.y + (nb.y - na.y) * (s / steps));
+          px(c, lx, ly, 1, 1, "#428f8c");
+        }
+      }
+    });
+
+    // Crisp 1px satellite radar grid
+    c.fillStyle = "rgba(85, 140, 175, 0.07)";
+    for (let x = 0; x < W; x += 32) c.fillRect(x, 0, 1, H);
+    for (let y = 0; y < H; y += 32) c.fillRect(0, y, W, 1);
+
+    // Drifting crisp pixel cloud shadows
+    for (let ci = 0; ci < 3; ci++) {
+      const cx = Math.round(((ci * 115 + t * 0.25) % (W + 80)) - 60);
+      const cy = 28 + ci * 42;
+      c.fillStyle = "rgba(180, 220, 245, 0.05)";
+      c.fillRect(cx, cy, 48, 8);
+      c.fillRect(cx + 8, cy - 3, 28, 3);
+    }
+
+    // Draw interactive area pins + razor-sharp 3x5 pixel labels
+    MAP_NODES.forEach((node, idx) => {
+      const isSel = idx === selectedMapNodeIdx;
+      const pulse = Math.sin(t * 0.12 + idx) > 0;
+      if (isSel) {
+        const ring = 6 + (t % 20 < 10 ? 1 : 0);
+        pxStrokeRect(c, node.x - ring, node.y - ring, ring * 2 + 1, ring * 2 + 1, node.color);
+      }
+      px(c, node.x - 3, node.y - 3, 7, 7, "#060811");
+      px(c, node.x - 2, node.y - 2, 5, 5, (isSel || pulse) ? node.color : "#394866");
+      px(c, node.x - 1, node.y - 1, 2, 2, isSel ? "#ffffff" : node.color);
+
+      // Crisp pixel-font tag with 1px dark backdrop pill
+      const tagW = node.short.length * 4 + 3;
+      px(c, node.x + 6, node.y - 3, tagW, 7, "rgba(6, 9, 18, 0.85)");
+      drawPxText(c, node.short, node.x + 8, node.y - 2, isSel ? "#ffffff" : "#b8cbe8");
+    });
+
+    // Bottom crisp status line
+    drawPxText(c, "SAT-SCAN // OLD TOKYO SECTOR [CLICK PIN TO INSPECT]", 10, 170, "#6cd4c6");
+  }
+
+  function renderPortraits(t) {
+    const cK = document.getElementById("portrait-k09");
+    const cB = document.getElementById("portrait-bunny");
+    if (!cK || !cB) return;
+    const ctxK = cK.getContext("2d");
+    const ctxB = cB.getContext("2d");
+    ctxK.imageSmoothingEnabled = false;
+    ctxB.imageSmoothingEnabled = false;
+
+    const blK = (t % 190 > 184);
+    const blB = ((t + 65) % 165 > 160);
+    const earTw = (Math.sin(t * 0.08) > 0.94) ? 1 : 0;
+
+    // K-09 24x24 portrait
+    ctxK.fillStyle = "#0a0e1a";
+    ctxK.fillRect(0, 0, 24, 24);
+    px(ctxK, 4, 17, 16, 7, "#161a2b"); // coat
+    px(ctxK, 9, 17, 6, 7, "#27304a");  // lapel
+    px(ctxK, 11, 18, 2, 6, "#cad2e6"); // collar
+    px(ctxK, 7, 7, 10, 10, "#e6c9b5"); // face
+    px(ctxK, 7, 15, 10, 2, "#cfa995");
+    if (!blK) {
+      px(ctxK, 8, 12, 3, 1, "#55cfc4");
+      px(ctxK, 13, 12, 3, 1, "#55cfc4");
+    } else {
+      px(ctxK, 8, 12, 3, 1, "#40323a");
+      px(ctxK, 13, 12, 3, 1, "#40323a");
+    }
+    px(ctxK, 6, 5, 12, 5, "#0b0d17"); // hair
+    px(ctxK, 6, 9, 2, 7, "#0b0d17");
+    px(ctxK, 16, 9, 2, 7, "#0b0d17");
+    // Fox ears
+    px(ctxK, 6, 1 + earTw, 4, 5, "#0b0d17");
+    px(ctxK, 7, 2 + earTw, 2, 3, "#4b3b4e");
+    px(ctxK, 14, 1, 4, 5, "#0b0d17");
+    px(ctxK, 15, 2, 2, 3, "#4b3b4e");
+
+    // 🐰 24x24 portrait
+    ctxB.fillStyle = "#120d1a";
+    ctxB.fillRect(0, 0, 24, 24);
+    px(ctxB, 5, 17, 14, 7, "#6f7e99"); // soft jacket
+    px(ctxB, 7, 16, 10, 3, "#b86b84"); // rose scarf
+    px(ctxB, 7, 7, 10, 9, "#f2d6ca"); // face
+    px(ctxB, 8, 13, 2, 1, "#e5a3ac"); // blush
+    px(ctxB, 14, 13, 2, 1, "#e5a3ac");
+    if (!blB) {
+      px(ctxB, 9, 11, 2, 2, "#392c3e");
+      px(ctxB, 13, 11, 2, 2, "#392c3e");
+    } else {
+      px(ctxB, 9, 12, 2, 1, "#5c4755");
+      px(ctxB, 13, 12, 2, 1, "#5c4755");
+    }
+    px(ctxB, 6, 5, 12, 4, "#2c2433"); // soft hair
+    px(ctxB, 6, 8, 2, 7, "#2c2433");
+    px(ctxB, 16, 8, 2, 7, "#2c2433");
+    px(ctxB, 9, 6, 6, 2, "#463a52");
+  }
+
+  // =========================================================================
+  // 6. UI / DIALOGUE CONTROLLER
+  // =========================================================================
+  const stageContainer = document.getElementById("stage-container");
+  const sceneTitleLabel = document.getElementById("scene-title-label");
+  const speakerNameEl = document.getElementById("speaker-name");
+  const lineCounterEl = document.getElementById("line-counter");
+  const dialogueTextEl = document.getElementById("dialogue-text");
+  const dialogueBox = document.getElementById("dialogue-box");
+  const timeToggleBtn = document.getElementById("time-toggle-btn");
+  const mapBtn = document.getElementById("map-btn");
+  const dossierBtn = document.getElementById("dossier-btn");
+  const bgmBtn = document.getElementById("bgm-btn");
+  const autoBtn = document.getElementById("auto-btn");
+  const hideUiBtn = document.getElementById("hide-ui-btn");
+  const uiRestoreBtn = document.getElementById("ui-restore-btn");
+  const sceneTabs = Array.from(document.querySelectorAll(".scene-tab"));
+
+  const mapPanel = document.getElementById("map-panel");
+  const mapPinList = document.getElementById("map-pin-list");
+  const mapDetailTitle = document.getElementById("map-detail-title");
+  const mapDetailMeta = document.getElementById("map-detail-meta");
+  const mapDetailBody = document.getElementById("map-detail-body");
+  const mapJumpBtn = document.getElementById("map-jump-btn");
+
+  const dossierModal = document.getElementById("dossier-modal");
+  const closeDossierBtn = document.getElementById("close-dossier-btn");
+  const dossierTabs = Array.from(document.querySelectorAll(".dossier-tab"));
+  const dossierSections = {
+    prologue: document.getElementById("tab-prologue"),
+    personnel: document.getElementById("tab-personnel")
+  };
+
+  function initMapPins() {
+    mapPinList.innerHTML = "";
+    MAP_NODES.forEach((node, idx) => {
+      const b = document.createElement("button");
+      b.className = "map-node-btn";
+      b.textContent = node.short;
+      b.addEventListener("click", () => selectMapNode(idx));
+      mapPinList.appendChild(b);
+    });
+    selectMapNode(0);
+  }
+
+  function selectMapNode(idx) {
+    selectedMapNodeIdx = idx;
+    const node = MAP_NODES[idx];
+    Array.from(mapPinList.children).forEach((el, i) => el.classList.toggle("active", i === idx));
+    mapDetailTitle.textContent = node.title;
+    mapDetailTitle.style.color = node.color;
+    mapDetailMeta.textContent = node.meta;
+    mapDetailBody.textContent = node.body;
+    if (node.sceneIdx !== null) {
+      mapJumpBtn.style.display = "block";
+      mapJumpBtn.textContent = "▶ ENTER THIS DIORAMA";
+    } else {
+      mapJumpBtn.style.display = "none";
+    }
+  }
+
+  function setMapMode(active) {
+    mapMode = active;
+    mapBtn.classList.toggle("active", active);
+    mapPanel.classList.toggle("open", active);
+    stageContainer.classList.toggle("map-active", active);
+    if (active) {
+      sceneTitleLabel.textContent = "AERIAL MAP // OLD TOKYO OVERVIEW";
+      sceneTabs.forEach((btn) => btn.classList.remove("active"));
+    } else {
+      loadScene(currentSceneIdx);
+    }
+  }
+
+  mapBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setMapMode(!mapMode);
+  });
+
+  mapJumpBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const node = MAP_NODES[selectedMapNodeIdx];
+    if (node.sceneIdx !== null) {
+      mapMode = false;
+      mapBtn.classList.remove("active");
+      mapPanel.classList.remove("open");
+      stageContainer.classList.remove("map-active");
+      loadScene(node.sceneIdx);
+    }
+  });
+
+  canvas.addEventListener("click", (e) => {
+    if (!mapMode) return;
+    const rect = canvas.getBoundingClientRect();
+    const cx = ((e.clientX - rect.left) / rect.width) * W;
+    const cy = ((e.clientY - rect.top) / rect.height) * H;
+    let bestIdx = -1;
+    let bestDist = 18;
+    MAP_NODES.forEach((node, idx) => {
+      const d = Math.hypot(cx - node.x, cy - node.y);
+      if (d < bestDist) {
+        bestDist = d;
+        bestIdx = idx;
+      }
+    });
+    if (bestIdx !== -1) selectMapNode(bestIdx);
+  });
+
+  dossierBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dossierModal.classList.add("open");
+  });
+
+  closeDossierBtn.addEventListener("click", () => {
+    dossierModal.classList.remove("open");
+  });
+
+  dossierModal.addEventListener("click", (e) => {
+    if (e.target === dossierModal) dossierModal.classList.remove("open");
+  });
+
+  dossierTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const key = tab.dataset.tab;
+      dossierTabs.forEach((t) => t.classList.toggle("active", t === tab));
+      Object.entries(dossierSections).forEach(([k, sec]) => sec.classList.toggle("active", k === key));
+    });
+  });
+
+  function loadScene(idx) {
+    if (mapMode) {
+      mapMode = false;
+      mapBtn.classList.remove("active");
+      mapPanel.classList.remove("open");
+      stageContainer.classList.remove("map-active");
+    }
+    currentSceneIdx = idx;
+    currentLineIdx = 0;
+    const sc = SCENES[idx];
+    sceneTitleLabel.textContent = sc.label;
+
+    sceneTabs.forEach((btn, i) => btn.classList.toggle("active", i === idx));
+    timeToggleBtn.classList.toggle("visible", sc.id === "suite");
+    updateTimeBtnText();
+    sound.updateSceneAmbience();
+    startLine();
+  }
+
+  function updateTimeBtnText() {
+    timeToggleBtn.textContent = suiteTimeMode === "night" ? "🌙 NIGHT (LIT 38F)" : "🌅 DUSK";
+    timeToggleBtn.classList.toggle("active", suiteTimeMode === "dusk");
+  }
+
+  function startLine() {
+    const sc = SCENES[currentSceneIdx];
+    const line = sc.dialogues[currentLineIdx];
+    speakerNameEl.textContent = line.speaker;
+    speakerNameEl.className = "";
+    if (line.speaker === "🐰") speakerNameEl.classList.add("bunny");
+    else if (line.speaker === "SYSTEM") speakerNameEl.classList.add("narrator");
+
+    const num = String(currentLineIdx + 1).padStart(2, "0");
+    const tot = String(sc.dialogues.length).padStart(2, "0");
+    lineCounterEl.textContent = `${num} / ${tot}`;
+
+    typedChars = 0;
+    isTyping = true;
+    autoWaitTimer = 0;
+    dialogueTextEl.textContent = "";
+  }
+
+  function advanceDialogue() {
+    const sc = SCENES[currentSceneIdx];
+    const fullText = sc.dialogues[currentLineIdx].text;
+    if (isTyping) {
+      typedChars = fullText.length;
+      dialogueTextEl.textContent = fullText;
+      isTyping = false;
+      return;
+    }
+    currentLineIdx = (currentLineIdx + 1) % sc.dialogues.length;
+    startLine();
+  }
+
+  dialogueBox.addEventListener("click", advanceDialogue);
+
+  sceneTabs.forEach((tab) => {
+    tab.addEventListener("click", (e) => {
+      e.stopPropagation();
+      loadScene(Number(tab.dataset.scene));
+    });
+  });
+
+  timeToggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    suiteTimeMode = suiteTimeMode === "night" ? "dusk" : "night";
+    updateTimeBtnText();
+  });
+
+  bgmBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const on = sound.toggle();
+    bgmBtn.textContent = on ? "♪ SOUND: ON" : "♪ SOUND: OFF";
+    bgmBtn.classList.toggle("active", on);
+  });
+
+  autoBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    autoMode = !autoMode;
+    autoBtn.textContent = autoMode ? "AUTO: ON" : "AUTO: OFF";
+    autoBtn.classList.toggle("active", autoMode);
+  });
+
+  hideUiBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    uiHidden = true;
+    stageContainer.classList.add("hud-hidden");
+  });
+
+  uiRestoreBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    uiHidden = false;
+    stageContainer.classList.remove("hud-hidden");
+  });
+
+  // Keyboard shortcuts
+  window.addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      if (!uiHidden && !mapMode && !dossierModal.classList.contains("open")) advanceDialogue();
+    } else if (e.key >= "1" && e.key <= "5") {
+      dossierModal.classList.remove("open");
+      loadScene(Number(e.key) - 1);
+    } else if (e.key.toLowerCase() === "m") {
+      dossierModal.classList.remove("open");
+      setMapMode(!mapMode);
+    } else if (e.key.toLowerCase() === "h") {
+      uiHidden = !uiHidden;
+      stageContainer.classList.toggle("hud-hidden", uiHidden);
+    } else if (e.key === "Escape") {
+      dossierModal.classList.remove("open");
+    }
+  });
+
+  // =========================================================================
+  // 7. MAIN ANIMATION LOOP (~30 FPS pixel cadence for authentic feel)
+  // =========================================================================
+  let lastTime = 0;
+  function loop(now) {
+    requestAnimationFrame(loop);
+    if (now - lastTime < 32) return; // crisp ~30fps pixel art pacing
+    lastTime = now;
+    frame++;
+
+    // Draw current diorama (or Aerial Map) into offscreen buffer, then blit
+    if (mapMode) {
+      renderAerialMap(octx, frame);
+    } else {
+      RENDERERS[currentSceneIdx](octx, frame);
+    }
+    ctx.drawImage(offCanvas, 0, 0);
+
+    // Animate Dossier mini pixel portraits when open
+    if (dossierModal.classList.contains("open")) {
+      renderPortraits(frame);
+    }
+
+    // Typewriter text progression (paused during map or dossier)
+    if (!mapMode && !dossierModal.classList.contains("open")) {
+      const sc = SCENES[currentSceneIdx];
+      const line = sc.dialogues[currentLineIdx];
+      if (isTyping) {
+        typingTimer++;
+        if (typingTimer >= 1) {
+          typingTimer = 0;
+          typedChars++;
+          dialogueTextEl.textContent = line.text.slice(0, typedChars);
+          if (typedChars % 3 === 0 && line.speaker !== "SYSTEM") {
+            sound.playBlip(line.speaker === "🐰");
+          }
+          if (typedChars >= line.text.length) {
+            isTyping = false;
+          }
+        }
+      } else if (autoMode) {
+        autoWaitTimer++;
+        if (autoWaitTimer > 125) {
+          advanceDialogue();
+        }
+      }
+    }
+  }
+
+  initMapPins();
+  loadScene(0);
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
