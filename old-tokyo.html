@@ -546,6 +546,17 @@
     display: none !important;
   }
 
+  #dialogue-box.heart-mode {
+    border-color: #b85c82;
+    box-shadow:
+      inset 0 0 0 2px #291220,
+      0 8px 28px rgba(217, 107, 148, 0.25);
+  }
+
+  #dialogue-box.heart-mode .next-indicator {
+    color: #f497b8;
+  }
+
   /* =========================================================================
      MOBILE PORTRAIT LAYOUT (Smartphones held vertically)
      Stacks cleanly: Top HUD -> Scene Tabs -> 16:9 Canvas -> Dialogue / Map Info
@@ -848,10 +859,15 @@
       title: "01. 旧図書館",
       dialogues: [
         { speaker: "SYSTEM", text: "【第42観測日：第1区画・森に沈んだ旧図書館】\n320年の時を経て緑に呑まれた石造りの知の殿堂。崩れた天窓から、水底のように柔らかな光が降り注ぐ。" },
-        { speaker: "🐰", text: "……見て。古い詩集も、植物図鑑も、まだこんなに綺麗に残ってる。埃をかぶっているけれど、まるで昨日誰かが読み終えたみたいだ。" },
-        { speaker: "K-09", text: "……静かに。奥の回廊で古い哨戒機が動いている。柱の影へ入れ。君の息が落ち着くまで、こうして俺の胸元に隠れていろ。" },
-        { speaker: "🐰", text: "っ……心臓の音、すごく近い……。でも不思議と怖くないや。君のコートって、外の森よりずっと暖かくて落ち着くんだ。" },
-        { speaker: "K-09", text: "傷ひとつ負わせるわけにはいかないからな。ほら、見つけた蜂蜜漬けの瓶も鞄にしまった。……少し、熱が上がってきた。戻ったら付き合ってもらう。" }
+        { speaker: "🐰", text: "……見て。革装丁の詩集も、古い植物図鑑も、まだこんなに綺麗に残ってる！ 埃をかぶっているけれど、まるで昨日誰かが読み終えたみたいだ。" },
+        { speaker: "K-09", text: "保存状態がいいな。こっちの戸棚からは密閉された蜂蜜漬けの無花果も見つかった。……おまえが、いや、君が好きそうな甘味だ。" },
+        { speaker: "🐰", text: "わあ、本当に？ 基地の棚に並べる宝物がまた増え――……っ、あれ？ 奥の暗がり、何か赤い光が動いてない……？" },
+        { speaker: "K-09", text: "……静かに。旧式の小型哨戒機械が巡回している。声を出すな。柱の影へ入れ。" },
+        { speaker: "SYSTEM", text: "冷たい石柱の裏側、K-09 の大きな黒いコートの内側にすっぽりと引き寄せられる。呼吸の音さえ聞こえるほど、二人の距離がゼロになる。" },
+        { speaker: "🐰", text: "っ……心臓の音、すごく近いし……なんだかいつもより速い……？ 映画みたいに飛び出して戦ったりしないんだね。" },
+        { speaker: "K-09", text: "君に破片ひとつ触れさせるわけにはいかないからな。……それより、この距離でじっとしている方がよほど危うい。俺の胸の温度がわかるか。" },
+        { speaker: "🐰", text: "あ……本当だ、すごく熱い……。警戒したから、生体炉の熱が上がっちゃったんだね。……基地に帰ったら、ちゃんと冷却しなきゃ。" },
+        { speaker: "K-09", text: "言ったな、特別観測官殿。……帰路は抱えて運ぶ。今夜の『メンテナンス』、約束は取り消させない。" }
       ]
     },
     {
@@ -861,9 +877,16 @@
       dialogues: [
         { speaker: "SYSTEM", text: "【前哨基地：旧最高級ホテル最上階・要塞スイート】\n緑に沈んだ廃墟都市の中で、ただ一箇所だけ温かい灯りが点る38階の聖域。二人のための揺るぎない鳥籠。" },
         { speaker: "🐰", text: "窓の外、すごく広いね……。こんなに大きな廃墟の中で、灯りがついているのは僕たちの部屋だけなんだ。なんだか世界から切り離されたみたい。" },
-        { speaker: "K-09", text: "ああ。外の誰にも見つけられない、完璧な空白だ。ほら、冷えないうちに熱いミルクを飲め。……尻尾が邪魔なら、今のうちに言え。" },
-        { speaker: "🐰", text: "ううん、そのままでいい。あったかくてふわふわで……ずっとこうして巻かれてたい。……ねえ、もし僕がいつか年を取って先にいなくなったら、君は一人になっちゃうのかな。" },
-        { speaker: "K-09", text: "愚かなことを考えるな。……俺の心臓のコードは、君の鼓動が止まる瞬間にすべて停止するよう書き換えてある。一人にはしない。させない。" }
+        { speaker: "K-09", text: "ああ。外の誰にも見つけられない、完璧な空白だ。ほら、昼間の探索で少し冷えただろう。搾りたてのミルクに無花果を添えておいた。飲め。" },
+        { speaker: "🐰", text: "ん、おいしい……。……あの、それで……昼間の約束、忘れてないよ？ 君のコア、まだ熱いままなんでしょ。" },
+        { speaker: "K-09", text: "……よく覚えているな。通常の睡眠や水冷では下がらない仕様だ。――契約者、君の体温と呼吸で、直接鎮めてもらう必要がある。" },
+        { speaker: "SYSTEM", text: "黒い革ソファに深く沈み込み、シャツのボタンが一つ、また一つと解かれる。甘い吐息が重なり、部屋のランプが静かに遠のいていく――。", fx: "blush" },
+        { speaker: "♡♡♡", text: "……っ、離すな、ウォ――……っ。……熱いのは、君のせいだと分かっているのか……。\n[ VITAL SYNC // CORE COOLING DOWN... ♡♡♡ ]", fx: "heart" },
+        { speaker: "♡♡♡", text: "……んっ、ふ……っ、だめ……まだ、深いとこ、熱いのが……っ。\n[ MAINTENANCE IN PROGRESS // SYNCHRONIZING... ♡♡♡ ]", fx: "heart" },
+        { speaker: "SYSTEM", text: "――やがて、生体炉の熱が穏やかな体温へと溶け落ちる。湯上がりのベッドの上、長い黒狐の尾が 🐰 の身体を優しく包み込んでいた。" },
+        { speaker: "🐰", text: "……ねえ、すごく幸せだからこそ急に怖くなっちゃった。僕は人間だから、いつか先におじいちゃんになっていなくなったら、君を一人にしちゃうのかなって……。" },
+        { speaker: "K-09", text: "愚かなことを考えるな。……俺のコアの制御コードは、君の鼓動が止まる瞬間にすべて永久停止するよう書き換えてある。" },
+        { speaker: "K-09", text: "一人にはしないし、させない。……涙を拭いて、このまま俺の腕の中で眠れ。" }
       ]
     },
     {
@@ -871,11 +894,16 @@
       label: "AREA 03 // SUBMERGED AQUARIUM",
       title: "03. 水没水族館",
       dialogues: [
-        { speaker: "SYSTEM", text: "【第43観測日：第3区画・水没水族館とクラゲの回廊】\n湧き水に満たされた静謐な地下迷宮。発光苔の青白い光と、ガラスの向こうを漂うミズクラゲが足元の水面を揺らす。" },
-        { speaker: "🐰", text: "わぁ……！ 本の中でしか見たことがなかったクラゲが、目の前を飛ぶみたいに泳いでる。青い光が水面に映って、宝石箱みたいだ。" },
-        { speaker: "K-09", text: "足元が濡れているし、滑りやすい。……下りるな。こうして抱えたまま運んでやるから、君は落ちてこないように俺の首に腕を回していればいい。" },
-        { speaker: "🐰", text: "えへへ、なんだかお姫様みたいで照れるな……。あ、これ見て！ さっき見つけた、中が青く光るガラスのクラゲ。部屋の棚に飾ったら綺麗だよね。" },
-        { speaker: "K-09", text: "……軽いものだ。本国の連中がどんな数字を並べていようと、今この腕の中に収まっている重さだけが、俺にとっての現実だ。" }
+        { speaker: "SYSTEM", text: "【第43観測日：第3区画・水没水族館とクラゲの回廊】\n朝、屋上の新鮮なミルクと焼きたてのパンを食べさせてもらったあと、二人は清澄な水に沈んだ青い迷宮へ向かった。" },
+        { speaker: "🐰", text: "わぁ……！ 天井から緑の光が差して、発光苔がキラキラしてる！ 本の中でしか見たことがなかったミズクラゲが、本当に目の前を泳いでるよ！" },
+        { speaker: "K-09", text: "足元が濡れているし、苔で滑りやすい。……下りるな。こうして抱えたまま運んでやるから、君は落ちてこないように俺の首に腕を回していればいい。" },
+        { speaker: "🐰", text: "えへへ、ずっとお姫様抱っこで運んでもらってて、なんだか照れるな……。あ、見て！ お土産コーナーの瓦礫の中に、綺麗なガラス玉が！" },
+        { speaker: "K-09", text: "……蓄光ガラス製のミズクラゲの文鎮か。300年前の記念品だな。ほら、君にやる。基地の書斎に飾るコレクションがまた増えたな。" },
+        { speaker: "SYSTEM", text: "探索の折り返し、水底の青い光が揺れる深海ラウンジでひと休み。K-09 は保温ボトルから温かい蜂蜜ミルクを取り出し、一口含むと――。" },
+        { speaker: "🐰", text: "え、コップじゃなくて……んっ！？ ……ふ、ぁ……っ、くちうつしで飲ませるの、反則だってば……！", fx: "blush" },
+        { speaker: "K-09", text: "……こぼすな。唇の端に付いているぞ。――今の俺の熱は、戦闘でも警戒でもない。ただ、君を見ているだけで心地よく巡っている。" },
+        { speaker: "🐰", text: "……っ、もう。……ねえ、部屋に小さな水槽を作る話もあったけど、君にこうして抱っこされてここまでお散歩に来る時間も好きだから、悩ましいな。" },
+        { speaker: "K-09", text: "欲張りな奴だ。……ならば両方採用してやる。寝室にも青い水槽を置き、休日にはこうして俺の腕の中でまたここへ連れてこよう。" }
       ]
     },
     {
@@ -883,11 +911,17 @@
       label: "AREA 03 SURFACE // CENTRAL STATION",
       title: "04. 花の展望車",
       dialogues: [
-        { speaker: "SYSTEM", text: "【第43観測日・夕刻：中央駅・花の線路と真紅の展望車】\nシロツメクサに埋もれた鉄路と、時を止めた豪華列車。傾きかけた黄金色の陽光が、真紅のベルベットシートを染め上げる。" },
-        { speaker: "🐰", text: "線路が全部、シロツメクサの花畑になってる……。こんな綺麗な場所に停まっている列車の中なのに、シートまでふかふかで真っ赤なんだね。" },
-        { speaker: "K-09", text: "密閉状態が良かったおかげだな。……ほら、ポケットに入れておいたものを確認してみろ。300年前の、未使用のまま眠っていた金色の切符だ。" },
-        { speaker: "🐰", text: "えっ、何か書いてある……？ 『要塞スイート・帰還専用、終点：K-09の腕の中』……。これ、片道切符って書いてあるよ？" },
-        { speaker: "K-09", text: "戻り道など最初から用意していない。……白い花より、西日に照らされた君の顔の方がよほど目を奪われる。今夜は少し、この窓辺で過ごしていくか。" }
+        { speaker: "SYSTEM", text: "【第43観測日・午後：中央駅・花の線路と真紅の特別展望車】\n水族館の上のホームに出ると、かつての鉄路はシロツメクサとクローバーの花畑へと姿を変え、白い蝶が舞っていた。" },
+        { speaker: "🐰", text: "線路が全部、白いお花畑になってる……！ それに屋根の下に停まってるあの豪華列車、中まで真紅のベルベットシートがふかふかのままだよ！" },
+        { speaker: "K-09", text: "気密扉が閉ざされていたおかげだな。……ほら、さっき君の胸ポケットに忍ばせておいたものを出して確認してみろ。" },
+        { speaker: "🐰", text: "あれ、未使用の金の切符……？ 何か万年筆で書き込んである。『要塞スイート・帰還専用、終点：K-09 の腕の中』……。これ、片道切符って書いてあるよ？" },
+        { speaker: "K-09", text: "戻り道など最初から用意していない。……白い花より、西日に照らされた君の顔の方がよほど目を奪われるな。" },
+        { speaker: "SYSTEM", text: "「シートの弾力を確かめる」という建前で真紅の座席へ押し倒され、昼間の明るい光が差し込む窓辺で、そっと襟元のボタンが外されていく――。", fx: "blush" },
+        { speaker: "🐰", text: "ちょ、ちょっと……外から丸見えみたいな明るさなのに……。それに今日、警戒も戦闘もしてないから、コアの熱だって上がってないはずでしょ……？" },
+        { speaker: "K-09", text: "……見抜いたか。ああ、もう冷却なんて建前は要らない。――ただ純粋に、この光のなかで君を独り占めにしたくなっただけだ。" },
+        { speaker: "♡♡♡", text: "……っ、嘘をつかないで認めてくれたの、ずるい……っ。……ん、だめ……声、出ちゃう……っ。\n[ OVERRIDE // NO EXCUSES NEEDED... ♡♡♡ ]", fx: "heart" },
+        { speaker: "♡♡♡", text: "……っ、足、絡められたら……もう手加減はできないぞ……っ。\n[ DAYLIGHT SYNC // COMPLETE... ♡♡♡ ]", fx: "heart" },
+        { speaker: "SYSTEM", text: "――やがて黄金色の光が茜へと変わる頃。腰が抜けて動けなくなった 🐰 を、K-09 は自分の大きな黒ロングコートの内側にすっぽり隠し、横抱きのまま要塞へと連れ帰った。" }
       ]
     },
     {
@@ -895,11 +929,17 @@
       label: "AREA 04 // DEEP LAB K-09",
       title: "05. 深層ラボ K-09",
       dialogues: [
-        { speaker: "SYSTEM", text: "【第46観測日：第4区画・地下深層プラント K-09ラボ】\n緑さえ届かぬ冷たい鉄の封印域。砕けた生体凍結ポッドの前で、二人は本国からの最後の回線を物理的に焼き切った。" },
-        { speaker: "🐰", text: "……ここが、君が320年もの間、ずっと一人で眠っていた場所なんだね。ガラスが割れてて、すごく冷たい……。本国に送る嘘の報告書、もう送信していい？" },
-        { speaker: "K-09", text: "ああ。『全域汚染・調査不能』の偽装ログを飛ばして、通信回路を焼き切る。これで本国から邪魔が入ることは二度とない。……震えているな。コートの中へ入れ。" },
-        { speaker: "🐰", text: "……ねえ。さっきログを見て気づいたんだ。君は追放されたんじゃなくて……最初から僕をここへ呼ぶために、人事を書き換えて半年も前に待っていてくれたんだね。" },
-        { speaker: "K-09", text: "……見つけたか。そうだ。あの日から俺のすべては、この冷たい地下ではなく、君が降り立つ場所だけを見ていた。……これで、本当の共犯者だな。" }
+        { speaker: "SYSTEM", text: "【第46観測日：第4区画・地下深層プラント K-09ラボ】\n数ヶ月ぶりに入った本国からの「第4区画調査命令」。これ以上、本国の調査隊をこの街へ寄せ付けないため、二人は禁断の地下最深部へ降り立った。" },
+        { speaker: "🐰", text: "真っ暗で冷たい鉄のエレベーター……途中、大きな多脚兵器が襲ってきた時はびっくりしたけど、君が僕を左腕で抱いたまま一瞬で切り伏せてくれたね。" },
+        { speaker: "K-09", text: "君の髪一本、傷つけさせるものか。……ここが最深部、かつて俺が造られ、320年ものあいだ封印されていた『K-09』の凍結ポッドだ。" },
+        { speaker: "🐰", text: "ガラスが粉々に砕けてて、すごく冷たい……。……あ、制御端末の履歴が開いてる。本国へ偽装の汚染データを送る前に……これ、何のログ？" },
+        { speaker: "SYSTEM", text: "モニターに浮かび上がった、半年前の古い改ざん記録。――『危険だから追放された』のではなく、K-09 自身が 🐰 のファイルを見つけ、人事を書き換えて半年も前から一人で要塞を整えて待っていたという真実。", fx: "blush" },
+        { speaker: "🐰", text: "……嘘。最初から……僕のことを、ずっとここで待っていてくれたの？ 初めて輸送機から降りた日、撃たれるかもって思ってたのが嘘みたいだ……。" },
+        { speaker: "K-09", text: "……見つけたか。そうだ。あの日から俺のすべては、この冷たい地下ではなく、君が降り立つ場所だけを見ていた。" },
+        { speaker: "K-09", text: "さあ、本国へ『全域汚染・調査不能』の嘘の報告を送り、通信回線を焼き切るぞ。――震えているな。もっと俺のコートの中へ入れ。" },
+        { speaker: "SYSTEM", text: "火花を散らして本国への回線が永久に絶たれる。冷たい制御卓の上、かつて兵器として管理されていた場所で、K-09 は過去の記憶をすべて 🐰 の体温で塗り潰しにかかる――。" },
+        { speaker: "♡♡♡", text: "『本国に言えない本当の記録を、ここに刻んでいけ』……っ、ん……っ。\n[ LINK SEVERED // ACCOMPLICES FOREVER... ♡♡♡ ]", fx: "heart" },
+        { speaker: "SYSTEM", text: "――こうして、誰も邪魔できない緑の箱庭は完成した。壊れた氷の棺の前で、二人は永遠の共犯者となった。" }
       ]
     }
   ];
@@ -1031,6 +1071,13 @@
       if (!this.ctx || !this.enabled) return;
       const freq = isBunny ? 620 + Math.random() * 40 : 280 + Math.random() * 25;
       this.playNote(freq, 0.045, "square", 0.014);
+    }
+
+    playHeartbeat() {
+      if (!this.ctx || !this.enabled) return;
+      // Soft warm double-thump pulse
+      this.playNote(78, 0.14, "sine", 0.09);
+      setTimeout(() => this.playNote(68, 0.18, "sine", 0.07), 160);
     }
 
     startSequencer() {
@@ -1965,11 +2012,12 @@
     "0": [7,5,5,5,7], "1": [2,6,2,2,7], "2": [7,1,7,4,7], "3": [7,1,7,1,7], "4": [5,5,7,1,1],
     "5": [7,4,7,1,7], "6": [7,4,7,5,7], "7": [7,1,1,2,2], "8": [7,5,7,5,7], "9": [7,5,7,1,7],
     "A": [2,5,7,5,5], "B": [6,5,6,5,6], "C": [7,4,4,4,7], "D": [6,5,5,5,6], "E": [7,4,6,4,7],
-    "F": [7,4,6,4,4], "G": [7,4,5,5,7], "H": [5,5,7,5,5], "I": [7,2,2,2,7], "K": [5,5,6,5,5],
-    "L": [4,4,4,4,7], "M": [5,7,7,5,5], "N": [5,7,7,7,5], "O": [7,5,5,5,7], "P": [7,5,7,4,4],
-    "R": [6,5,6,5,5], "S": [7,4,7,1,7], "T": [7,2,2,2,2], "U": [5,5,5,5,7], "V": [5,5,5,5,2],
-    "Y": [5,5,2,2,2], "-": [0,0,7,0,0], "/": [1,1,2,4,4], "[": [6,4,4,4,6], "]": [3,1,1,1,3],
-    " ": [0,0,0,0,0]
+    "F": [7,4,6,4,4], "G": [7,4,5,5,7], "H": [5,5,7,5,5], "I": [7,2,2,2,7], "J": [3,1,1,5,7],
+    "K": [5,5,6,5,5], "L": [4,4,4,4,7], "M": [5,7,7,5,5], "N": [5,7,7,7,5], "O": [7,5,5,5,7],
+    "P": [7,5,7,4,4], "Q": [7,5,5,7,3], "R": [6,5,6,5,5], "S": [7,4,7,1,7], "T": [7,2,2,2,2],
+    "U": [5,5,5,5,7], "V": [5,5,5,5,2], "W": [5,5,7,7,5], "X": [5,5,2,5,5], "Y": [5,5,2,2,2],
+    "Z": [7,1,2,4,7], "-": [0,0,7,0,0], ".": [0,0,0,0,2], "/": [1,1,2,4,4], "[": [6,4,4,4,6],
+    "]": [3,1,1,1,3], " ": [0,0,0,0,0]
   };
 
   function drawPxText(c, str, x, y, color, shadow = "#05070e") {
@@ -2335,6 +2383,8 @@
       mapPanel.classList.remove("open");
       stageContainer.classList.remove("map-active");
     }
+    blackoutAlpha = 0;
+    activeFx = null;
     currentSceneIdx = idx;
     currentLineIdx = 0;
     const sc = SCENES[idx];
@@ -2352,13 +2402,99 @@
     timeToggleBtn.classList.toggle("active", suiteTimeMode === "dusk");
   }
 
+  let blackoutAlpha = 0;
+  let activeFx = null;
+
+  const HEART_SPRITE = [
+    "011000110",
+    "111101111",
+    "111111111",
+    "111111111",
+    "011111110",
+    "001111100",
+    "000111000",
+    "000010000"
+  ];
+
+  function drawPixelHeart(c, cx, cy, scale, color, highlight) {
+    const ox = Math.round(cx - (9 * scale) / 2);
+    const oy = Math.round(cy - (8 * scale) / 2);
+    for (let r = 0; r < 8; r++) {
+      for (let col = 0; col < 9; col++) {
+        if (HEART_SPRITE[r][col] === "1") {
+          c.fillStyle = (highlight && r === 1 && (col === 2 || col === 3)) ? highlight : color;
+          c.fillRect(ox + col * scale, oy + r * scale, scale, scale);
+        }
+      }
+    }
+  }
+
+  function renderFxOverlay(c, t) {
+    const targetAlpha = (activeFx === "heart") ? 0.94 : 0;
+    blackoutAlpha += (targetAlpha - blackoutAlpha) * 0.14;
+
+    if (blackoutAlpha > 0.02) {
+      c.fillStyle = `rgba(6, 4, 12, ${blackoutAlpha.toFixed(3)})`;
+      c.fillRect(0, 0, W, H);
+    }
+
+    if (activeFx === "heart" && blackoutAlpha > 0.35) {
+      // Three pulsing pixel hearts in center!
+      const beatCycle = t % 44;
+      const beatMain = (beatCycle < 7 || (beatCycle >= 11 && beatCycle < 17));
+      const positions = [126, 160, 194];
+      positions.forEach((hx, i) => {
+        const phase = (t + i * 10) % 44;
+        const thump = (phase < 7 || (phase >= 11 && phase < 17));
+        const sc = thump ? 2 : 2;
+        const dy = thump ? -2 : 0;
+        const col = thump ? "#ff7aa8" : "#c94b78";
+        const hi = thump ? "#ffd9e8" : "#f29ab8";
+        // Soft aura behind beating heart
+        if (thump) {
+          c.fillStyle = "rgba(255, 110, 165, 0.18)";
+          c.fillRect(hx - 11, 74 + dy, 22, 18);
+        }
+        drawPixelHeart(c, hx, 83 + dy, sc, col, hi);
+      });
+
+      // Tiny sparkling pixel particles around hearts
+      for (let p = 0; p < 12; p++) {
+        const pxX = 95 + Math.floor(hash(p * 17 + Math.floor(t / 12)) * 130);
+        const pxY = 54 + Math.floor(hash(p * 23 + Math.floor(t / 12)) * 60);
+        if ((t + p * 5) % 24 < 12) {
+          px(c, pxX, pxY, 1, 1, p % 2 === 0 ? "#ffb8d2" : "#fff0f5");
+        }
+      }
+
+      // Crisp pixel label beneath the 3 hearts
+      const msg = beatMain ? "VITAL MAINTENANCE // SYNC..." : "CORE COOLING DOWN // ...";
+      drawPxText(c, msg, Math.round(W / 2 - (msg.length * 4) / 2), 106, "#e889ab", "#000000");
+    } else if (activeFx === "blush") {
+      // Subtle floating pixel hearts during romantic / close-distance lines
+      for (let i = 0; i < 3; i++) {
+        const fy = 68 - ((t * 0.45 + i * 18) % 36);
+        const fx = 148 + i * 14 + Math.round(Math.sin(t * 0.1 + i) * 3);
+        drawPixelHeart(c, fx, fy, 1, "rgba(255, 138, 180, 0.85)", "#ffd6e7");
+      }
+    }
+  }
+
   function startLine() {
     const sc = SCENES[currentSceneIdx];
     const line = sc.dialogues[currentLineIdx];
+    activeFx = line.fx || null;
+
     speakerNameEl.textContent = line.speaker;
     speakerNameEl.className = "";
     if (line.speaker === "🐰") speakerNameEl.classList.add("bunny");
     else if (line.speaker === "SYSTEM") speakerNameEl.classList.add("narrator");
+    else if (line.speaker === "♡♡♡") speakerNameEl.classList.add("bunny");
+
+    dialogueBox.classList.toggle("heart-mode", activeFx === "heart" || activeFx === "blush");
+    if (activeFx === "heart") {
+      sound.playHeartbeat();
+    }
 
     const num = String(currentLineIdx + 1).padStart(2, "0");
     const tot = String(sc.dialogues.length).padStart(2, "0");
@@ -2457,6 +2593,7 @@
       renderAerialMap(octx, frame);
     } else {
       RENDERERS[currentSceneIdx](octx, frame);
+      renderFxOverlay(octx, frame);
     }
     ctx.drawImage(offCanvas, 0, 0);
 
