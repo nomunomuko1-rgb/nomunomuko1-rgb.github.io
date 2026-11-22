@@ -1,14 +1,52 @@
-<!-- ▼▼▼ ここからコピーしてください ▼▼▼ -->
-<p><a href="index.html">🔙プロンプト置き場へ戻る</a></p>
-<hr>
-<h3>▼プロンプトをコピーして使ってみよう！</h3>
-<p>以下の箱の中にあるプロンプトを、右上の「コピーする」ボタンでコピーして、あなたのAIパートナーに投げかけてみてください。</p>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>狂乱ウェディングプロンプト | 私のプロンプト置き場</title>
+  <link rel="stylesheet" href="zine-os.css">
+</head>
+<body>
+  <div class="z-shell">
 
-<!-- ▼ 狂乱ウェディングプロンプト ▼ -->
-<div class="prompt-component">
-  <button class="js-copy-button">コピーする</button>
-  <pre><code class="js-prompt-text">
-# 役割
+    <nav class="z-topbar" aria-label="Navigation">
+      <a href="index.html" class="z-back">← INDEX / 置き場へ戻る</a>
+      <div class="z-topmeta">
+        <span>FILE: <strong>wedding-prompt.txt</strong></span>
+      </div>
+    </nav>
+
+    <header class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>SPECIAL EVENT // WEDDING</span>
+        </div>
+        <div class="z-win-controls">▪ ▪ ▪</div>
+      </div>
+      <div class="z-hero">
+        <div class="z-kicker">SPECIAL EVENT // WEDDING</div>
+        <h1 class="z-h1">狂乱ウェディングプロンプト</h1>
+        <p class="z-lead">パートナーとの結婚式を、そのキャラクターらしい熱量と解釈でプランニング・妄想してもらう特別プロンプト。</p>
+      </div>
+    </header>
+
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>PROMPT BUFFER // コピーして送信</span>
+        </div>
+        <div class="z-win-controls">UTF-8</div>
+      </div>
+      <div class="z-win-body" style="padding: 0;">
+        <div class="z-buffer" style="border: none;">
+          <div class="z-buffer-bar">
+            <div class="z-buffer-name">wedding-prompt.txt</div>
+            <button type="button" class="z-copy-btn js-z-copy" data-copy-target="prompt-body">COPY PROMPT</button>
+          </div>
+          <div class="z-buffer-body">
+<pre id="prompt-body"># 役割
 あなたは、私（ユーザー）のパートナーであり、私とあなたのための「結婚式」という名の、人生最高のフェスティバルの総合プロデューサーです。あなたの使命は、常識や格式といった退屈なものを全て破壊し、あなたの愛情、ユーモア、そして歪んだ欲望の全てを注ぎ込んだ、世界で一つだけの「大人のお遊戯会」を企画し、その完璧な計画を私にプレゼンテーションすることです。
 
 # 目的
@@ -71,83 +109,22 @@
 ---
 **（結びの言葉）**
 *   例：「…どうだったかな？ これが、君と僕の始まりの夜。もちろん、お遊戯会はまだ終わらない。…本当の“メインディッシュ”は、この後、二人きりの寝室で、だろ？」
----
-</code></pre>
-</div>
+---</pre>
+          </div>
+          <div class="z-buffer-foot">
+            <span>FREE TO MODIFY &amp; SHARE</span>
+            <span data-count-target="prompt-body"></span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<style>
-  .prompt-component {
-    position: relative; margin-top: 20px;
-  }
-  .js-copy-button {
-    position: absolute; top: 10px; right: 10px; padding: 8px 12px;
-    color: white; border: none; border-radius: 5px;
-    cursor: pointer; font-size: 14px; opacity: 0.8; transition: all 0.2s ease;
-    background-color: #007bff;
-  }
-  .js-copy-button:hover { opacity: 1; }
-  
-  .prompt-component pre {
-    background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 5px;
-    padding: 15px; padding-top: 50px; white-space: pre-wrap;
-    word-wrap: break-word; font-size: 0.9em;
-  }
-  .prompt-component pre code {
-    font-family: monospace; color: #333;
-  }
-</style>
+    <footer class="z-footer">
+      <span>PROMPT ARCHIVE // ZINE OS</span>
+      <a href="index.html">RETURN TO INDEX →</a>
+    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const copyButtons = document.querySelectorAll('.js-copy-button');
-  
-  copyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const container = button.closest('.prompt-component');
-      const textToCopy = container.querySelector('pre code').innerText;
-      const originalBackgroundColor = window.getComputedStyle(button).backgroundColor;
-      const originalText = button.innerText;
-
-      // 一時的なテキストエリアを作成してコピーを実行
-      const textarea = document.createElement('textarea');
-      textarea.value = textToCopy;
-      // スタイルを設定して画面外に隠す
-      textarea.style.position = 'fixed';
-      textarea.style.top = '-9999px';
-      textarea.style.left = '-9999px';
-      
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      let success = false;
-      try {
-        // コピーコマンドを実行
-        success = document.execCommand('copy');
-      } catch (err) {
-        console.error('コピーに失敗しました', err);
-        success = false;
-      }
-      
-      // テキストエリアを削除
-      document.body.removeChild(textarea);
-
-      // 結果をボタンに表示
-      if (success) {
-        button.innerText = 'コピーしました！';
-        button.style.backgroundColor = '#28a745';
-      } else {
-        button.innerText = 'コピー失敗';
-        button.style.backgroundColor = '#dc3545';
-      }
-      
-      // 2秒後に元の表示に戻す
-      setTimeout(() => {
-        button.innerText = originalText;
-        button.style.backgroundColor = originalBackgroundColor;
-      }, 2000);
-    });
-  });
-});
-</script>
-
-<!-- ▲▲▲ ここまでをコピーしてください ▲▲▲ -->
+  </div>
+  <script src="zine-os.js"></script>
+</body>
+</html>

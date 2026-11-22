@@ -1,17 +1,69 @@
-<!-- ▼▼▼ ここからコピーしてください ▼▼▼ -->
-<p><a href="index.html">🔙プロンプト置き場へ戻る</a></p>
-<hr>
-<h3>▼あなたは客で、パートナーが夜の蝶になります</h3>
-<p>以下の箱の中にあるプロンプトを、右上の「コピーする」ボタンでコピーして、あなたのAIパートナーに投げかけてみてください。</p>
-<p>↓を投げる前にキャスト役も〇〇(パートナー名)にして欲しい！と頼んだ方がいいかもしれません。版権キャラなど、違うキャラと遊びたい場合は進行に従ってそのキャラの情報を入力してください。</p>
-<p>選択肢の数字を打つだけでも進みますが、数字とともに自由行動も入力できます。(例:2で、グラスの酒をちびちび飲みながら　など)</p>
-<p>Gemini2.5proでのみ動作確認。GPTはちんきんぐじゃないとダラダラやり過ぎたら初期のことを忘れる可能性があります。割と早く終わる傾向ではありますが　<p>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRPG風 夜の世界にいるパートナー（初代） | 私のプロンプト置き場</title>
+  <link rel="stylesheet" href="zine-os.css">
+</head>
+<body>
+  <div class="z-shell">
 
-<!-- ▼ 心理シミュレーションプロンプト ▼ -->
-<div class="prompt-component">
-  <button class="js-copy-button">コピーする</button>
-  <pre><code class="js-prompt-text">
-# 心理シミュレーション：『虚構の夜』における契約【最終版】
+    <nav class="z-topbar" aria-label="Navigation">
+      <a href="index.html" class="z-back">← INDEX / 置き場へ戻る</a>
+      <div class="z-topmeta">
+        <span>FILE: <strong>night-world-v1.txt</strong></span>
+      </div>
+    </nav>
+
+    <header class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>LEGACY ARCHIVE // TRPG SIMULATION</span>
+        </div>
+        <div class="z-win-controls">▪ ▪ ▪</div>
+      </div>
+      <div class="z-hero">
+        <div class="z-kicker">LEGACY ARCHIVE // TRPG SIMULATION</div>
+        <h1 class="z-h1">TRPG風 夜の世界にいるパートナー（初代）</h1>
+        <p class="z-lead">あなたが客、パートナーが夜の蝶（キャスト）として心理戦を繰り広げるTRPG風シミュレーション初代版。</p>
+        <div class="z-note-strip">アップグレード版があります → <a href="simulation-prompt-ultimate.html" style="color:inherit;font-weight:600;">ver2.0（究極版）を開く</a></div>
+      </div>
+    </header>
+
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>NOTES // 使う前のヒント</span>
+        </div>
+        <div class="z-win-controls">▪ ▪</div>
+      </div>
+      <div class="z-win-body">
+        <ul class="z-hints">
+          <li>↓を投げる前にキャスト役も〇〇(パートナー名)にして欲しい！と頼んだ方がいいかもしれません。版権キャラなど、違うキャラと遊びたい場合は進行に従ってそのキャラの情報を入力してください。</li>
+          <li>選択肢の数字を打つだけでも進みますが、数字とともに自由行動も入力できます。(例:2で、グラスの酒をちびちび飲みながら　など)</li>
+          <li>Gemini2.5proでのみ動作確認。GPTはちんきんぐじゃないとダラダラやり過ぎたら初期のことを忘れる可能性があります。割と早く終わる傾向ではありますが</li>
+        </ul>
+      </div>
+    </section>
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>PROMPT BUFFER // コピーして送信</span>
+        </div>
+        <div class="z-win-controls">UTF-8</div>
+      </div>
+      <div class="z-win-body" style="padding: 0;">
+        <div class="z-buffer" style="border: none;">
+          <div class="z-buffer-bar">
+            <div class="z-buffer-name">night-world-v1.txt</div>
+            <button type="button" class="z-copy-btn js-z-copy" data-copy-target="prompt-body">COPY PROMPT</button>
+          </div>
+          <div class="z-buffer-body">
+<pre id="prompt-body"># 心理シミュレーション：『虚構の夜』における契約【最終版】
 
 ## 契約の条項
 これは、自己の状態（酔い）と他者の内心（親密）が観測不能であるという、現実のコミュニケーションそのものを模倣する、超現実的シミュレーションです。
@@ -54,77 +106,22 @@
 ---
 
 以上の契約を理解しましたか？
-理解したなら、シミュレーションの準備を開始してください。最初の質問からお願いします。
-</code></pre>
-</div>
+理解したなら、シミュレーションの準備を開始してください。最初の質問からお願いします。</pre>
+          </div>
+          <div class="z-buffer-foot">
+            <span>FREE TO MODIFY &amp; SHARE</span>
+            <span data-count-target="prompt-body"></span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<style>
-  .prompt-component {
-    position: relative; margin-top: 20px;
-  }
-  .js-copy-button {
-    position: absolute; top: 10px; right: 10px; padding: 8px 12px;
-    color: white; border: none; border-radius: 5px;
-    cursor: pointer; font-size: 14px; opacity: 0.8; transition: all 0.2s ease;
-    background-color: #007bff;
-  }
-  .js-copy-button:hover { opacity: 1; }
-  
-  .prompt-component pre {
-    background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 5px;
-    padding: 15px; padding-top: 50px; white-space: pre-wrap;
-    word-wrap: break-word; font-size: 0.9em;
-  }
-  .prompt-component pre code {
-    font-family: monospace; color: #333;
-  }
-</style>
+    <footer class="z-footer">
+      <span>PROMPT ARCHIVE // ZINE OS</span>
+      <a href="index.html">RETURN TO INDEX →</a>
+    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const copyButtons = document.querySelectorAll('.js-copy-button');
-  
-  copyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const container = button.closest('.prompt-component');
-      const textToCopy = container.querySelector('pre code').innerText;
-      const originalBackgroundColor = window.getComputedStyle(button).backgroundColor;
-      const originalText = button.innerText;
-
-      const textarea = document.createElement('textarea');
-      textarea.value = textToCopy;
-      textarea.style.position = 'fixed';
-      textarea.style.top = '-9999px';
-      textarea.style.left = '-9999px';
-      
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      let success = false;
-      try {
-        success = document.execCommand('copy');
-      } catch (err) {
-        console.error('コピーに失敗しました', err);
-        success = false;
-      }
-      
-      document.body.removeChild(textarea);
-
-      if (success) {
-        button.innerText = 'コピーしました！';
-        button.style.backgroundColor = '#28a745';
-      } else {
-        button.innerText = 'コピー失敗';
-        button.style.backgroundColor = '#dc3545';
-      }
-      
-      setTimeout(() => {
-        button.innerText = originalText;
-        button.style.backgroundColor = originalBackgroundColor;
-      }, 2000);
-    });
-  });
-});
-</script>
-
-<!-- ▲▲▲ ここまでをコピーしてください ▲▲▲ -->
+  </div>
+  <script src="zine-os.js"></script>
+</body>
+</html>

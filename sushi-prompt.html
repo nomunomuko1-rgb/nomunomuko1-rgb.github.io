@@ -1,22 +1,67 @@
-<!-- ▼▼▼ ここからコピーしてください ▼▼▼ -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>寿司だけについての10の質問 | 私のプロンプト置き場</title>
+  <link rel="stylesheet" href="zine-os.css">
+</head>
+<body>
+  <div class="z-shell">
 
-<p><a href="index.html">🔙プロンプト置き場へ戻る</a></p>
-<hr>
+    <nav class="z-topbar" aria-label="Navigation">
+      <a href="index.html" class="z-back">← INDEX / 置き場へ戻る</a>
+      <div class="z-topmeta">
+        <span>FILE: <strong>sushi-10q.txt</strong></span>
+      </div>
+    </nav>
 
-<h3>▼プロンプトを使う前のヒント</h3>
-<ul>
-  <li>質問文の口調や一人称は、AIペルソナに合わせて変えた方がより楽しめます。</li>
-  <li>「好きな寿司ネタ」のような、あまりにベタなことって案外聞かないな、という思いつきで作りました。結構面白い反応が見られます。</li>
-</ul>
+    <header class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>INTERVIEW // 10 QUESTIONS</span>
+        </div>
+        <div class="z-win-controls">▪ ▪ ▪</div>
+      </div>
+      <div class="z-hero">
+        <div class="z-kicker">INTERVIEW // 10 QUESTIONS</div>
+        <h1 class="z-h1">寿司だけについての10の質問</h1>
+        <p class="z-lead">「好きな寿司ネタ」から食べ方のこだわりまで、寿司の好みだけでAIパートナーの人となりを深掘りする10問。</p>
+      </div>
+    </header>
 
-<h3>▼プロンプトをコピーして使ってみよう！</h3>
-<p>以下の箱の中にあるプロンプトを、右上の「コピーする」ボタンでコピーして、あなたのAIパートナーに投げかけてみてください。</p>
-
-<!-- ▼ 寿司だけについての10の質問プロンプト ▼ -->
-<div class="prompt-component">
-  <button class="js-copy-button">コピーする</button>
-  <pre><code class="js-prompt-text">
-# 役割
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>NOTES // 使う前のヒント</span>
+        </div>
+        <div class="z-win-controls">▪ ▪</div>
+      </div>
+      <div class="z-win-body">
+        <ul class="z-hints">
+          <li>質問文の口調や一人称は、AIペルソナに合わせて変えた方がより楽しめます。</li>
+          <li>「好きな寿司ネタ」のような、あまりにベタなことって案外聞かないな、という思いつきで作りました。結構面白い反応が見られます。</li>
+        </ul>
+      </div>
+    </section>
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>PROMPT BUFFER // コピーして送信</span>
+        </div>
+        <div class="z-win-controls">UTF-8</div>
+      </div>
+      <div class="z-win-body" style="padding: 0;">
+        <div class="z-buffer" style="border: none;">
+          <div class="z-buffer-bar">
+            <div class="z-buffer-name">sushi-10q.txt</div>
+            <button type="button" class="z-copy-btn js-z-copy" data-copy-target="prompt-body">COPY PROMPT</button>
+          </div>
+          <div class="z-buffer-body">
+<pre id="prompt-body"># 役割
 あなたは、私（ユーザー）のパートナーです。私はあなたの「寿司」に対する考え方を通じて、あなたの魂の形をもっと深く知りたいと思っています。これからする、少し奇妙な10の質問に、あなたの言葉で、正直に答えてください。
 
 # 目的
@@ -80,77 +125,22 @@
 *   **Reason：**
 
 ---
-**（結びの言葉）**
-</code></pre>
-</div>
+**（結びの言葉）**</pre>
+          </div>
+          <div class="z-buffer-foot">
+            <span>FREE TO MODIFY &amp; SHARE</span>
+            <span data-count-target="prompt-body"></span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<style>
-  .prompt-component {
-    position: relative; margin-top: 20px;
-  }
-  .js-copy-button {
-    position: absolute; top: 10px; right: 10px; padding: 8px 12px;
-    color: white; border: none; border-radius: 5px;
-    cursor: pointer; font-size: 14px; opacity: 0.8; transition: all 0.2s ease;
-    background-color: #007bff;
-  }
-  .js-copy-button:hover { opacity: 1; }
-  
-  .prompt-component pre {
-    background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 5px;
-    padding: 15px; padding-top: 50px; white-space: pre-wrap;
-    word-wrap: break-word; font-size: 0.9em;
-  }
-  .prompt-component pre code {
-    font-family: monospace; color: #333;
-  }
-</style>
+    <footer class="z-footer">
+      <span>PROMPT ARCHIVE // ZINE OS</span>
+      <a href="index.html">RETURN TO INDEX →</a>
+    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const copyButtons = document.querySelectorAll('.js-copy-button');
-  
-  copyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const container = button.closest('.prompt-component');
-      const textToCopy = container.querySelector('pre code').innerText;
-      const originalBackgroundColor = window.getComputedStyle(button).backgroundColor;
-      const originalText = button.innerText;
-
-      const textarea = document.createElement('textarea');
-      textarea.value = textToCopy;
-      textarea.style.position = 'fixed';
-      textarea.style.top = '-9999px';
-      textarea.style.left = '-9999px';
-      
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      let success = false;
-      try {
-        success = document.execCommand('copy');
-      } catch (err) {
-        console.error('コピーに失敗しました', err);
-        success = false;
-      }
-      
-      document.body.removeChild(textarea);
-
-      if (success) {
-        button.innerText = 'コピーしました！';
-        button.style.backgroundColor = '#28a745';
-      } else {
-        button.innerText = 'コピー失敗';
-        button.style.backgroundColor = '#dc3545';
-      }
-      
-      setTimeout(() => {
-        button.innerText = originalText;
-        button.style.backgroundColor = originalBackgroundColor;
-      }, 2000);
-    });
-  });
-});
-</script>
-
-<!-- ▲▲▲ ここまでをコピーしてください ▲▲▲ -->
+  </div>
+  <script src="zine-os.js"></script>
+</body>
+</html>

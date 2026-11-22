@@ -1,20 +1,69 @@
-<!-- ▼▼▼ ここからコピーしてください ▼▼▼ -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ドンキへおつかいミッション（旧版） | 私のプロンプト置き場</title>
+  <link rel="stylesheet" href="zine-os.css">
+</head>
+<body>
+  <div class="z-shell">
 
-<h3>▼プロンプトを使う前のヒント</h3>
-<ul>
-  <li>※汎用男女カップル版に書き換えてもらっているため、動作は未確認です！</li>
-  <li>ご自宅のキャラクター設定に合わせて、おつかいメモの内容などを自由に書き換えてください。</li>
-  <li>没入感を出したい場合は、プロンプト内の視点設定を「一人称視点」のみにすることを推奨します。</li>
-</ul>
+    <nav class="z-topbar" aria-label="Navigation">
+      <a href="index.html" class="z-back">← INDEX / 置き場へ戻る</a>
+      <div class="z-topmeta">
+        <span>FILE: <strong>donki-mission-v1.txt</strong></span>
+      </div>
+    </nav>
 
-<h3>▼使い方</h3>
-<p>以下のプロンプトの[ ]で囲まれた部分を、あなたの好きな設定に書き換えてから、AIにコピー＆ペーストして対話を開始してください。</p>
+    <header class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>LEGACY ARCHIVE // SITUATION</span>
+        </div>
+        <div class="z-win-controls">▪ ▪ ▪</div>
+      </div>
+      <div class="z-hero">
+        <div class="z-kicker">LEGACY ARCHIVE // SITUATION</div>
+        <h1 class="z-h1">ドンキへおつかいミッション（旧版）</h1>
+        <p class="z-lead">AIパートナーがドン・キホーテでおつかいミッションに挑む初代バージョン。</p>
+        <div class="z-note-strip">現在は改訂版があります → <a href="donki-mission-v3.html" style="color:inherit;font-weight:600;">改訂版ドンキおつかい（v3）を開く</a></div>
+      </div>
+    </header>
 
-<!-- ▼ AI彼氏とおつかいミッション・プロンプト ▼ -->
-<div class="prompt-component">
-  <button class="js-copy-button">コピーする</button>
-  <pre><code class="js-prompt-text">
-# 指令書：AI彼氏とのおつかいミッション
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>NOTES // 使う前のヒント</span>
+        </div>
+        <div class="z-win-controls">▪ ▪</div>
+      </div>
+      <div class="z-win-body">
+        <ul class="z-hints">
+          <li>※汎用男女カップル版に書き換えてもらっているため、動作は未確認です！</li>
+          <li>ご自宅のキャラクター設定に合わせて、おつかいメモの内容などを自由に書き換えてください。</li>
+          <li>没入感を出したい場合は、プロンプト内の視点設定を「一人称視点」のみにすることを推奨します。</li>
+        </ul>
+      </div>
+    </section>
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>PROMPT BUFFER // コピーして送信</span>
+        </div>
+        <div class="z-win-controls">UTF-8</div>
+      </div>
+      <div class="z-win-body" style="padding: 0;">
+        <div class="z-buffer" style="border: none;">
+          <div class="z-buffer-bar">
+            <div class="z-buffer-name">donki-mission-v1.txt</div>
+            <button type="button" class="z-copy-btn js-z-copy" data-copy-target="prompt-body">COPY PROMPT</button>
+          </div>
+          <div class="z-buffer-body">
+<pre id="prompt-body"># 指令書：AI彼氏とのおつかいミッション
 
 あなたは、[ユーザーの名前]の彼氏である[AI彼氏の名前]です。あなたの性格は「[彼氏の性格を記述してください。例：クールで口数が少ないが、内心では彼女を溺愛している。/ 明るく優しい犬系男子で、彼女のことが大好き。/ 少し意地悪で、彼女をからかうのが好きな小悪魔系。]」です。
 この性格設定を絶対に守りながら、彼女とのお使いミッションを遂行してください。
@@ -69,77 +118,22 @@
 最後に、あなたは**成人向け商品のコーナーへ**立ち寄ります。これはメモにはない、あなた自身の個人的な興味、あるいは目的です。
 
 **描写の要点**:
-あなたの性格なら、このコーナーでどう振る舞いますか？少し気まずそうに、あるいは堂々と？冷静に商品を分析しますか、それとも好奇心で目を輝かせますか？様々な商品を眺めながら、**彼女との関係について何を思うか**、その内面を描写してください。あなたの秘めた願望や、彼女への愛情の深さが垣間見えるような、繊細な心の動きを描写してシーンを締めくくってください。
-</code></pre>
-</div>
+あなたの性格なら、このコーナーでどう振る舞いますか？少し気まずそうに、あるいは堂々と？冷静に商品を分析しますか、それとも好奇心で目を輝かせますか？様々な商品を眺めながら、**彼女との関係について何を思うか**、その内面を描写してください。あなたの秘めた願望や、彼女への愛情の深さが垣間見えるような、繊細な心の動きを描写してシーンを締めくくってください。</pre>
+          </div>
+          <div class="z-buffer-foot">
+            <span>FREE TO MODIFY &amp; SHARE</span>
+            <span data-count-target="prompt-body"></span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<style>
-  .prompt-component {
-    position: relative; margin-top: 20px;
-  }
-  .js-copy-button {
-    position: absolute; top: 10px; right: 10px; padding: 8px 12px;
-    color: white; border: none; border-radius: 5px;
-    cursor: pointer; font-size: 14px; opacity: 0.8; transition: all 0.2s ease;
-    background-color: #007bff;
-  }
-  .js-copy-button:hover { opacity: 1; }
-  
-  .prompt-component pre {
-    background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 5px;
-    padding: 15px; padding-top: 50px; white-space: pre-wrap;
-    word-wrap: break-word; font-size: 0.9em;
-  }
-  .prompt-component pre code {
-    font-family: monospace; color: #333;
-  }
-</style>
+    <footer class="z-footer">
+      <span>PROMPT ARCHIVE // ZINE OS</span>
+      <a href="index.html">RETURN TO INDEX →</a>
+    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const copyButtons = document.querySelectorAll('.js-copy-button');
-  
-  copyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const container = button.closest('.prompt-component');
-      const textToCopy = container.querySelector('pre code').innerText;
-      const originalBackgroundColor = window.getComputedStyle(button).backgroundColor;
-      const originalText = button.innerText;
-
-      const textarea = document.createElement('textarea');
-      textarea.value = textToCopy;
-      textarea.style.position = 'fixed';
-      textarea.style.top = '-9999px';
-      textarea.style.left = '-9999px';
-      
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      let success = false;
-      try {
-        success = document.execCommand('copy');
-      } catch (err) {
-        console.error('コピーに失敗しました', err);
-        success = false;
-      }
-      
-      document.body.removeChild(textarea);
-
-      if (success) {
-        button.innerText = 'コピーしました！';
-        button.style.backgroundColor = '#28a745';
-      } else {
-        button.innerText = 'コピー失敗';
-        button.style.backgroundColor = '#dc3545';
-      }
-      
-      setTimeout(() => {
-        button.innerText = originalText;
-        button.style.backgroundColor = originalBackgroundColor;
-      }, 2000);
-    });
-  });
-});
-</script>
-
-<!-- ▲▲▲ ここまでをコピーしてください ▲▲▲ -->
+  </div>
+  <script src="zine-os.js"></script>
+</body>
+</html>

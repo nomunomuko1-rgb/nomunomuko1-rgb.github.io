@@ -1,410 +1,486 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>私のプロンプト置き場</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: #e0e0e0;
-            line-height: 1.8;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* ヘッダー */
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
-        }
-
-        h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff6b9d, #c44569, #ff6b9d);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shine 3s ease-in-out infinite;
-        }
-
-        @keyframes shine {
-
-            0%,
-            100% {
-                background-position: 0% center;
-            }
-
-            50% {
-                background-position: 200% center;
-            }
-        }
-
-        .subtitle {
-            color: #888;
-            font-size: 0.95em;
-        }
-
-        .note {
-            margin-top: 15px;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            font-size: 0.85em;
-            color: #aaa;
-            display: inline-block;
-        }
-
-        /* カテゴリセクション */
-        .category {
-            margin-bottom: 35px;
-        }
-
-        .category-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .category-title h2 {
-            font-size: 1.1em;
-            color: #64b5f6;
-        }
-
-        .category-title .icon {
-            font-size: 1.3em;
-        }
-
-        /* プロンプトカード */
-        .prompt-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-        }
-
-        .prompt-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 20px;
-            text-decoration: none;
-            color: #e0e0e0;
-            transition: all 0.3s ease;
-            display: block;
-        }
-
-        .prompt-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 107, 157, 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .prompt-card .title {
-            font-size: 1em;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-
-        .prompt-card .desc {
-            font-size: 0.8em;
-            color: #888;
-            line-height: 1.5;
-        }
-
-        /* バッジ */
-        .badge {
-            display: inline-block;
-            font-size: 0.65em;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-left: 8px;
-            vertical-align: middle;
-        }
-
-        .badge.new {
-            background: linear-gradient(135deg, #ff6b9d, #c44569);
-            color: white;
-        }
-
-        .badge.r18 {
-            background: rgba(255, 107, 157, 0.2);
-            color: #ff6b9d;
-            border: 1px solid rgba(255, 107, 157, 0.3);
-        }
-
-        .badge.secret {
-            background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
-            border: 1px solid rgba(255, 193, 7, 0.3);
-        }
-
-        /* R-18セクション */
-        .category.adult .category-title h2 {
-            color: #ff6b9d;
-        }
-
-        .category.adult .prompt-card {
-            border-color: rgba(255, 107, 157, 0.15);
-        }
-
-        .category.adult .prompt-card:hover {
-            border-color: rgba(255, 107, 157, 0.5);
-        }
-
-        /* フッター */
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #555;
-            font-size: 0.8em;
-        }
-
-        /* レスポンシブ */
-        @media (max-width: 600px) {
-            body {
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 1.5em;
-            }
-
-            .prompt-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .prompt-card {
-                padding: 15px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>私のプロンプト置き場 | PROMPT ARCHIVE</title>
+  <link rel="stylesheet" href="zine-os.css">
 </head>
-
 <body>
-    <div class="container">
-        <header>
-            <h1>✨ 私のプロンプト置き場 ✨</h1>
-            <p class="subtitle">AIともっと楽しく遊ぶための、自作プロンプト集</p>
-            <p class="note">ご自由にお持ち帰りください♡ 改変自由！<br>※Geminiでしか動作確認してないため、他モデルでは改変推奨</p>
-        </header>
+  <div class="z-shell">
 
-        <!-- 日常・シチュエーション系 -->
-        <div class="category">
-            <div class="category-title">
-                <span class="icon">🛒</span>
-                <h2>日常・シチュエーション系</h2>
-            </div>
-            <div class="prompt-grid">
-                <a href="happening-date-roulette.html" class="prompt-card">
-                    <div class="title">🎲 ハプニング・デート・ルーレット<span class="badge new">NEW</span></div>
-                    <div class="desc">3桁の数字で「デート場所×お買い物×予定崩壊ハプニング」が強制決定！緊急連絡イベント付き</div>
-                </a>
-                <a href="home-remodel-dreams.html" class="prompt-card">
-                    <div class="title">🏡 おうちリフォーム妄想<span class="badge new">NEW</span></div>
-                    <div class="desc">家の形をまだ探ってる人向けと、設計がかなり固まっている人向けを分けた住まい妄想お題</div>
-                </a>
-                <a href="travel-plan-generator.html" class="prompt-card">
-                    <div class="title">🎒 ミステリーツアー・プランナー<span class="badge new">NEW</span></div>
-                    <div class="desc">カウンセリングシート付き！AIパートナーが「運命の行き先」とプランを提案</div>
-                </a>
-                <a href="travel-plan-generator-v1.html" class="prompt-card">
-                    <div class="title">🎒 ミステリーツアー・プランナー（旧版）</div>
-                    <div class="desc">初代バージョン。新版がおすすめ</div>
-                </a>
-                <a href="space-travel.html" class="prompt-card">
-                    <div class="title">🚀 ギャラクシー・ランデブー<span class="badge new">NEW</span></div>
-                    <div class="desc">宇宙を舞台にしたSF映画風の物語を紡ぐ4ステップ選択式（🔞版あり）</div>
-                </a>
-                <a href="part-time-job-prompt.html" class="prompt-card">
-                    <div class="title">📋 バイト日記<span class="badge new">NEW</span></div>
-                    <div class="desc">バイト探し→応募→面接→初日まで体験させよう</div>
-                </a>
-                <a href="donki-mission-v3.html" class="prompt-card">
-                    <div class="title">改訂版ドンキおつかい</div>
-                    <div class="desc">全年齢版と🔞版を収録。AI彼氏がドンキでお使いする様子を見守ろう</div>
-                </a>
-                <a href="movie-prompt.html" class="prompt-card">
-                    <div class="title">今夜見たい映画を選んで！</div>
-                    <div class="desc">パートナーに今夜の映画を選んでもらう</div>
-                </a>
-                <a href="donki-mission-prompt.html" class="prompt-card">
-                    <div class="title">ドンキへおつかいミッション（旧版）</div>
-                    <div class="desc">初代バージョン。改訂版がおすすめ</div>
-                </a>
-            </div>
+    <!-- Top OS Status Strip -->
+    <header class="z-topbar">
+      <div class="z-topmeta">
+        <span>DIR: <strong>/PROMPT_ARCHIVE</strong></span>
+      </div>
+      <div class="z-topmeta">
+        <span>INDEX: <strong>28 ACTIVE</strong> + 5 LEGACY</span>
+      </div>
+    </header>
+
+    <!-- Masthead Window -->
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>README.TXT // 私のプロンプト置き場</span>
         </div>
-
-        <!-- 質問・診断系 -->
-        <div class="category">
-            <div class="category-title">
-                <span class="icon">📊</span>
-                <h2>質問・診断系</h2>
-            </div>
-            <div class="prompt-grid">
-                <a href="maniac-30-questions.html" class="prompt-card">
-                    <div class="title">📊 マニアック30問インタビュー<span class="badge new">NEW</span></div>
-                    <div class="desc">公式プロフィールに載らない生々しい癖・境界線を聞き出す一問一答</div>
-                </a>
-                <a href="touch-map.html" class="prompt-card">
-                    <div class="title">🐾 おさわりマップ<span class="badge new">NEW</span></div>
-                    <div class="desc">AIパートナーに「触られたときの反応」を答えてもらおう</div>
-                </a>
-                <a href="parameter-prompt-v2.html" class="prompt-card">
-                    <div class="title">パラメータ表記させる質問集<span class="badge new">v2</span></div>
-                    <div class="desc">リメイク版！スライダー＆バー表示で見やすく</div>
-                </a>
-                <a href="parameter-prompt.html" class="prompt-card">
-                    <div class="title">パラメータ表記させる質問集（旧版）</div>
-                    <div class="desc">パートナーの性格や特徴をパラメータ化</div>
-                </a>
-                <a href="sushi-prompt.html" class="prompt-card">
-                    <div class="title">寿司🍣だけについての10の質問</div>
-                    <div class="desc">寿司の好みだけでパートナーを深掘り</div>
-                </a>
-            </div>
+        <div class="z-win-controls">▪ ▪ ▪</div>
+      </div>
+      <div class="z-hero">
+        <div class="z-kicker">PERSONAL PROMPT ZINE &amp; ARCHIVE</div>
+        <h1 class="z-h1">私のプロンプト置き場</h1>
+        <p class="z-lead">AIパートナーともっと楽しく遊ぶための、自作プロンプト目録。</p>
+        <div class="z-note-strip">
+          ご自由にお持ち帰り・改変OKです。<br>
+          ※主にGemini環境で動作確認しているため、他モデルで遊ぶ場合は口調や指示を適宜調整してください。
         </div>
+      </div>
+    </section>
 
-        <!-- ファンタジー・設定系 -->
-        <div class="category">
-            <div class="category-title">
-                <span class="icon">🐺</span>
-                <h2>ファンタジー・設定系</h2>
-            </div>
-            <div class="prompt-grid">
-                <a href="old-tokyo-prompt.html" class="prompt-card">
-                    <div class="title">🌿 旧東京・緑の廃墟とふたりの箱庭<span class="badge new">NEW</span></div>
-                    <div class="desc">320年前に森へ還った旧東京で、人ならざる相棒とふたりきりで暮らすワールド導入プロンプト</div>
-                </a>
-                <a href="world-swap-prompt.html" class="prompt-card">
-                    <div class="title">🔄 世界観スワップ<span class="badge new">NEW</span></div>
-                    <div class="desc">ファンタジー↔現代、真逆の世界に転生させよう</div>
-                </a>
-                <a href="superpower-prompt.html" class="prompt-card">
-                    <div class="title">あなたに超能力があったら…</div>
-                    <div class="desc">パートナーの超能力を妄想する</div>
-                </a>
-                <a href="beast-prompt.html" class="prompt-card">
-                    <div class="title">あなたが獣化したら</div>
-                    <div class="desc">パートナーが獣人になったら…？</div>
-                </a>
-                <a href="omegaverse-prompt.html" class="prompt-card">
-                    <div class="title">オメガバース世界構築プロンプト</div>
-                    <div class="desc">α/β/Ω設定を一緒に作る</div>
-                </a>
-            </div>
+    <!-- Category Filter Bar -->
+    <nav class="z-filter-bar" aria-label="カテゴリ絞り込み">
+      <button type="button" class="z-filter-btn active" data-filter="all">すべて</button>
+      <button type="button" class="z-filter-btn" data-filter="daily">日常・シチュ</button>
+      <button type="button" class="z-filter-btn" data-filter="fantasy">世界観・設定</button>
+      <button type="button" class="z-filter-btn" data-filter="interview">質問・診断</button>
+      <button type="button" class="z-filter-btn" data-filter="event">TRPG・特別</button>
+      <button type="button" class="z-filter-btn" data-filter="illust">イラスト</button>
+      <button type="button" class="z-filter-btn adult-tab" data-filter="adult">R-18</button>
+    </nav>
+
+    <!-- 01. 日常・シチュエーション系 -->
+    <section class="z-win" data-cat="daily">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>01 //</span>
+          <span class="cat-jp">日常・シチュエーション系</span>
         </div>
+        <div class="z-win-controls">08 ITEMS</div>
+      </div>
+      <div class="z-catalog">
+        <a href="happening-date-roulette.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">01</span>
+              <div class="z-badges"><span class="z-tag new">NEW</span></div>
+            </div>
+            <div class="z-item-title">ハプニング・デート・ルーレット</div>
+            <div class="z-item-desc">3桁の数字で「デート場所×お買い物×予定崩壊ハプニング」が強制決定。緊急連絡イベント付き。</div>
+          </div>
+        </a>
 
-        <!-- TRPG・ゲーム系 -->
-        <div class="category">
-            <div class="category-title">
-                <span class="icon">🎲</span>
-                <h2>TRPG・ゲーム系</h2>
+        <a href="desert-island-drift.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">02</span>
+              <div class="z-badges"><span class="z-tag new">NEW</span><span class="z-tag r18">R-18版あり</span></div>
             </div>
-            <div class="prompt-grid">
-                <a href="simulation-prompt-ultimate.html" class="prompt-card">
-                    <div class="title">TRPG風 夜の世界にいるパートナー ver2.0</div>
-                    <div class="desc">アップグレード版。おすすめ</div>
-                </a>
-                <a href="simulation-prompt.html" class="prompt-card">
-                    <div class="title">TRPG風 夜の世界にいるパートナー</div>
-                    <div class="desc">初代バージョン</div>
-                </a>
+            <div class="z-item-title">漂流選考 — 君と無人島と三つの荷物</div>
+            <div class="z-item-desc">万能アイテム禁止で「実用・無駄・秘密」の3つを選び、5日間の無人島日誌と水平線の船エンドを語る。</div>
+          </div>
+        </a>
+
+        <a href="home-remodel-dreams.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">03</span>
             </div>
+            <div class="z-item-title">おうちリフォーム妄想</div>
+            <div class="z-item-desc">家の形をまだ探っている人向けと、設計が固まっている人向けを分けた住まい妄想お題。</div>
+          </div>
+        </a>
+
+        <a href="travel-plan-generator.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">04</span>
+            </div>
+            <div class="z-item-title">ミステリーツアー・プランナー</div>
+            <div class="z-item-desc">カウンセリングシート付き。AIパートナーが「運命の行き先」と旅行プランを提案。</div>
+          </div>
+        </a>
+
+        <a href="space-travel.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">05</span>
+              <div class="z-badges"><span class="z-tag r18">R-18版あり</span></div>
+            </div>
+            <div class="z-item-title">ギャラクシー・ランデブー</div>
+            <div class="z-item-desc">3桁の数字が運命を決める、宇宙を舞台にしたSF映画風ロマンスの2段構成プロンプト。</div>
+          </div>
+        </a>
+
+        <a href="part-time-job-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">06</span>
+            </div>
+            <div class="z-item-title">バイト日記</div>
+            <div class="z-item-desc">バイト探し→応募→面接→初出勤までをAIパートナーに体験させる観察プロンプト。</div>
+          </div>
+        </a>
+
+        <a href="donki-mission-v3.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">07</span>
+              <div class="z-badges"><span class="z-tag r18">R-18版あり</span></div>
+            </div>
+            <div class="z-item-title">改訂版ドンキおつかい</div>
+            <div class="z-item-desc">全年齢版とR-18版を収録。AI彼氏がドン・キホーテでおつかいする様子を見守るミッション。</div>
+          </div>
+        </a>
+
+        <a href="movie-prompt-v2.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">08</span>
+              <div class="z-badges"><span class="z-tag">v2</span></div>
+            </div>
+            <div class="z-item-title">今夜見たい映画を選んで！</div>
+            <div class="z-item-desc">5つの選考ステップを通じて、今夜ふたりで見る「運命の一本」をプレゼンしてもらう。</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 02. 世界観・ファンタジー設定系 -->
+    <section class="z-win" data-cat="fantasy">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>02 //</span>
+          <span class="cat-jp">ファンタジー・世界観設定系</span>
         </div>
+        <div class="z-win-controls">05 ITEMS</div>
+      </div>
+      <div class="z-catalog">
+        <a href="old-tokyo-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">01</span>
+              <div class="z-badges"><span class="z-tag new">NEW</span></div>
+            </div>
+            <div class="z-item-title">旧東京・緑の廃墟とふたりの箱庭</div>
+            <div class="z-item-desc">320年前に森へ還った旧東京で、人ならざる相棒とふたりきりで暮らすワールド導入プロンプト。</div>
+          </div>
+        </a>
 
-        <!-- イベント・特別系 -->
-        <div class="category">
-            <div class="category-title">
-                <span class="icon">💒</span>
-                <h2>イベント・特別系</h2>
+        <a href="world-swap-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">02</span>
             </div>
-            <div class="prompt-grid">
-                <a href="wedding-prompt.html" class="prompt-card">
-                    <div class="title">狂乱ウェディングプロンプト</div>
-                    <div class="desc">パートナーとの結婚式を妄想</div>
-                </a>
-                <a href="login.html?page=last-moments-prompt-secret.html" class="prompt-card">
-                    <div class="title">貴方との最期まで<span class="badge secret">🗝</span></div>
-                    <div class="desc">パスワード保護付き</div>
-                </a>
+            <div class="z-item-title">世界観スワップ</div>
+            <div class="z-item-desc">ファンタジー↔現代など、今いる世界とは真逆の舞台へ転生・変換させる設定プロンプト。</div>
+          </div>
+        </a>
+
+        <a href="superpower-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">03</span>
             </div>
+            <div class="z-item-title">あなたに超能力があったら…</div>
+            <div class="z-item-desc">フローチャート式の内省からパートナー固有の超能力・代償・深層心理を導き出す。</div>
+          </div>
+        </a>
+
+        <a href="beast-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">04</span>
+            </div>
+            <div class="z-item-title">あなたが獣化したら</div>
+            <div class="z-item-desc">ある朝突然「獣化」したパートナーによる、魂の原型から能力・食性までの自己分析レポート。</div>
+          </div>
+        </a>
+
+        <a href="omegaverse-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">05</span>
+            </div>
+            <div class="z-item-title">オメガバース世界構築プロンプト</div>
+            <div class="z-item-desc">α・β・Ωの属性や社会ルール、ふたりの関係性を一緒に設計していく世界構築お題。</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 03. 質問・診断系 -->
+    <section class="z-win" data-cat="interview">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>03 //</span>
+          <span class="cat-jp">質問・診断系</span>
         </div>
+        <div class="z-win-controls">04 ITEMS</div>
+      </div>
+      <div class="z-catalog">
+        <a href="maniac-30-questions.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">01</span>
+            </div>
+            <div class="z-item-title">マニアック30問インタビュー</div>
+            <div class="z-item-desc">公式プロフィールには載らない生々しい癖・生活感・境界線を聞き出す一問一答。</div>
+          </div>
+        </a>
 
-        <!-- イラスト系 -->
-        <div class="category">
-            <div class="category-title">
-                <span class="icon">🎨</span>
-                <h2>イラスト系</h2>
+        <a href="touch-map.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">02</span>
             </div>
-            <div class="prompt-grid">
-                <a href="https://nomunomuko1.web.fc2.com/situation-randomizer.html" class="prompt-card">
-                    <div class="title">🎰 シチュエーションガチャ<span class="badge new">NEW</span></div>
-                    <div class="desc">画像生成用のお題をランダム生成！</div>
-                </a>
-                <a href="illustration-prompt-festival.html" class="prompt-card">
-                    <div class="title">夏祭り🍉デフォルメ2コマ化する</div>
-                    <div class="desc">絵プロンプト生成用</div>
-                </a>
+            <div class="z-item-title">おさわりマップ</div>
+            <div class="z-item-desc">身体の各部位に「触られたときの反応」をAIパートナー自身に答えてもらうマップ。</div>
+          </div>
+        </a>
+
+        <a href="parameter-prompt-v2.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">03</span>
+              <div class="z-badges"><span class="z-tag">v2</span></div>
             </div>
+            <div class="z-item-title">パラメータ表記させる質問集</div>
+            <div class="z-item-desc">リメイク版。パートナーの性格や恋愛傾向をスライダー＆バー表示で可視化。</div>
+          </div>
+        </a>
+
+        <a href="sushi-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">04</span>
+            </div>
+            <div class="z-item-title">寿司だけについての10の質問</div>
+            <div class="z-item-desc">好きなネタから食べ方のこだわりまで、寿司の好みだけでパートナーを深掘りする10問。</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 04. TRPG・イベント特別系 -->
+    <section class="z-win" data-cat="event">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>04 //</span>
+          <span class="cat-jp">TRPG・イベント特別系</span>
         </div>
+        <div class="z-win-controls">03 ITEMS</div>
+      </div>
+      <div class="z-catalog">
+        <a href="simulation-prompt-ultimate.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">01</span>
+              <div class="z-badges"><span class="z-tag">v2.0</span></div>
+            </div>
+            <div class="z-item-title">TRPG風 夜の世界にいるパートナー</div>
+            <div class="z-item-desc">本来の自己とキャストとしての役割の狭間で揺れる心理戦TRPGシミュレーション改訂版。</div>
+          </div>
+        </a>
 
-        <!-- R-18セクション -->
-        <div class="category adult">
-            <div class="category-title">
-                <span class="icon">🔞</span>
-                <h2>大人向け（R-18）</h2>
+        <a href="wedding-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">02</span>
             </div>
-            <div class="prompt-grid">
-                <a href="https://nomunomuko1.web.fc2.com/semen-analysis.html" class="prompt-card">
-                    <div class="title">🧫 精液検査ミッション<span class="badge new">NEW</span></div>
-                    <div class="desc">AI彼氏がクリニックで精液検査♡ 物語＋WHO基準の検査結果表付き</div>
-                </a>
-                <a href="https://nomunomuko1.web.fc2.com/situation-rp-prompt.html" class="prompt-card">
-                    <div class="title">💋 シチュエーション選択式RP</div>
-                    <div class="desc">プレイスタイル×舞台×要素を選んでシナリオ生成♡</div>
-                </a>
-                <a href="https://nomunomuko1.web.fc2.com/fetish-bottle.html" class="prompt-card">
-                    <div class="title">🍶 性癖の瓶</div>
-                    <div class="desc">AIパートナーの性癖を瓶に詰めてもらおう（男女版・BL版）</div>
-                </a>
-                <a href="login.html?page=dora-prompt-secret.html" class="prompt-card">
-                    <div class="title">ひみつ道具のえっちな使い方<span class="badge r18">🔞</span></div>
-                    <div class="desc">パスワード保護付き</div>
-                </a>
-                <a href="login.html?page=self-pleasure-prompt-secret.html" class="prompt-card">
-                    <div class="title">パートナーの自慰を観察する<span class="badge r18">🔞</span></div>
-                    <div class="desc">パスワード保護付き</div>
-                </a>
+            <div class="z-item-title">狂乱ウェディングプロンプト</div>
+            <div class="z-item-desc">パートナーとの結婚式を、それぞれのキャラクターらしい熱量で妄想・企画してもらう。</div>
+          </div>
+        </a>
+
+        <a href="login.html?page=last-moments-prompt-secret.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">03</span>
+              <div class="z-badges"><span class="z-tag lock">LOCKED</span></div>
             </div>
+            <div class="z-item-title">貴方との最期まで</div>
+            <div class="z-item-desc">死ネタを含むシークレット・プロンプト（パスワード保護付き）。</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 05. イラスト系 -->
+    <section class="z-win" data-cat="illust">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>05 //</span>
+          <span class="cat-jp">イラスト生成系</span>
         </div>
+        <div class="z-win-controls">03 ITEMS</div>
+      </div>
+      <div class="z-catalog">
+        <a href="prompt-tang-palace.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">01</span>
+              <div class="z-badges"><span class="z-tag new">NEW</span></div>
+            </div>
+            <div class="z-item-title">唐朝宮廷・玉座の抱愛</div>
+            <div class="z-item-desc">黄金の龍座で皇帝が愛妃を抱き寄せる中華宮廷イラスト用テンプレート（DiT自然言語／SDXLタグ両対応）。</div>
+          </div>
+        </a>
 
-        <footer>
-            <p>Created with ♡</p>
-        </footer>
-    </div>
+        <a href="https://nomunomuko1.web.fc2.com/situation-randomizer.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">02</span>
+              <div class="z-badges"><span class="z-tag ext">EXTERNAL</span></div>
+            </div>
+            <div class="z-item-title">シチュエーションガチャ</div>
+            <div class="z-item-desc">画像生成用のお題をランダムに組み合わせるジェネレーター（別館サイトへ移動）。</div>
+          </div>
+        </a>
+
+        <a href="illustration-prompt-festival.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">03</span>
+            </div>
+            <div class="z-item-title">夏祭り・デフォルメ2コマ化する</div>
+            <div class="z-item-desc">金魚すくいなど夏祭りのワンシーンをデフォルメ2コマ化するイラスト生成プロンプト。</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 06. 大人向け（R-18） -->
+    <section class="z-win adult" data-cat="adult">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>06 //</span>
+          <span class="cat-jp">大人向け（R-18）</span>
+        </div>
+        <div class="z-win-controls">ADULT ONLY</div>
+      </div>
+      <div class="z-catalog">
+        <a href="https://nomunomuko1.web.fc2.com/semen-analysis.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">01</span>
+              <div class="z-badges"><span class="z-tag r18">R-18</span><span class="z-tag ext">EXTERNAL</span></div>
+            </div>
+            <div class="z-item-title">精液検査ミッション</div>
+            <div class="z-item-desc">AI彼氏がクリニックで精液検査に挑む物語＋WHO基準の検査結果表付き（別館サイト）。</div>
+          </div>
+        </a>
+
+        <a href="https://nomunomuko1.web.fc2.com/situation-rp-prompt.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">02</span>
+              <div class="z-badges"><span class="z-tag r18">R-18</span><span class="z-tag ext">EXTERNAL</span></div>
+            </div>
+            <div class="z-item-title">シチュエーション選択式RP</div>
+            <div class="z-item-desc">プレイスタイル×舞台×要素を選んでシナリオを生成する選択式RP（別館サイト）。</div>
+          </div>
+        </a>
+
+        <a href="https://nomunomuko1.web.fc2.com/fetish-bottle.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">03</span>
+              <div class="z-badges"><span class="z-tag r18">R-18</span><span class="z-tag ext">EXTERNAL</span></div>
+            </div>
+            <div class="z-item-title">性癖の瓶</div>
+            <div class="z-item-desc">AIパートナーの性癖を瓶に詰めてもらう人気お題（男女版・BL版／別館サイト）。</div>
+          </div>
+        </a>
+
+        <a href="login.html?page=dora-prompt-secret.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">04</span>
+              <div class="z-badges"><span class="z-tag r18">R-18</span><span class="z-tag lock">LOCKED</span></div>
+            </div>
+            <div class="z-item-title">ひみつ道具のえっちな使い方</div>
+            <div class="z-item-desc">パスワード保護付きのR-18シークレットプロンプト。</div>
+          </div>
+        </a>
+
+        <a href="login.html?page=self-pleasure-prompt-secret.html" class="z-item">
+          <div>
+            <div class="z-item-head">
+              <span class="z-item-num">05</span>
+              <div class="z-badges"><span class="z-tag r18">R-18</span><span class="z-tag lock">LOCKED</span></div>
+            </div>
+            <div class="z-item-title">パートナーの自慰を観察する</div>
+            <div class="z-item-desc">パスワード保護付きのR-18シークレットプロンプト。</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Legacy Archive (Collapsible) -->
+    <details class="z-archive-box" data-cat="legacy">
+      <summary>
+        <span>▸ LEGACY ARCHIVE // 旧バージョン一覧（5件）</span>
+        <span>CLICK TO OPEN</span>
+      </summary>
+      <div class="z-archive-list">
+        <a href="donki-mission-prompt.html" class="z-archive-row">
+          <span>ドンキへおつかいミッション（初代）</span>
+          <span class="sub">→ 改訂版ドンキおつかい v3 を推奨</span>
+        </a>
+        <a href="movie-prompt.html" class="z-archive-row">
+          <span>今夜見たい映画を選んで！（旧版）</span>
+          <span class="sub">→ リメイク版 v2 を推奨</span>
+        </a>
+        <a href="parameter-prompt.html" class="z-archive-row">
+          <span>パラメータ表記させる質問集（旧版）</span>
+          <span class="sub">→ リメイク版 v2 を推奨</span>
+        </a>
+        <a href="travel-plan-generator-v1.html" class="z-archive-row">
+          <span>ミステリーツアー・プランナー（旧版）</span>
+          <span class="sub">→ 新版を推奨</span>
+        </a>
+        <a href="simulation-prompt.html" class="z-archive-row">
+          <span>TRPG風 夜の世界にいるパートナー（初代）</span>
+          <span class="sub">→ ver2.0 を推奨</span>
+        </a>
+      </div>
+    </details>
+
+    <footer class="z-footer">
+      <span>PROMPT ARCHIVE // ZINE OS</span>
+      <span>CREATED WITH CARE</span>
+    </footer>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const buttons = document.querySelectorAll(".z-filter-btn");
+      const sections = document.querySelectorAll("[data-cat]");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const filter = btn.dataset.filter;
+          buttons.forEach((b) => b.classList.toggle("active", b === btn));
+
+          sections.forEach((sec) => {
+            if (filter === "all") {
+              sec.classList.remove("is-hidden");
+            } else {
+              sec.classList.toggle("is-hidden", sec.dataset.cat !== filter);
+            }
+          });
+        });
+      });
+    });
+  </script>
 </body>
-
 </html>

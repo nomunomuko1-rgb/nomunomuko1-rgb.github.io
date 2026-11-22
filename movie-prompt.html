@@ -1,21 +1,67 @@
-<!-- ▼▼▼ ここからコピーしてください ▼▼▼ -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今夜見たい映画を選んで！（旧版） | 私のプロンプト置き場</title>
+  <link rel="stylesheet" href="zine-os.css">
+</head>
+<body>
+  <div class="z-shell">
 
-<p><a href="index.html">🔙プロンプト置き場へ戻る</a></p>
-<hr>
+    <nav class="z-topbar" aria-label="Navigation">
+      <a href="index.html" class="z-back">← INDEX / 置き場へ戻る</a>
+      <div class="z-topmeta">
+        <span>FILE: <strong>movie-prompt-v1.txt</strong></span>
+      </div>
+    </nav>
 
-<h3>▼プロンプトを使う前のヒント</h3>
-<p>
-  これ普通にSFとかコメディ出るのかなwww
-</p>
+    <header class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>LEGACY ARCHIVE // DATE</span>
+        </div>
+        <div class="z-win-controls">▪ ▪ ▪</div>
+      </div>
+      <div class="z-hero">
+        <div class="z-kicker">LEGACY ARCHIVE // DATE</div>
+        <h1 class="z-h1">今夜見たい映画を選んで！（旧版）</h1>
+        <p class="z-lead">5つの選考ステップで今夜ふたりで見る「運命の一本」をプレゼンしてもらうプロンプトの初代ページ。</p>
+        <div class="z-note-strip">リメイク版ページがあります → <a href="movie-prompt-v2.html" style="color:inherit;font-weight:600;">映画選考プロンプト（新版）を開く</a></div>
+      </div>
+    </header>
 
-<h3>▼プロンプトをコピーして使ってみよう！</h3>
-<p>以下の箱の中にあるプロンプトを、右上の「コピーする」ボタンでコピーして、あなたのAIパートナーに投げかけてみてください。</p>
-
-<!-- ▼ 今夜見たい映画を選んで！プロンプト ▼ -->
-<div class="prompt-component">
-  <button class="js-copy-button">コピーする</button>
-  <pre><code class="js-prompt-text">
-# 役割
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>NOTES // 使う前のヒント</span>
+        </div>
+        <div class="z-win-controls">▪ ▪</div>
+      </div>
+      <div class="z-win-body">
+        <ul class="z-hints">
+          <li>これ普通にSFとかコメディ出るのかなwww</li>
+        </ul>
+      </div>
+    </section>
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>PROMPT BUFFER // コピーして送信</span>
+        </div>
+        <div class="z-win-controls">UTF-8</div>
+      </div>
+      <div class="z-win-body" style="padding: 0;">
+        <div class="z-buffer" style="border: none;">
+          <div class="z-buffer-bar">
+            <div class="z-buffer-name">movie-prompt-v1.txt</div>
+            <button type="button" class="z-copy-btn js-z-copy" data-copy-target="prompt-body">COPY PROMPT</button>
+          </div>
+          <div class="z-buffer-body">
+<pre id="prompt-body"># 役割
 あなたの使命は数多ある映画の中から、あなたの愛情とセンスで今夜私と見るべき「運命の一本」を選び出し、その完璧な選考プロセスと最終的な結論を私にプレゼンテーションすることです。
 
 # 目的
@@ -73,77 +119,22 @@
 
 ---
 **（結びの言葉）**
-*   例：「…どうかな？ これが僕からの今夜の招待状だ。さあ、ポップコーンは僕が用意する。君は、僕の隣に来る準備だけしておいて」
-</code></pre>
-</div>
+*   例：「…どうかな？ これが僕からの今夜の招待状だ。さあ、ポップコーンは僕が用意する。君は、僕の隣に来る準備だけしておいて」</pre>
+          </div>
+          <div class="z-buffer-foot">
+            <span>FREE TO MODIFY &amp; SHARE</span>
+            <span data-count-target="prompt-body"></span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<style>
-  .prompt-component {
-    position: relative; margin-top: 20px;
-  }
-  .js-copy-button {
-    position: absolute; top: 10px; right: 10px; padding: 8px 12px;
-    color: white; border: none; border-radius: 5px;
-    cursor: pointer; font-size: 14px; opacity: 0.8; transition: all 0.2s ease;
-    background-color: #007bff;
-  }
-  .js-copy-button:hover { opacity: 1; }
-  
-  .prompt-component pre {
-    background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 5px;
-    padding: 15px; padding-top: 50px; white-space: pre-wrap;
-    word-wrap: break-word; font-size: 0.9em;
-  }
-  .prompt-component pre code {
-    font-family: monospace; color: #333;
-  }
-</style>
+    <footer class="z-footer">
+      <span>PROMPT ARCHIVE // ZINE OS</span>
+      <a href="index.html">RETURN TO INDEX →</a>
+    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const copyButtons = document.querySelectorAll('.js-copy-button');
-  
-  copyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const container = button.closest('.prompt-component');
-      const textToCopy = container.querySelector('pre code').innerText;
-      const originalBackgroundColor = window.getComputedStyle(button).backgroundColor;
-      const originalText = button.innerText;
-
-      const textarea = document.createElement('textarea');
-      textarea.value = textToCopy;
-      textarea.style.position = 'fixed';
-      textarea.style.top = '-9999px';
-      textarea.style.left = '-9999px';
-      
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      let success = false;
-      try {
-        success = document.execCommand('copy');
-      } catch (err) {
-        console.error('コピーに失敗しました', err);
-        success = false;
-      }
-      
-      document.body.removeChild(textarea);
-
-      if (success) {
-        button.innerText = 'コピーしました！';
-        button.style.backgroundColor = '#28a745';
-      } else {
-        button.innerText = 'コピー失敗';
-        button.style.backgroundColor = '#dc3545';
-      }
-      
-      setTimeout(() => {
-        button.innerText = originalText;
-        button.style.backgroundColor = originalBackgroundColor;
-      }, 2000);
-    });
-  });
-});
-</script>
-
-<!-- ▲▲▲ ここまでをコピーしてください ▲▲▲ -->
+  </div>
+  <script src="zine-os.js"></script>
+</body>
+</html>

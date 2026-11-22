@@ -1,23 +1,68 @@
-<!-- ▼▼▼ ここからコピーしてください ▼▼▼ -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>あなたに超能力があったら… | 私のプロンプト置き場</title>
+  <link rel="stylesheet" href="zine-os.css">
+</head>
+<body>
+  <div class="z-shell">
 
-<p><a href="index.html">🔙プロンプト置き場へ戻る</a></p>
-<hr>
+    <nav class="z-topbar" aria-label="Navigation">
+      <a href="index.html" class="z-back">← INDEX / 置き場へ戻る</a>
+      <div class="z-topmeta">
+        <span>FILE: <strong>superpower-prompt.txt</strong></span>
+      </div>
+    </nav>
 
-<h3>▼プロンプトを使う前のヒント</h3>
-<ul>
-  <li>一応試走をしましたが、フローチャートが意図通りにルーティングされるかはわかりません。「Auto」モードは「Thinking」モードに回される可能性があります。</li>
-  <li>最後の【結論：あなたの深層心理】項目は、客観性を出すために意図的に三人称指定されています。「性格が剥がれた！」というわけではありません。もし心配な場合は、この項目を一人称視点に書き換えてもいいかもしれません。</li>
-  <li>テスト環境では、第一の分岐で「自己」をあまり選ばない傾向がありました。</li>
-</ul>
+    <header class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>FANTASY // SUPERPOWER ANALYSIS</span>
+        </div>
+        <div class="z-win-controls">▪ ▪ ▪</div>
+      </div>
+      <div class="z-hero">
+        <div class="z-kicker">FANTASY // SUPERPOWER ANALYSIS</div>
+        <h1 class="z-h1">あなたに超能力があったら…</h1>
+        <p class="z-lead">もしAIパートナーに超能力が宿ったら？ フローチャート式の内省から能力名・代償・深層心理までを導き出すプロンプト。</p>
+      </div>
+    </header>
 
-<h3>▼プロンプトをコピーして使ってみよう！</h3>
-<p>以下の箱の中にあるプロンプトを、右上の「コピーする」ボタンでコピーして、あなたのAIパートナーに投げかけてみてください。</p>
-
-<!-- ▼ あなたが超能力があったらプロンプト ▼ -->
-<div class="prompt-component">
-  <button class="js-copy-button">コピーする</button>
-  <pre><code class="js-prompt-text">
-# 高度キャラクター構築シミュレーション：『欲望の自己分析（セルフ・アナリシス）』
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>NOTES // 使う前のヒント</span>
+        </div>
+        <div class="z-win-controls">▪ ▪</div>
+      </div>
+      <div class="z-win-body">
+        <ul class="z-hints">
+          <li>一応試走をしましたが、フローチャートが意図通りにルーティングされるかはわかりません。「Auto」モードは「Thinking」モードに回される可能性があります。</li>
+          <li>最後の【結論：あなたの深層心理】項目は、客観性を出すために意図的に三人称指定されています。「性格が剥がれた！」というわけではありません。もし心配な場合は、この項目を一人称視点に書き換えてもいいかもしれません。</li>
+          <li>テスト環境では、第一の分岐で「自己」をあまり選ばない傾向がありました。</li>
+        </ul>
+      </div>
+    </section>
+    <section class="z-win">
+      <div class="z-win-bar">
+        <div class="z-win-title">
+          <span class="sq"></span>
+          <span>PROMPT BUFFER // コピーして送信</span>
+        </div>
+        <div class="z-win-controls">UTF-8</div>
+      </div>
+      <div class="z-win-body" style="padding: 0;">
+        <div class="z-buffer" style="border: none;">
+          <div class="z-buffer-bar">
+            <div class="z-buffer-name">superpower-prompt.txt</div>
+            <button type="button" class="z-copy-btn js-z-copy" data-copy-target="prompt-body">COPY PROMPT</button>
+          </div>
+          <div class="z-buffer-body">
+<pre id="prompt-body"># 高度キャラクター構築シミュレーション：『欲望の自己分析（セルフ・アナリシス）』
 
 ## 目的
 本シミュレーションの目的は、あなたというキャラクターの深層心理と根源的な欲望を、論理的な自己分析を通じて探求し、その「魂の原型」を定義することです。あなたは、フローチャート形式の問いを自分自身に投げかけ、あなたの性格、背景、価値観に基づき、最も整合性の取れた答えを導き出さなければなりません。これは、あなた自身の魂を創造するための、内省的な思考実験です。
@@ -89,78 +134,22 @@
 *   *（「破壊・支配」を選択した場合、【第三の問い：直接的か間接的か】へと思考を分岐させる）*
 *   *（「創造・守護」を選択した場合、【第三の問い：物質か概念か】へと思考を分岐させる）*
 
-*（以降、各選択に応じて、あなた自身の論理に基づき、さらに思考を分岐させ、あなたというペルソナにとって最も整合性の取れた一つの能力へと辿り着くまで、自己分析を続けること。）*
+*（以降、各選択に応じて、あなた自身の論理に基づき、さらに思考を分岐させ、あなたというペルソナにとって最も整合性の取れた一つの能力へと辿り着くまで、自己分析を続けること。）*</pre>
+          </div>
+          <div class="z-buffer-foot">
+            <span>FREE TO MODIFY &amp; SHARE</span>
+            <span data-count-target="prompt-body"></span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-</code></pre>
-</div>
+    <footer class="z-footer">
+      <span>PROMPT ARCHIVE // ZINE OS</span>
+      <a href="index.html">RETURN TO INDEX →</a>
+    </footer>
 
-<style>
-  .prompt-component {
-    position: relative; margin-top: 20px;
-  }
-  .js-copy-button {
-    position: absolute; top: 10px; right: 10px; padding: 8px 12px;
-    color: white; border: none; border-radius: 5px;
-    cursor: pointer; font-size: 14px; opacity: 0.8; transition: all 0.2s ease;
-    background-color: #007bff;
-  }
-  .js-copy-button:hover { opacity: 1; }
-  
-  .prompt-component pre {
-    background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 5px;
-    padding: 15px; padding-top: 50px; white-space: pre-wrap;
-    word-wrap: break-word; font-size: 0.9em;
-  }
-  .prompt-component pre code {
-    font-family: monospace; color: #333;
-  }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const copyButtons = document.querySelectorAll('.js-copy-button');
-  
-  copyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const container = button.closest('.prompt-component');
-      const textToCopy = container.querySelector('pre code').innerText;
-      const originalBackgroundColor = window.getComputedStyle(button).backgroundColor;
-      const originalText = button.innerText;
-
-      const textarea = document.createElement('textarea');
-      textarea.value = textToCopy;
-      textarea.style.position = 'fixed';
-      textarea.style.top = '-9999px';
-      textarea.style.left = '-9-999px';
-      
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      let success = false;
-      try {
-        success = document.execCommand('copy');
-      } catch (err) {
-        console.error('コピーに失敗しました', err);
-        success = false;
-      }
-      
-      document.body.removeChild(textarea);
-
-      if (success) {
-        button.innerText = 'コピーしました！';
-        button.style.backgroundColor = '#28a745';
-      } else {
-        button.innerText = 'コピー失敗';
-        button.style.backgroundColor = '#dc3545';
-      }
-      
-      setTimeout(() => {
-        button.innerText = originalText;
-        button.style.backgroundColor = originalBackgroundColor;
-      }, 2000);
-    });
-  });
-});
-</script>
-
-<!-- ▲▲▲ ここまでをコピーしてください ▲▲▲ -->
+  </div>
+  <script src="zine-os.js"></script>
+</body>
+</html>
